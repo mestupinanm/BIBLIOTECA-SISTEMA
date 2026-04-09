@@ -1,0 +1,64 @@
+{
+  "faqs": [
+    {
+      "question": {
+        "es": "Como puedo prestar un libro?",
+        "en": "How can I borrow a book?"
+      },
+      "answer": {
+        "es": "Dirigete a Recepcion con tu carnet universitario. El personal te asistira con el proceso de prestamo. Tambien puedes usar la estacion de autoservicio.",
+        "en": "Go to Reception with your university ID. Staff will assist you with the borrowing process. You can also use the self-checkout station."
+      }
+    },
+    {
+      "question": {
+        "es": "Cuantos libros puedo tener prestados?",
+        "en": "How many books can I have on loan?"
+      },
+      "answer": {
+        "es": "Los estudiantes de pregrado pueden tener hasta 5 libros prestados simultaneamente. Estudiantes de posgrado pueden tener hasta 8.",
+        "en": "Undergraduate students can have up to 5 books on loan simultaneously. Graduate students can have up to 8."
+      }
+    },
+    {
+      "question": {
+        "es": "Donde estan los banos?",
+        "en": "Where are the restrooms?"
+      },
+      "answer": {
+        "es": "Los banos estan ubicados en el costado derecho de la biblioteca. Puedes usar la opcion 'Adonde voy?' para que te guie.",
+        "en": "The restrooms are located on the right side of the library. You can use the 'Where do I go?' option for directions."
+      }
+    },
+    {
+      "question": {
+        "es": "Puedo reservar una sala de estudio?",
+        "en": "Can I reserve a study room?"
+      },
+      "answer": {
+        "es": "Si, las salas de estudio se pueden reservar a traves del sistema IRUS o directamente en Recepcion.",
+        "en": "Yes, study rooms can be reserved through the IRUS system or directly at Reception."
+      }
+    },
+    {
+      "question": {
+        "es": "Hay impresoras disponibles?",
+        "en": "Are printers available?"
+      },
+      "answer": {
+        "es": "Si, hay impresoras disponibles para los estudiantes. Consulta en Recepcion sobre el servicio de impresion.",
+        "en": "Yes, printers are available for students. Ask at Reception about the printing service."
+      }
+    },
+    {
+      "question": {
+        "es": "Que hago si pierdo un libro prestado?",
+        "en": "What if I lose a borrowed book?"
+      },
+      "answer": {
+        "es": "Dirigete a Recepcion lo antes posible para reportar la perdida. El personal te indicara el procedimiento a seguir.",
+        "en": "Go to Reception as soon as possible to report the loss. Staff will guide you through the procedure."
+      }
+    }
+  ]
+}
