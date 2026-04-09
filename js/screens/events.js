@@ -6,134 +6,188 @@
 
   window.PepperLib = window.PepperLib || {};
 
-  var TRIVIA = [
+  var DATA_URL = 'assets/data/events/activities.json';
+  var fallbackActivities = [
     {
-      q: { es: 'En que piso se encuentra la Sala de Ciencias e Ingenieria?', en: 'On which floor is the Science and Engineering Room located?' },
-      options: {
-        es: ['Piso 1', 'Piso 2', 'Piso 3', 'Piso 4'],
-        en: ['Floor 1', 'Floor 2', 'Floor 3', 'Floor 4']
+      id: 'library-trivia',
+      type: 'trivia',
+      enabled: true,
+      title: {
+        es: 'Trivia de la biblioteca',
+        en: 'Library trivia'
       },
-      correct: 1
-    },
-    {
-      q: { es: 'Cuantas salas de estudio tiene esta seccion de la biblioteca?', en: 'How many study rooms does this section of the library have?' },
-      options: {
-        es: ['4', '6', '8', '10'],
-        en: ['4', '6', '8', '10']
+      description: {
+        es: 'Pon a prueba lo que sabes sobre la biblioteca, sus servicios y la universidad.',
+        en: 'Put your knowledge of the library, its services, and the university to the test.'
       },
-      correct: 2
-    },
-    {
-      q: { es: 'Como se llama el sistema de bibliotecas de la Universidad de los Andes?', en: 'What is the name of the Universidad de los Andes library system?' },
-      options: {
-        es: ['SIBILA', 'IRUS', 'OPAC', 'ALEPH'],
-        en: ['SIBILA', 'IRUS', 'OPAC', 'ALEPH']
+      cta: {
+        es: 'Comenzar trivia',
+        en: 'Start trivia'
       },
-      correct: 1
-    },
-    {
-      q: { es: 'Cual es el horario de la biblioteca de lunes a viernes?', en: 'What are the library hours Monday through Friday?' },
-      options: {
-        es: ['8 AM - 6 PM', '7 AM - 9 PM', '9 AM - 8 PM', '6 AM - 10 PM'],
-        en: ['8 AM - 6 PM', '7 AM - 9 PM', '9 AM - 8 PM', '6 AM - 10 PM']
-      },
-      correct: 1
-    },
-    {
-      q: { es: 'Que robot te esta asistiendo ahora mismo?', en: 'Which robot is assisting you right now?' },
-      options: {
-        es: ['NAO', 'Pepper', 'Spot', 'Atlas'],
-        en: ['NAO', 'Pepper', 'Spot', 'Atlas']
-      },
-      correct: 1
+      content: {
+        questions: [
+          {
+            question: {
+              es: 'En que piso se encuentra la Sala de Ciencias e Ingenieria?',
+              en: 'On which floor is the Science and Engineering Room located?'
+            },
+            options: {
+              es: ['Piso 1', 'Piso 2', 'Piso 3', 'Piso 4'],
+              en: ['Floor 1', 'Floor 2', 'Floor 3', 'Floor 4']
+            },
+            correct: 1
+          }
+        ]
+      }
     }
   ];
-
+  var activities = [];
+  var activeActivity = null;
   var state = {
     currentQuestion: 0,
     score: 0,
     answered: false
   };
 
-  function renderIntro() {
+  function getLangText(value) {
+    if (!value) return '';
+    return value[PepperLib.State.language] || value.es || '';
+  }
+
+  function loadActivities() {
+    if (activities.length) return Promise.resolve(activities);
+    if (typeof fetch === 'undefined') {
+      activities = fallbackActivities;
+      return Promise.resolve(activities);
+    }
+
+    return fetch(DATA_URL)
+      .then(function (response) {
+        if (!response.ok) throw new Error('events_data_unavailable');
+        return response.json();
+      })
+      .then(function (data) {
+        activities = data && data.activities ? data.activities : fallbackActivities;
+        return activities;
+      })
+      .catch(function () {
+        activities = fallbackActivities;
+        return activities;
+      });
+  }
+
+  function renderLibrary() {
     var introEl = document.getElementById('events-intro');
     var questionEl = document.getElementById('events-question');
     var resultEl = document.getElementById('events-result');
+    var html = '';
 
-    if (introEl) {
-      introEl.classList.remove('hidden');
-      introEl.innerHTML =
-        '<div class="events-intro-icon">' +
-        '  <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
-        '    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>' +
-        '  </svg>' +
-        '</div>' +
-        '<h1 class="events-intro-title" data-i18n="events.trivia_title">' + PepperLib.i18n.t('events.trivia_title') + '</h1>' +
-        '<p class="events-intro-desc" data-i18n="events.trivia_desc">' + PepperLib.i18n.t('events.trivia_desc') + '</p>' +
-        '<button class="btn btn--primary" id="btn-trivia-start" data-i18n="events.start">' + PepperLib.i18n.t('events.start') + '</button>';
+    if (!introEl) return;
 
-      var btnStart = document.getElementById('btn-trivia-start');
-      if (btnStart) {
-        btnStart.addEventListener('click', function () {
-          state.currentQuestion = 0;
-          state.score = 0;
-          state.answered = false;
-          renderQuestion();
-        });
-      }
+    html += '<section class="events-library">';
+    html += '  <div class="events-library-head">';
+    html += '    <span class="events-library-badge" data-i18n="events.library_arcade">' + PepperLib.i18n.t('events.library_arcade') + '</span>';
+    html += '    <h2 data-i18n="events.select_activity">' + PepperLib.i18n.t('events.select_activity') + '</h2>';
+    html += '  </div>';
+    html += '  <div class="events-activity-grid">';
+
+    for (var i = 0; i < activities.length; i++) {
+      var activity = activities[i];
+      var badgeKey = activity.type === 'game' ? 'events.badge_game' : 'events.badge_trivia';
+      var stateKey = activity.enabled ? 'events.available_now' : 'events.coming_soon';
+
+      html += '<article class="events-activity-card' + (activity.enabled ? '' : ' is-disabled') + '">';
+      html += '  <div class="events-activity-top">';
+      html += '    <span class="events-activity-kind" data-i18n="' + badgeKey + '">' + PepperLib.i18n.t(badgeKey) + '</span>';
+      html += '    <span class="events-activity-state" data-i18n="' + stateKey + '">' + PepperLib.i18n.t(stateKey) + '</span>';
+      html += '  </div>';
+      html += '  <h3>' + getLangText(activity.title) + '</h3>';
+      html += '  <p>' + getLangText(activity.description) + '</p>';
+      html += '  <button class="btn ' + (activity.enabled ? 'btn--primary' : 'btn--secondary') + ' events-activity-btn" data-activity="' + activity.id + '"' + (activity.enabled ? '' : ' disabled') + '>' + getLangText(activity.cta) + '</button>';
+      html += '</article>';
     }
+
+    html += '  </div>';
+    html += '</section>';
+
+    introEl.classList.remove('hidden');
+    introEl.innerHTML = html;
     if (questionEl) questionEl.classList.add('hidden');
     if (resultEl) resultEl.classList.add('hidden');
+
+    var buttons = introEl.querySelectorAll('[data-activity]');
+    for (var j = 0; j < buttons.length; j++) {
+      buttons[j].addEventListener('click', function () {
+        startActivity(this.getAttribute('data-activity'));
+      });
+    }
+  }
+
+  function startActivity(activityId) {
+    PepperLib.Analytics.count('events', 'trivia_started');
+    PepperLib.LastAction = PepperLib.i18n.t('events.screen_title') + ' — ' + activityId;
+    for (var i = 0; i < activities.length; i++) {
+      if (activities[i].id === activityId) {
+        activeActivity = activities[i];
+        break;
+      }
+    }
+
+    state.currentQuestion = 0;
+    state.score = 0;
+    state.answered = false;
+
+    if (activeActivity && activeActivity.type === 'trivia') {
+      renderQuestion();
+    }
   }
 
   function renderQuestion() {
-    var introEl = document.getElementById('events-intro');
     var questionEl = document.getElementById('events-question');
+    var introEl = document.getElementById('events-intro');
     var resultEl = document.getElementById('events-result');
+    var questions = activeActivity.content.questions;
+    var q = questions[state.currentQuestion];
+    var options = getLangText(q.options) ? q.options[PepperLib.State.language] || q.options.es : [];
+    var total = questions.length;
+    var progress = ((state.currentQuestion + 1) / total) * 100;
+    var html = '';
 
     if (introEl) introEl.classList.add('hidden');
-    if (questionEl) questionEl.classList.remove('hidden');
     if (resultEl) resultEl.classList.add('hidden');
+    if (!questionEl) return;
 
-    var lang = PepperLib.State.language;
-    var q = TRIVIA[state.currentQuestion];
-    var total = TRIVIA.length;
-    var progress = ((state.currentQuestion) / total) * 100;
-
-    var html =
-      '<div class="trivia-progress">' +
-      '  <span class="trivia-score">' + PepperLib.i18n.t('events.question') + ' ' + (state.currentQuestion + 1) + ' ' + PepperLib.i18n.t('events.of') + ' ' + total + '</span>' +
-      '  <div class="trivia-progress-bar"><div class="trivia-progress-fill" style="width:' + progress + '%"></div></div>' +
-      '  <span class="trivia-score">' + PepperLib.i18n.t('events.score') + ': ' + state.score + '</span>' +
-      '</div>' +
-      '<div class="trivia-question-text">' + (q.q[lang] || q.q['es']) + '</div>' +
-      '<div class="trivia-answers">';
-
-    var options = q.options[lang] || q.options['es'];
+    html += '<article class="events-question-card">';
+    html += '  <div class="events-question-header">';
+    html += '    <span class="events-progress-label">' + PepperLib.i18n.t('events.question') + ' ' + (state.currentQuestion + 1) + ' ' + PepperLib.i18n.t('events.of') + ' ' + total + '</span>';
+    html += '    <span class="events-progress-score">' + PepperLib.i18n.t('events.score') + ': ' + state.score + '</span>';
+    html += '  </div>';
+    html += '  <div class="events-progress-bar"><div class="events-progress-fill" style="width:' + progress + '%"></div></div>';
+    html += '  <h3 class="events-question-text">' + getLangText(q.question) + '</h3>';
+    html += '  <div class="events-option-list">';
     for (var i = 0; i < options.length; i++) {
-      html += '<button class="trivia-answer-btn" data-index="' + i + '">' + options[i] + '</button>';
+      html += '    <button class="events-option-btn" data-index="' + i + '">' + options[i] + '</button>';
     }
+    html += '  </div>';
+    html += '</article>';
 
-    html += '</div>';
-
+    questionEl.classList.remove('hidden');
     questionEl.innerHTML = html;
     state.answered = false;
 
-    // Attach answer handlers
-    var answerBtns = questionEl.querySelectorAll('.trivia-answer-btn');
+    var answerBtns = questionEl.querySelectorAll('.events-option-btn');
     for (var j = 0; j < answerBtns.length; j++) {
       answerBtns[j].addEventListener('click', function () {
         if (state.answered) return;
         state.answered = true;
 
-        var selected = parseInt(this.getAttribute('data-index'));
+        var selected = parseInt(this.getAttribute('data-index'), 10);
         var correct = q.correct;
+        var allBtns = questionEl.querySelectorAll('.events-option-btn');
 
-        // Disable all buttons
-        var allBtns = questionEl.querySelectorAll('.trivia-answer-btn');
         for (var k = 0; k < allBtns.length; k++) {
-          allBtns[k].classList.add('disabled');
-          if (parseInt(allBtns[k].getAttribute('data-index')) === correct) {
+          allBtns[k].disabled = true;
+          if (parseInt(allBtns[k].getAttribute('data-index'), 10) === correct) {
             allBtns[k].classList.add('correct');
           }
         }
@@ -146,68 +200,60 @@
         }
 
         PepperLib.Analytics.log('trivia_answer', {
+          activity: activeActivity.id,
           question: state.currentQuestion,
           selected: selected,
           correct: correct,
           isCorrect: selected === correct
         });
 
-        // Auto advance after 1.5s
         setTimeout(function () {
           state.currentQuestion++;
-          if (state.currentQuestion < TRIVIA.length) {
+          if (state.currentQuestion < questions.length) {
             renderQuestion();
           } else {
             renderResult();
           }
-        }, 1500);
+        }, 1300);
       });
     }
   }
 
   function renderResult() {
-    var introEl = document.getElementById('events-intro');
     var questionEl = document.getElementById('events-question');
     var resultEl = document.getElementById('events-result');
+    var introEl = document.getElementById('events-intro');
+    var total = activeActivity.content.questions.length;
+    var percentage = Math.round((state.score / total) * 100);
+    var messageKey = percentage >= 80 ? 'events.result_great' : percentage >= 50 ? 'events.result_good' : 'events.result_ok';
+    var html = '';
 
     if (introEl) introEl.classList.add('hidden');
     if (questionEl) questionEl.classList.add('hidden');
-    if (resultEl) resultEl.classList.remove('hidden');
+    if (!resultEl) return;
 
-    var total = TRIVIA.length;
-    var percentage = Math.round((state.score / total) * 100);
+    html += '<article class="events-result-card">';
+    html += '  <span class="events-result-kicker">' + getLangText(activeActivity.title) + '</span>';
+    html += '  <div class="events-result-score">' + state.score + '/' + total + '</div>';
+    html += '  <div class="events-result-label" data-i18n="' + messageKey + '">' + PepperLib.i18n.t(messageKey) + '</div>';
+    html += '  <div class="events-result-actions">';
+    html += '    <button class="btn btn--primary" id="btn-trivia-replay" data-i18n="events.play_again">' + PepperLib.i18n.t('events.play_again') + '</button>';
+    html += '    <button class="btn btn--secondary" id="btn-trivia-menu" data-i18n="events.back_menu">' + PepperLib.i18n.t('events.back_menu') + '</button>';
+    html += '  </div>';
+    html += '</article>';
 
-    var messageKey;
-    if (percentage >= 80) messageKey = 'events.result_great';
-    else if (percentage >= 50) messageKey = 'events.result_good';
-    else messageKey = 'events.result_ok';
+    resultEl.classList.remove('hidden');
+    resultEl.innerHTML = html;
 
-    resultEl.innerHTML =
-      '<div class="events-result-score">' + state.score + '/' + total + '</div>' +
-      '<div class="events-result-label" data-i18n="' + messageKey + '">' + PepperLib.i18n.t(messageKey) + '</div>' +
-      '<div style="display:flex;gap:16px;justify-content:center">' +
-      '  <button class="btn btn--primary" id="btn-trivia-replay" data-i18n="events.play_again">' + PepperLib.i18n.t('events.play_again') + '</button>' +
-      '  <button class="btn btn--secondary" id="btn-trivia-menu" data-i18n="events.back_menu">' + PepperLib.i18n.t('events.back_menu') + '</button>' +
-      '</div>';
+    document.getElementById('btn-trivia-replay').addEventListener('click', function () {
+      startActivity(activeActivity.id);
+    });
+    document.getElementById('btn-trivia-menu').addEventListener('click', function () {
+      renderLibrary();
+    });
 
-    var btnReplay = document.getElementById('btn-trivia-replay');
-    if (btnReplay) {
-      btnReplay.addEventListener('click', function () {
-        state.currentQuestion = 0;
-        state.score = 0;
-        state.answered = false;
-        renderQuestion();
-      });
-    }
-
-    var btnMenu = document.getElementById('btn-trivia-menu');
-    if (btnMenu) {
-      btnMenu.addEventListener('click', function () {
-        PepperLib.State.go(PepperLib.SCREENS.FEEDBACK);
-      });
-    }
-
-    PepperLib.Analytics.log('trivia_completed', { score: state.score, total: total });
+    PepperLib.Analytics.count('events', 'trivia_completed');
+    PepperLib.Analytics.log('trivia_completed', { activity: activeActivity.id, score: state.score, total: total });
   }
 
   PepperLib.State.registerScreen('events', {
@@ -215,10 +261,13 @@
 
     onEnter: function () {
       PepperLib.Inactivity.reset();
-      renderIntro();
+      loadActivities().then(function () {
+        renderLibrary();
+      });
     },
 
     onExit: function () {
+      activeActivity = null;
       state.currentQuestion = 0;
       state.score = 0;
       state.answered = false;

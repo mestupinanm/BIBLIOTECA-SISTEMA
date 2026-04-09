@@ -1,203 +1,94 @@
 /* ============================================
-   SHELF SEARCH SCREEN — Accordion shelf view
-   Shows 22 shelves; tap to expand and see topics.
-   Map highlights the selected shelf with a marker.
+   SHELF SEARCH SCREEN
    ============================================ */
 (function () {
   'use strict';
 
   window.PepperLib = window.PepperLib || {};
 
-  /* ------------------------------------------------------------------
-     TOPIC → SHELF DATA
-     Each entry maps one topic row from the shelf catalog to a shelf.
-  ------------------------------------------------------------------ */
   var SHELF_TOPICS = [
-    // Shelf 01
-    { topics: ['SIMULACIÓN', 'ARQUITECTURA DE SOFTWARE'],                                                shelf: '01', size: 'UNICA',   position: 'FRONTAL', coordKey: 'shelf_01' },
-    { topics: ['REDES Y CONECTIVIDAD', 'INTELIGENCIA ARTIFICIAL'],                                      shelf: '01', size: 'UNICA',   position: 'TRASERA', coordKey: 'shelf_01' },
-    // Shelf 02
-    { topics: ['SISTEMAS OPERATIVOS', 'BASES DE DATOS'],                                                shelf: '02', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_02' },
-    { topics: ['SEGURIDAD INFORMÁTICA', 'INTELIGENCIA ARTIFICIAL', 'DISEÑO MULTIMEDIA'],                shelf: '02', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_02' },
-    { topics: ['LENGUAJES DE PROGRAMACIÓN', 'SISTEMAS OPERATIVOS'],                                     shelf: '02', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_02' },
-    { topics: ['METODOLOGÍA CIENTÍFICA', 'FILOSOFÍA DE LA CIENCIA'],                                    shelf: '02', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_02' },
-    // Shelf 03
-    { topics: ['MATEMÁTICAS - ENSEÑANZA', 'MATEMÁTICAS - FUNDAMENTOS'],                                shelf: '03', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_03' },
-    { topics: ['MATEMÁTICAS - HISTORIA', 'LÓGICA MATEMÁTICA'],                                         shelf: '03', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_03' },
-    { topics: ['CIENCIA Y TECNOLOGÍA - HISTORIA', 'MATEMÁTICAS'],                                      shelf: '03', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_03' },
-    { topics: ['ÁLGEBRA', 'ÁLGEBRA LINEAL'],                                                            shelf: '03', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_03' },
-    // Shelf 04
-    { topics: ['TOPOLOGÍA', 'CÁLCULO'],                                                                 shelf: '04', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_04' },
-    { topics: ['CÁLCULO', 'PRE-CÁLCULO'],                                                               shelf: '04', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_04' },
-    { topics: ['ÁLGEBRA LINEAL', 'TEORÍA DE LOS NÚMEROS', 'TOPOLOGÍA'],                                shelf: '04', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_04' },
-    { topics: ['CÁLCULO', 'ECUACIONES DIFERENCIALES'],                                                  shelf: '04', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_04' },
-    // Shelf 05
-    { topics: ['GEOMETRÍA', 'PROBABILIDAD'],                                                            shelf: '05', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_05' },
-    { topics: ['PROBABILIDAD', 'TEORÍA DEL JUEGO'],                                                     shelf: '05', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_05' },
-    { topics: ['CÁLCULO VECTORIAL', 'ANÁLISIS DE GEOMETRÍA'],                                           shelf: '05', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_05' },
-    { topics: ['TEORÍA DEL JUEGO', 'ANÁLISIS NUMÉRICO', 'PROBABILIDAD'],                               shelf: '05', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_05' },
-    // Shelf 06
-    { topics: ['ESTADÍSTICA', 'ANÁLISIS MULTIVARIABLE'],                                                shelf: '06', size: 'UNICA',   position: 'FRONTAL', coordKey: 'shelf_06' },
-    // Shelf 07
-    { topics: ['OPTIMIZACIÓN', 'ASTRONOMÍA'],                                                           shelf: '07', size: 'UNICA',   position: 'TRASERA', coordKey: 'shelf_07' },
-    // Shelf 08
-    { topics: ['FÍSICA'],                                                                               shelf: '08', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_08' },
-    { topics: ['FÍSICA - BIOGRAFÍAS', 'RELATIVIDAD', 'TEORÍA CUÁNTICA'],                               shelf: '08', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_08' },
-    { topics: ['COSMOLOGÍA', 'TOPOGRAFÍA', 'FÍSICA - FUNDAMENTOS'],                                    shelf: '08', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_08' },
-    { topics: ['TEORÍA CUÁNTICA', 'ELECTROMAGNETISMO'],                                                 shelf: '08', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_08' },
-    // Shelf 09
-    { topics: ['MECÁNICA ESTADÍSTICA', 'FÍSICA TERMODINÁMICA', 'ELECTROMAGNETISMO'],                   shelf: '09', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_09' },
-    { topics: ['ELECTRODINÁMICA', 'FÍSICA NUCLEAR'],                                                    shelf: '09', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_09' },
-    { topics: ['MECÁNICA DE FLUIDOS', 'ÓPTICA'],                                                        shelf: '09', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_09' },
-    { topics: ['MODELOS NUCLEARES', 'QUÍMICA GENERAL'],                                                 shelf: '09', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_09' },
-    // Shelf 10
-    { topics: ['ANÁLISIS QUÍMICO', 'QUÍMICA INORGÁNICA'],                                              shelf: '10', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_10' },
-    { topics: ['QUÍMICA ORGÁNICA'],                                                                     shelf: '10', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_10' },
-    { topics: ['FÍSICOQUÍMICA', 'QUÍMICA TERMODINÁMICA'],                                               shelf: '10', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_10' },
-    { topics: ['MACROMOLÉCULAS', 'MINERALES', 'GEOLOGÍA'],                                             shelf: '10', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_10' },
-    // Shelf 11
-    { topics: ['ANTROPOLOGÍA BIOLÓGICA', 'BIOLOGÍA'],                                                   shelf: '11', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_11' },
-    { topics: ['BIOESTADÍSTICA'],                                                                        shelf: '11', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_11' },
-    { topics: ['METEOROLOGÍA', 'GEOQUÍMICA'],                                                           shelf: '11', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_11' },
-    { topics: ['BIOQUÍMICA', 'ECOLOGÍA'],                                                               shelf: '11', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_11' },
-    // Shelf 12
-    { topics: ['MICROBIOLOGÍA', 'BOTÁNICA'],                                                            shelf: '12', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_12' },
-    { topics: ['FITOPATOLOGÍA'],                                                                         shelf: '12', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_12' },
-    { topics: ['BIOLOGÍA MOLECULAR', 'GENÉTICA', 'MICROBIOLOGÍA'],                                     shelf: '12', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_12' },
-    { topics: ['MICOLOGÍA', 'ZOOLOGÍA', 'INVERTEBRADOS'],                                              shelf: '12', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_12' },
-    // Shelf 13
-    { topics: ['DIBUJO EN INGENIERÍA', 'HISTORIA DE LA TECNOLOGÍA', 'INGENIERÍA BIOMÉDICA'],           shelf: '13', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_13' },
-    { topics: ['MEDICINA SOCIAL', 'ANATOMÍA', 'HISTOLOGÍA'],                                           shelf: '13', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_13' },
-    { topics: ['INSECTOS', 'MAMÍFEROS', 'AVES'],                                                        shelf: '13', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_13' },
-    { topics: ['FISIOLOGÍA MÉDICA', 'NEUROCIENCIA', 'MEDICINA FORENSE'],                               shelf: '13', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_13' },
-    // Shelf 14
-    { topics: ['PATOLOGÍA', 'INMUNOLOGÍA', 'HEMATOLOGÍA'],                                             shelf: '14', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_14' },
-    { topics: ['NEUROLOGÍA', 'PSICOLOGÍA CLÍNICA'],                                                    shelf: '14', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_14' },
-    { topics: ['FARMACOLOGÍA', 'SALUD PÚBLICA', 'MICROBIOLOGÍA MÉDICA'],                               shelf: '14', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_14' },
-    { topics: ['PSIQUIATRÍA', 'ENFERMEDADES INFECCIOSAS', 'PEDIATRÍA'],                                shelf: '14', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_14' },
-    // Shelf 15
-    { topics: ['MATERIALES', 'MECÁNICA APLICADA'],                                                      shelf: '15', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_15' },
-    { topics: ['MECÁNICA DE MATERIALES', 'COMPOSICIÓN DE MATERIALES'],                                  shelf: '15', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_15' },
-    { topics: ['INGENIERÍA', 'DISEÑO DE INGENIERÍA', 'INGENIERÍA MECÁNICA'],                           shelf: '15', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_15' },
-    { topics: ['INGENIERÍA DE POLÍMEROS', 'NANOTECNOLOGÍA', 'INGENIERÍA ELÉCTRICA'],                   shelf: '15', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_15' },
-    // Shelf 16
-    { topics: ['TELECOMUNICACIONES', 'MICROELECTRÓNICA'],                                               shelf: '16', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_16' },
-    { topics: ['ELECTRÓNICA', 'COMUNICACIÓN DIGITAL'],                                                  shelf: '16', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_16' },
-    { topics: ['CIRCUITOS ELÉCTRICOS', 'PROCESAMIENTO DE SEÑALES'],                                    shelf: '16', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_16' },
-    { topics: ['DISEÑO DIGITAL', 'TERMODINÁMICA'],                                                      shelf: '16', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_16' },
-    // Shelf 17
-    { topics: ['INGENIERÍA CIVIL', 'MECÁNICA DE SUELOS'],                                              shelf: '17', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_17' },
-    { topics: ['INGENIERÍA DE CARRETERAS', 'DISEÑO DE ESTRUCTURAS'],                                   shelf: '17', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_17' },
-    { topics: ['INGENIERÍA MECÁNICA', 'INGENIERÍA DE PETRÓLEOS', 'INGENIERÍA HIDRÁULICA'],             shelf: '17', size: 'GRANDE',  position: 'FRONTAL', coordKey: 'shelf_17' },
-    { topics: ['INGENIERÍA HIDRÁULICA', 'INGENIERÍA AMBIENTAL'],                                       shelf: '17', size: 'GRANDE',  position: 'TRASERA', coordKey: 'shelf_17' },
-    // Shelf 18
-    { topics: ['INGENIERÍA DEL AGUA', 'GESTIÓN DE RESIDUOS'],                                          shelf: '18', size: 'UNICA',   position: 'FRONTAL', coordKey: 'shelf_18' },
-    // Shelf 19
-    { topics: ['INGENIERÍA AMBIENTAL', 'INGENIERÍA AUTOMOTRIZ', 'SISTEMAS DE CONTROL Y ROBÓTICA'],     shelf: '19', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_19' },
-    { topics: ['AGRICULTURA', 'ZOOTECNIA', 'GASTRONOMÍA'],                                             shelf: '19', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_19' },
-    // Shelf 20
-    { topics: ['GASTRONOMÍA', 'CONTABILIDAD', 'ADMINISTRACIÓN'],                                       shelf: '20', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_20' },
-    { topics: ['TOMA DE DECISIONES', 'GERENCIA DE PROYECTOS', 'ADMINISTRACIÓN DE OPERACIONES'],        shelf: '20', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_20' },
-    // Shelf 21
-    { topics: ['MERCADEO', 'INGENIERÍA QUÍMICA', 'PROCESOS QUÍMICOS'],                                 shelf: '21', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_21' },
-    { topics: ['QUÍMICA INDUSTRIAL', 'TECNOLOGÍA DE ALIMENTOS', 'PETRÓLEO'],                           shelf: '21', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_21' },
-    // Shelf 22
-    { topics: ['PLÁSTICOS', 'POLÍMEROS', 'METALURGIA'],                                                shelf: '22', size: 'PEQUEÑA', position: 'FRONTAL', coordKey: 'shelf_22' },
-    { topics: ['MANUFACTURA', 'CONSTRUCCIÓN Y ACABADOS', 'LIBROS DE GRAN FORMATO'],                    shelf: '22', size: 'PEQUEÑA', position: 'TRASERA', coordKey: 'shelf_22' }
+    { topics: ['SIMULACION', 'ARQUITECTURA DE SOFTWARE'], shelf: '01', coordKey: 'shelf_01' },
+    { topics: ['REDES Y CONECTIVIDAD', 'INTELIGENCIA ARTIFICIAL'], shelf: '01', coordKey: 'shelf_01' },
+    { topics: ['SISTEMAS OPERATIVOS', 'BASES DE DATOS'], shelf: '02', coordKey: 'shelf_02' },
+    { topics: ['SEGURIDAD INFORMATICA', 'INTELIGENCIA ARTIFICIAL', 'DISENO MULTIMEDIA'], shelf: '02', coordKey: 'shelf_02' },
+    { topics: ['LENGUAJES DE PROGRAMACION', 'SISTEMAS OPERATIVOS'], shelf: '02', coordKey: 'shelf_02' },
+    { topics: ['METODOLOGIA CIENTIFICA', 'FILOSOFIA DE LA CIENCIA'], shelf: '02', coordKey: 'shelf_02' },
+    { topics: ['MATEMATICAS - ENSENANZA', 'MATEMATICAS - FUNDAMENTOS'], shelf: '03', coordKey: 'shelf_03' },
+    { topics: ['MATEMATICAS - HISTORIA', 'LOGICA MATEMATICA'], shelf: '03', coordKey: 'shelf_03' },
+    { topics: ['CIENCIA Y TECNOLOGIA - HISTORIA', 'MATEMATICAS'], shelf: '03', coordKey: 'shelf_03' },
+    { topics: ['ALGEBRA', 'ALGEBRA LINEAL'], shelf: '03', coordKey: 'shelf_03' },
+    { topics: ['TOPOLOGIA', 'CALCULO'], shelf: '04', coordKey: 'shelf_04' },
+    { topics: ['CALCULO', 'PRE-CALCULO'], shelf: '04', coordKey: 'shelf_04' },
+    { topics: ['ALGEBRA LINEAL', 'TEORIA DE LOS NUMEROS', 'TOPOLOGIA'], shelf: '04', coordKey: 'shelf_04' },
+    { topics: ['CALCULO', 'ECUACIONES DIFERENCIALES'], shelf: '04', coordKey: 'shelf_04' },
+    { topics: ['GEOMETRIA', 'PROBABILIDAD'], shelf: '05', coordKey: 'shelf_05' },
+    { topics: ['PROBABILIDAD', 'TEORIA DEL JUEGO'], shelf: '05', coordKey: 'shelf_05' },
+    { topics: ['CALCULO VECTORIAL', 'ANALISIS DE GEOMETRIA'], shelf: '05', coordKey: 'shelf_05' },
+    { topics: ['TEORIA DEL JUEGO', 'ANALISIS NUMERICO', 'PROBABILIDAD'], shelf: '05', coordKey: 'shelf_05' },
+    { topics: ['ESTADISTICA', 'ANALISIS MULTIVARIABLE'], shelf: '06', coordKey: 'shelf_06' },
+    { topics: ['OPTIMIZACION', 'ASTRONOMIA'], shelf: '07', coordKey: 'shelf_07' },
+    { topics: ['FISICA'], shelf: '08', coordKey: 'shelf_08' },
+    { topics: ['FISICA - BIOGRAFIAS', 'RELATIVIDAD', 'TEORIA CUANTICA'], shelf: '08', coordKey: 'shelf_08' },
+    { topics: ['COSMOLOGIA', 'TOPOGRAFIA', 'FISICA - FUNDAMENTOS'], shelf: '08', coordKey: 'shelf_08' },
+    { topics: ['TEORIA CUANTICA', 'ELECTROMAGNETISMO'], shelf: '08', coordKey: 'shelf_08' },
+    { topics: ['MECANICA ESTADISTICA', 'FISICA TERMODINAMICA', 'ELECTROMAGNETISMO'], shelf: '09', coordKey: 'shelf_09' },
+    { topics: ['ELECTRODINAMICA', 'FISICA NUCLEAR'], shelf: '09', coordKey: 'shelf_09' },
+    { topics: ['MECANICA DE FLUIDOS', 'OPTICA'], shelf: '09', coordKey: 'shelf_09' },
+    { topics: ['MODELOS NUCLEARES', 'QUIMICA GENERAL'], shelf: '09', coordKey: 'shelf_09' },
+    { topics: ['ANALISIS QUIMICO', 'QUIMICA INORGANICA'], shelf: '10', coordKey: 'shelf_10' },
+    { topics: ['QUIMICA ORGANICA'], shelf: '10', coordKey: 'shelf_10' },
+    { topics: ['FISICOQUIMICA', 'QUIMICA TERMODINAMICA'], shelf: '10', coordKey: 'shelf_10' },
+    { topics: ['MACROMOLECULAS', 'MINERALES', 'GEOLOGIA'], shelf: '10', coordKey: 'shelf_10' },
+    { topics: ['ANTROPOLOGIA BIOLOGICA', 'BIOLOGIA'], shelf: '11', coordKey: 'shelf_11' },
+    { topics: ['BIOESTADISTICA'], shelf: '11', coordKey: 'shelf_11' },
+    { topics: ['METEOROLOGIA', 'GEOQUIMICA'], shelf: '11', coordKey: 'shelf_11' },
+    { topics: ['BIOQUIMICA', 'ECOLOGIA'], shelf: '11', coordKey: 'shelf_11' },
+    { topics: ['MICROBIOLOGIA', 'BOTANICA'], shelf: '12', coordKey: 'shelf_12' },
+    { topics: ['FITOPATOLOGIA'], shelf: '12', coordKey: 'shelf_12' },
+    { topics: ['BIOLOGIA MOLECULAR', 'GENETICA', 'MICROBIOLOGIA'], shelf: '12', coordKey: 'shelf_12' },
+    { topics: ['MICOLOGIA', 'ZOOLOGIA', 'INVERTEBRADOS'], shelf: '12', coordKey: 'shelf_12' },
+    { topics: ['DIBUJO EN INGENIERIA', 'HISTORIA DE LA TECNOLOGIA', 'INGENIERIA BIOMEDICA'], shelf: '13', coordKey: 'shelf_13' },
+    { topics: ['MEDICINA SOCIAL', 'ANATOMIA', 'HISTOLOGIA'], shelf: '13', coordKey: 'shelf_13' },
+    { topics: ['INSECTOS', 'MAMIFEROS', 'AVES'], shelf: '13', coordKey: 'shelf_13' },
+    { topics: ['FISIOLOGIA MEDICA', 'NEUROCIENCIA', 'MEDICINA FORENSE'], shelf: '13', coordKey: 'shelf_13' },
+    { topics: ['PATOLOGIA', 'INMUNOLOGIA', 'HEMATOLOGIA'], shelf: '14', coordKey: 'shelf_14' },
+    { topics: ['NEUROLOGIA', 'PSICOLOGIA CLINICA'], shelf: '14', coordKey: 'shelf_14' },
+    { topics: ['FARMACOLOGIA', 'SALUD PUBLICA', 'MICROBIOLOGIA MEDICA'], shelf: '14', coordKey: 'shelf_14' },
+    { topics: ['PSIQUIATRIA', 'ENFERMEDADES INFECCIOSAS', 'PEDIATRIA'], shelf: '14', coordKey: 'shelf_14' },
+    { topics: ['MATERIALES', 'MECANICA APLICADA'], shelf: '15', coordKey: 'shelf_15' },
+    { topics: ['MECANICA DE MATERIALES', 'COMPOSICION DE MATERIALES'], shelf: '15', coordKey: 'shelf_15' },
+    { topics: ['INGENIERIA', 'DISENO DE INGENIERIA', 'INGENIERIA MECANICA'], shelf: '15', coordKey: 'shelf_15' },
+    { topics: ['INGENIERIA DE POLIMEROS', 'NANOTECNOLOGIA', 'INGENIERIA ELECTRICA'], shelf: '15', coordKey: 'shelf_15' },
+    { topics: ['TELECOMUNICACIONES', 'MICROELECTRONICA'], shelf: '16', coordKey: 'shelf_16' },
+    { topics: ['ELECTRONICA', 'COMUNICACION DIGITAL'], shelf: '16', coordKey: 'shelf_16' },
+    { topics: ['CIRCUITOS ELECTRICOS', 'PROCESAMIENTO DE SENALES'], shelf: '16', coordKey: 'shelf_16' },
+    { topics: ['DISENO DIGITAL', 'TERMODINAMICA'], shelf: '16', coordKey: 'shelf_16' },
+    { topics: ['INGENIERIA CIVIL', 'MECANICA DE SUELOS'], shelf: '17', coordKey: 'shelf_17' },
+    { topics: ['INGENIERIA DE CARRETERAS', 'DISENO DE ESTRUCTURAS'], shelf: '17', coordKey: 'shelf_17' },
+    { topics: ['INGENIERIA MECANICA', 'INGENIERIA DE PETROLEOS', 'INGENIERIA HIDRAULICA'], shelf: '17', coordKey: 'shelf_17' },
+    { topics: ['INGENIERIA HIDRAULICA', 'INGENIERIA AMBIENTAL'], shelf: '17', coordKey: 'shelf_17' },
+    { topics: ['INGENIERIA DEL AGUA', 'GESTION DE RESIDUOS'], shelf: '18', coordKey: 'shelf_18' },
+    { topics: ['INGENIERIA AMBIENTAL', 'INGENIERIA AUTOMOTRIZ', 'SISTEMAS DE CONTROL Y ROBOTICA'], shelf: '19', coordKey: 'shelf_19' },
+    { topics: ['AGRICULTURA', 'ZOOTECNIA', 'GASTRONOMIA'], shelf: '19', coordKey: 'shelf_19' },
+    { topics: ['GASTRONOMIA', 'CONTABILIDAD', 'ADMINISTRACION'], shelf: '20', coordKey: 'shelf_20' },
+    { topics: ['TOMA DE DECISIONES', 'GERENCIA DE PROYECTOS', 'ADMINISTRACION DE OPERACIONES'], shelf: '20', coordKey: 'shelf_20' },
+    { topics: ['MERCADEO', 'INGENIERIA QUIMICA', 'PROCESOS QUIMICOS'], shelf: '21', coordKey: 'shelf_21' },
+    { topics: ['QUIMICA INDUSTRIAL', 'TECNOLOGIA DE ALIMENTOS', 'PETROLEO'], shelf: '21', coordKey: 'shelf_21' },
+    { topics: ['PLASTICOS', 'POLIMEROS', 'METALURGIA'], shelf: '22', coordKey: 'shelf_22' },
+    { topics: ['MANUFACTURA', 'CONSTRUCCION Y ACABADOS', 'LIBROS DE GRAN FORMATO'], shelf: '22', coordKey: 'shelf_22' }
   ];
 
-  /* ------------------------------------------------------------------
-     GROUP BY SHELF NUMBER
-  ------------------------------------------------------------------ */
-  var SHELF_NUMBERS = ['01','02','03','04','05','06','07','08','09','10',
-                       '11','12','13','14','15','16','17','18','19','20','21','22'];
-
-  var SHELVES = {}; // { '01': { coordKey, allTopics: [] }, ... }
-
-  for (var e = 0; e < SHELF_TOPICS.length; e++) {
-    var entry = SHELF_TOPICS[e];
-    if (!SHELVES[entry.shelf]) {
-      SHELVES[entry.shelf] = {
-        shelf: entry.shelf,
-        coordKey: entry.coordKey,
-        allTopics: []
-      };
-    }
-    for (var t = 0; t < entry.topics.length; t++) {
-      if (SHELVES[entry.shelf].allTopics.indexOf(entry.topics[t]) === -1) {
-        SHELVES[entry.shelf].allTopics.push(entry.topics[t]);
-      }
-    }
-  }
-
-  /* ------------------------------------------------------------------
-     STATE
-  ------------------------------------------------------------------ */
+  var SHELF_NUMBERS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'];
+  var SHELVES = {};
   var activeShelf = null;
+  var activeTopic = null;
+  var searchTerm = '';
 
-  /* ------------------------------------------------------------------
-     RENDER ACCORDION LIST
-  ------------------------------------------------------------------ */
-  function renderList() {
-    var listEl = document.getElementById('shelves-list');
-    if (!listEl) return;
-
-    var lang = PepperLib.State.language;
-    var shelfLabel = lang === 'en' ? 'Shelf' : 'Estantería';
-
-    var html = '';
-    for (var i = 0; i < SHELF_NUMBERS.length; i++) {
-      var num = SHELF_NUMBERS[i];
-      var data = SHELVES[num];
-      if (!data) continue;
-
-      var isActive = (activeShelf === num);
-      var primaryTopic = data.allTopics[0] || '';
-      var extraCount = data.allTopics.length - 1;
-
-      html += '<div class="shelf-item' + (isActive ? ' active' : '') + '" data-shelf="' + num + '">';
-
-      // Header (always visible)
-      html += '<button class="shelf-item-header">';
-      html += '<div class="shelf-item-num">' + num + '</div>';
-      html += '<div class="shelf-item-info">';
-      html += '<div class="shelf-item-title">' + escapeHtml(primaryTopic) + '</div>';
-      html += '<div class="shelf-item-subtitle">' + shelfLabel + ' ' + num;
-      if (extraCount > 0) {
-        html += ' &mdash; +' + extraCount + ' ' + (lang === 'en' ? 'more topics' : 'temas más');
-      }
-      html += '</div>';
-      html += '</div>';
-      html += '<svg class="shelf-item-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
-      html += '</button>';
-
-      // Body (only shown when active)
-      if (isActive) {
-        html += '<div class="shelf-item-body">';
-        for (var j = 0; j < data.allTopics.length; j++) {
-          html += '<span class="shelf-topic-tag">' + escapeHtml(data.allTopics[j]) + '</span>';
-        }
-        html += '</div>';
-      }
-
-      html += '</div>';
-    }
-
-    listEl.innerHTML = html;
-
-    // Attach click handlers to each shelf header
-    var items = listEl.querySelectorAll('.shelf-item');
-    for (var k = 0; k < items.length; k++) {
-      (function (item) {
-        var btn = item.querySelector('.shelf-item-header');
-        if (btn) {
-          btn.addEventListener('click', function () {
-            var num = item.getAttribute('data-shelf');
-            selectShelf(num);
-          });
-        }
-      })(items[k]);
-    }
+  function normalize(str) {
+    return String(str || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
   }
 
   function escapeHtml(str) {
@@ -207,70 +98,225 @@
       .replace(/>/g, '&gt;');
   }
 
-  /* ------------------------------------------------------------------
-     SELECT SHELF → highlight on map
-  ------------------------------------------------------------------ */
-  function selectShelf(shelfNum) {
-    if (activeShelf === shelfNum) {
-      // Tap again to collapse
-      activeShelf = null;
-      clearMap();
-      renderList();
-      return;
+  function buildShelfIndex() {
+    for (var i = 0; i < SHELF_TOPICS.length; i++) {
+      var entry = SHELF_TOPICS[i];
+      if (!SHELVES[entry.shelf]) {
+        SHELVES[entry.shelf] = {
+          shelf: entry.shelf,
+          coordKey: entry.coordKey,
+          topics: []
+        };
+      }
+      for (var t = 0; t < entry.topics.length; t++) {
+        if (SHELVES[entry.shelf].topics.indexOf(entry.topics[t]) === -1) {
+          SHELVES[entry.shelf].topics.push(entry.topics[t]);
+        }
+      }
     }
+  }
 
-    activeShelf = shelfNum;
-    renderList();
+  function getFilteredShelves() {
+    var list = [];
+    var query = normalize(searchTerm);
 
-    var data = SHELVES[shelfNum];
-    if (!data) return;
+    for (var i = 0; i < SHELF_NUMBERS.length; i++) {
+      var num = SHELF_NUMBERS[i];
+      var shelf = SHELVES[num];
+      var topics = [];
 
-    // Update map
-    var lang = PepperLib.State.language;
-    var mapImg = document.getElementById('shelves-map-img');
-    if (mapImg) {
-      mapImg.src = PepperLib.MapSrc(lang);
-    }
+      if (!shelf) continue;
 
-    var markersEl = document.getElementById('shelves-map-markers');
-    if (markersEl) {
-      var coord = PepperLib.MapCoords[data.coordKey];
-      if (coord) {
-        markersEl.innerHTML = PepperLib.BuildMarker(coord.x, coord.y, 'marker-dest');
+      if (!query) {
+        topics = shelf.topics.slice();
+      } else {
+        for (var t = 0; t < shelf.topics.length; t++) {
+          if (normalize(shelf.topics[t]).indexOf(query) !== -1) {
+            topics.push(shelf.topics[t]);
+          }
+        }
+      }
+
+      if (!query || topics.length) {
+        list.push({
+          shelf: num,
+          coordKey: shelf.coordKey,
+          topics: topics,
+          allTopics: shelf.topics
+        });
       }
     }
 
-    // Show actions + update hint
-    var hintEl = document.getElementById('shelves-map-hint');
-    var actionsEl = document.getElementById('shelves-info-actions');
-    var lang2 = PepperLib.State.language;
-    if (hintEl) {
-      hintEl.textContent = lang2 === 'en'
-        ? 'Shelf ' + shelfNum
-        : 'Estantería ' + shelfNum;
+    return list;
+  }
+
+  function updateSearchMeta(resultCount) {
+    var meta = document.getElementById('shelves-search-meta');
+    if (!meta) return;
+
+    if (!searchTerm) {
+      meta.textContent = PepperLib.i18n.t('shelves.search_meta_default');
+      return;
     }
-    if (actionsEl) actionsEl.classList.remove('hidden');
 
-    PepperLib.Analytics.log('shelf_selected', { shelf: shelfNum });
+    if (!resultCount) {
+      meta.textContent = PepperLib.i18n.t('shelves.search_empty');
+      return;
+    }
+
+    meta.textContent = resultCount + ' ' + PepperLib.i18n.t('shelves.search_results');
   }
 
-  function clearMap() {
+  function renderList() {
+    var listEl = document.getElementById('shelves-list');
+    if (!listEl) return;
+
+    var filtered = getFilteredShelves();
+    var html = '';
+
+    updateSearchMeta(filtered.length);
+
+    if (!filtered.length) {
+      listEl.innerHTML = '<div class="shelves-empty">' + PepperLib.i18n.t('shelves.search_empty') + '</div>';
+      return;
+    }
+
+    for (var i = 0; i < filtered.length; i++) {
+      var shelf = filtered[i];
+      var isActive = shelf.shelf === activeShelf;
+      var isExpanded = searchTerm ? visibleTopicsForSearch(shelf).length > 0 : isActive;
+      var visibleTopics = searchTerm ? shelf.topics : shelf.allTopics;
+
+      html += '<article class="shelf-item' + (isActive ? ' active' : '') + '" data-shelf="' + shelf.shelf + '">';
+      html += '  <button class="shelf-item-header" data-shelf-toggle="' + shelf.shelf + '">';
+      html += '    <div class="shelf-item-num">' + shelf.shelf + '.</div>';
+      html += '    <div class="shelf-item-info">';
+      html += '      <div class="shelf-item-title">' + PepperLib.i18n.t('shelves.shelf_label') + '</div>';
+      html += '      <div class="shelf-item-subtitle">' + visibleTopics.length + ' ' + PepperLib.i18n.t('shelves.topics_count') + '</div>';
+      html += '    </div>';
+      html += '    <span class="shelf-item-cta">' + PepperLib.i18n.t(isExpanded ? 'shelves.hide_topics' : 'shelves.view_topics') + '</span>';
+      html += '  </button>';
+
+      if (isExpanded) {
+        html += '<div class="shelf-item-body">';
+        html += '  <p class="shelf-item-helper">' + PepperLib.i18n.t('shelves.tap_topic') + '</p>';
+        html += '  <div class="shelf-topic-list">';
+        for (var j = 0; j < visibleTopics.length; j++) {
+          html += '    <button class="shelf-topic-tag' + (activeTopic === visibleTopics[j] ? ' is-active' : '') + '" data-topic="' + escapeHtml(visibleTopics[j]) + '" data-shelf-topic="' + shelf.shelf + '">' + escapeHtml(visibleTopics[j]) + '</button>';
+        }
+        html += '  </div>';
+        html += '</div>';
+      }
+
+      html += '</article>';
+    }
+
+    listEl.innerHTML = html;
+
+    var toggles = listEl.querySelectorAll('[data-shelf-toggle]');
+    for (var k = 0; k < toggles.length; k++) {
+      toggles[k].addEventListener('click', function () {
+        selectShelf(this.getAttribute('data-shelf-toggle'));
+      });
+    }
+
+    var topicBtns = listEl.querySelectorAll('[data-shelf-topic]');
+    for (var m = 0; m < topicBtns.length; m++) {
+      topicBtns[m].addEventListener('click', function () {
+        focusTopic(this.getAttribute('data-shelf-topic'), this.getAttribute('data-topic'));
+        PepperLib.Analytics.log('shelf_topic_selected', {
+          shelf: this.getAttribute('data-shelf-topic'),
+          topic: this.getAttribute('data-topic')
+        });
+      });
+    }
+  }
+
+  function visibleTopicsForSearch(shelf) {
+    return searchTerm ? shelf.topics : shelf.allTopics;
+  }
+
+  function updateMapForShelf(shelfNum, topicName) {
+    var data = SHELVES[shelfNum];
     var markersEl = document.getElementById('shelves-map-markers');
-    if (markersEl) markersEl.innerHTML = '';
-
+    var mapImg = document.getElementById('shelves-map-img');
     var hintEl = document.getElementById('shelves-map-hint');
-    if (hintEl) hintEl.textContent = PepperLib.i18n.t('shelves.select_hint');
-
     var actionsEl = document.getElementById('shelves-info-actions');
-    if (actionsEl) actionsEl.classList.add('hidden');
+    var coord = data ? PepperLib.MapCoords[data.coordKey] : null;
+
+    if (mapImg) {
+      mapImg.src = PepperLib.MapSrc(PepperLib.State.language);
+    }
+
+    if (markersEl) {
+      markersEl.innerHTML = coord ? PepperLib.BuildMarker(coord.x, coord.y, 'marker-dest') : '';
+    }
+
+    if (hintEl) {
+      hintEl.textContent = shelfNum
+        ? (topicName ? topicName + ' · ' : '') + PepperLib.i18n.t('shelves.shelf_label') + ' ' + shelfNum
+        : PepperLib.i18n.t('shelves.tap_topic');
+    }
+
+    if (actionsEl) {
+      actionsEl.classList.toggle('hidden', !shelfNum);
+    }
   }
 
-  /* ------------------------------------------------------------------
-     REGISTER SCREEN
-  ------------------------------------------------------------------ */
+  function selectShelf(shelfNum) {
+    activeShelf = activeShelf === shelfNum ? null : shelfNum;
+    if (!activeShelf) {
+      activeTopic = null;
+    }
+    renderList();
+    updateMapForShelf(activeShelf, activeTopic);
+
+    if (activeShelf) {
+      PepperLib.Analytics.count('shelves', 'shelf_' + activeShelf);
+    PepperLib.LastAction = (PepperLib.State.language === 'en' ? 'Shelf ' : 'Estanter\u00EDa ') + activeShelf;
+    PepperLib.LastActionItem = 'shelf_' + activeShelf;
+    PepperLib.LastActionCategory = 'shelves';
+    }
+  }
+
+  function focusTopic(shelfNum, topicName) {
+    activeShelf = shelfNum;
+    activeTopic = topicName;
+    renderList();
+    updateMapForShelf(activeShelf, activeTopic);
+  }
+
+  function bindSearch() {
+    var input = document.getElementById('shelves-search');
+    if (!input) return;
+
+    input.addEventListener('input', function () {
+      searchTerm = this.value || '';
+      var filtered = getFilteredShelves();
+      if (searchTerm && filtered.length) {
+        activeShelf = filtered[0].shelf;
+        activeTopic = filtered[0].topics[0] || null;
+      } else if (!searchTerm) {
+        activeShelf = '01';
+        activeTopic = null;
+      }
+      renderList();
+      if (activeShelf && filtered.some(function (item) { return item.shelf === activeShelf; })) {
+        updateMapForShelf(activeShelf, activeTopic);
+      } else if (!activeShelf) {
+        updateMapForShelf(null);
+      }
+    });
+  }
+
   PepperLib.State.registerScreen('shelves', {
     init: function () {
+      buildShelfIndex();
+      bindSearch();
+
       var btnGuide = document.getElementById('btn-shelves-guide-me');
+      var btnDone = document.getElementById('btn-shelves-done');
+
       if (btnGuide) {
         btnGuide.addEventListener('click', function () {
           if (activeShelf) {
@@ -279,7 +325,6 @@
         });
       }
 
-      var btnDone = document.getElementById('btn-shelves-done');
       if (btnDone) {
         btnDone.addEventListener('click', function () {
           PepperLib.State.go(PepperLib.SCREENS.FEEDBACK);
@@ -289,21 +334,32 @@
 
     onEnter: function () {
       PepperLib.Inactivity.reset();
-      activeShelf = null;
-      clearMap();
+      activeShelf = '01';
+      activeTopic = null;
+      searchTerm = '';
 
-      // Show map without marker
-      var mapImg = document.getElementById('shelves-map-img');
-      if (mapImg) {
-        mapImg.src = PepperLib.MapSrc(PepperLib.State.language);
+      var input = document.getElementById('shelves-search');
+      if (input) {
+        input.value = '';
       }
 
+      updateMapForShelf(null);
       renderList();
       PepperLib.i18n.applyToDOM();
     },
 
     onExit: function () {
       activeShelf = null;
+      activeTopic = null;
     }
   });
+
+  PepperLib.ShelvesContext = {
+    getActiveShelf: function () {
+      return activeShelf;
+    },
+    getActiveShelfLabel: function () {
+      return activeShelf ? (activeTopic ? activeTopic + ' · ' : '') + PepperLib.i18n.t('shelves.shelf_label') + ' ' + activeShelf : null;
+    }
+  };
 })();

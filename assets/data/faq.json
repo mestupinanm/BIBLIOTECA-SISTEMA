@@ -6,8 +6,8 @@
         "en": "How can I borrow a book?"
       },
       "answer": {
-        "es": "Dirigete a Recepcion con tu carnet universitario. El personal te asistira con el proceso de prestamo. Tambien puedes usar la estacion de autoservicio.",
-        "en": "Go to Reception with your university ID. Staff will assist you with the borrowing process. You can also use the self-checkout station."
+        "es": "Dirigete a recepción con tu carnet universitario. El personal te asistira con el proceso de prestamo. Tambien puedes usar la estación de autoservicio.",
+        "en": "Go to reception with your university ID. Staff will assist you with the borrowing process. You can also use the self-checkout station."
       }
     },
     {
@@ -22,12 +22,12 @@
     },
     {
       "question": {
-        "es": "Donde estan los banos?",
+        "es": "Donde estan los baños?",
         "en": "Where are the restrooms?"
       },
       "answer": {
-        "es": "Los banos estan ubicados en el costado derecho de la biblioteca. Puedes usar la opcion 'Adonde voy?' para que te guie.",
-        "en": "The restrooms are located on the right side of the library. You can use the 'Where do I go?' option for directions."
+        "es": "Los baños estan ubicados en el costado derecho e izquierdo de la biblioteca. Puedes usar la opcion 'A donde voy?' para que te guie.",
+        "en": "The restrooms are located on the right and left side of the library. You can use the 'Where do I go?' option for directions."
       }
     },
     {
@@ -36,8 +36,8 @@
         "en": "Can I reserve a study room?"
       },
       "answer": {
-        "es": "Si, las salas de estudio se pueden reservar a traves del sistema IRUS o directamente en Recepcion.",
-        "en": "Yes, study rooms can be reserved through the IRUS system or directly at Reception."
+        "es": "Si, las salas de estudio se pueden reservar a traves del sistema IRUS o directamente en recepción.",
+        "en": "Yes, study rooms can be reserved through the IRUS system or directly at reception."
       }
     },
     {
@@ -46,8 +46,8 @@
         "en": "Are printers available?"
       },
       "answer": {
-        "es": "Si, hay impresoras disponibles para los estudiantes. Consulta en Recepcion sobre el servicio de impresion.",
-        "en": "Yes, printers are available for students. Ask at Reception about the printing service."
+        "es": "Si, hay impresoras disponibles para los estudiantes en el tercer piso.",
+        "en": "Yes, printers are available for students on the third floor."
       }
     },
     {
@@ -56,8 +56,8 @@
         "en": "What if I lose a borrowed book?"
       },
       "answer": {
-        "es": "Dirigete a Recepcion lo antes posible para reportar la perdida. El personal te indicara el procedimiento a seguir.",
-        "en": "Go to Reception as soon as possible to report the loss. Staff will guide you through the procedure."
+        "es": "Dirigete a recepción lo antes posible para reportar la perdida. El personal te indicara el procedimiento a seguir.",
+        "en": "Go to reception as soon as possible to report the loss. Staff will guide you through the procedure."
       }
     }
   ]

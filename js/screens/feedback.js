@@ -14,6 +14,8 @@
       for (var i = 0; i < buttons.length; i++) {
         buttons[i].addEventListener('click', function () {
           var rating = this.getAttribute('data-rating');
+          PepperLib.Analytics.count('feedback', rating);
+          PepperLib.Analytics.insertFeedback(rating);
           PepperLib.Analytics.log('feedback', { rating: rating });
 
           // Hide options, show thanks

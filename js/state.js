@@ -37,7 +37,7 @@
   PepperLib.SCREENS = SCREENS;
 
   PepperLib.State = {
-    current: SCREENS.IDLE,
+    current: null,
     history: [],
     language: 'es',
     session: null,
@@ -59,7 +59,7 @@
       }
 
       // Push to history (don't push idle or greeting)
-      if (this.current !== SCREENS.IDLE && this.current !== SCREENS.GREETING) {
+      if (this.current && this.current !== SCREENS.IDLE && this.current !== SCREENS.GREETING) {
         this.history.push(this.current);
       }
 

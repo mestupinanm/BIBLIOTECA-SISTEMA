@@ -23,6 +23,7 @@
 
   PepperLib.State.registerScreen('idle', {
     init: function () {
+      updateClock();
       var screen = document.getElementById('screen-idle');
       if (screen) {
         screen.addEventListener('click', function () {
@@ -34,7 +35,7 @@
     onEnter: function () {
       PepperLib.Inactivity.stop();
       updateClock();
-      clockInterval = setInterval(updateClock, 10000);
+      clockInterval = setInterval(updateClock, 1000);
     },
 
     onExit: function () {

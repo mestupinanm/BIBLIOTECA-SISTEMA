@@ -6,6 +6,13 @@
 
   window.PepperLib = window.PepperLib || {};
 
+  // Human-readable label of the last thing the user did.
+  // Set by each screen so the help email can say "Mi última petición fue: Sala 254"
+  PepperLib.LastAction = null;
+  // Machine-readable keys for the last action (used by session_feedback in Supabase)
+  PepperLib.LastActionItem = null;     // e.g. 'room_254', 'shelf_06', 'borrow'
+  PepperLib.LastActionCategory = null; // e.g. 'rooms', 'shelves', 'books', 'info'
+
   /* --- Inactivity Timer --- */
   PepperLib.Inactivity = {
     timer: null,
@@ -118,6 +125,115 @@
     }
   };
 
+  PepperLib.Help = {
+    getLocationLabel: function () {
+      var screen = PepperLib.State.current;
+      var titleMap = {
+        'menu': 'menu.title',
+        'navigation': 'nav.screen_title',
+        'navigation-guide': 'nav.directions',
+        'shelves': 'shelves.screen_title',
+        'books': 'books.screen_title',
+        'info': 'info.screen_title',
+        'events': 'events.screen_title',
+        'feedback': 'feedback.title'
+      };
+
+      if (screen === PepperLib.SCREENS.NAVIGATION_GUIDE && PepperLib.NavigationGuide) {
+        return PepperLib.NavigationGuide.getCurrentDestinationLabel() || PepperLib.i18n.t(titleMap[screen]);
+      }
+
+      if (screen === PepperLib.SCREENS.SHELVES && PepperLib.ShelvesContext) {
+        return PepperLib.ShelvesContext.getActiveShelfLabel() || PepperLib.i18n.t(titleMap[screen]);
+      }
+
+      return PepperLib.i18n.t(titleMap[screen] || 'menu.title');
+    },
+
+    buildEmailPayload: function () {
+      var config = PepperLib.HelpConfig || {};
+      var recipient  = config.recipient  || 'm.estupinanm@uniandes.edu.co';
+      var senderName = config.senderName || 'Nova';
+      // Use the specific last action (e.g. "Sala 254") when available,
+      // fall back to the generic screen label.
+      var lastAction = PepperLib.LastAction || this.getLocationLabel() || 'No registrada';
+      var message = 'Soy ' + senderName + ' y necesito ayuda. Mi \u00FAltima petici\u00F3n fue: ' + lastAction + '.';
+
+      return {
+        recipient:  recipient,
+        lastAction: lastAction,
+        message:    message
+      };
+    },
+
+    sendEmail: function () {
+      var config = PepperLib.HelpConfig || {};
+      var payload = this.buildEmailPayload();
+      var provider = config.provider || 'emailjs';
+      var formsubmitConfig = config.formsubmit || {};
+      var emailJsConfig = config.emailjs || {};
+
+      if (typeof fetch === 'undefined') {
+        return Promise.reject(new Error('help_email_fetch_unavailable'));
+      }
+
+      if (provider === 'formsubmit') {
+        return fetch((formsubmitConfig.endpointBase || 'https://formsubmit.co/ajax/') + encodeURIComponent(payload.recipient), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            name:     config.senderName || 'Nova',
+            subject:  'Nova necesita ayuda — ' + (payload.lastAction || ''),
+            message:  payload.message,
+            _captcha: 'false',
+            _template: 'box'
+          })
+        }).then(function (response) {
+          if (!response.ok) {
+            throw new Error('help_email_request_failed');
+          }
+          return response.json();
+        });
+      }
+
+      if (provider !== 'emailjs') {
+        return Promise.reject(new Error('help_email_provider_unavailable'));
+      }
+
+      if (!emailJsConfig.serviceId || emailJsConfig.serviceId.indexOf('YOUR_') === 0 ||
+          !emailJsConfig.templateId || emailJsConfig.templateId.indexOf('YOUR_') === 0 ||
+          !emailJsConfig.publicKey || emailJsConfig.publicKey.indexOf('YOUR_') === 0) {
+        return Promise.reject(new Error('help_email_not_configured'));
+      }
+
+      return fetch(emailJsConfig.endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          service_id: emailJsConfig.serviceId,
+          template_id: emailJsConfig.templateId,
+          user_id: emailJsConfig.publicKey,
+          template_params: {
+            to_email: payload.recipient,
+            message: payload.message,
+            location: payload.location,
+            sender_name: config.senderName || 'Nova'
+          }
+        })
+      }).then(function (response) {
+        if (!response.ok) {
+          throw new Error('help_email_request_failed');
+        }
+        return response.text();
+      });
+    }
+  };
+
   /* --- Boot --- */
   function boot() {
     // Initialize all registered screens
@@ -156,6 +272,15 @@
           helpOverlay.classList.remove('hidden');
           PepperLib.Robot.callLibrarian();
         }
+        PepperLib.Help.sendEmail()
+          .then(function () {
+            PepperLib.Analytics.log('help_email_sent', PepperLib.Help.buildEmailPayload());
+          })
+          .catch(function (error) {
+            PepperLib.Analytics.log('help_email_failed', {
+              reason: error && error.message ? error.message : 'unknown'
+            });
+          });
         PepperLib.Inactivity.reset();
       });
     }

@@ -21,6 +21,7 @@
         'help.title': 'Necesitas ayuda?',
         'help.message': 'Un bibliotecario ha sido notificado y vendra a asistirte. Por favor espera aqui.',
         'help.dismiss': 'Cerrar',
+        'help.location_unknown': 'No registrada',
 
         // Menu
         'menu.title': 'Como puedo ayudarte?',
@@ -42,11 +43,11 @@
         'nav.cat.rooms': 'Salas de estudio',
         'nav.cat.services': 'Servicios',
         'nav.cat.access': 'Accesos',
-        'nav.cat.collections': 'Colecciones',
         'nav.guide_me': 'Llevame',
         'nav.done': 'Listo',
         'nav.directions': 'Indicaciones',
         'nav.map_label': 'Mapa del piso',
+        'nav.quick_hint': 'Elige un destino y te mostrare la ruta en el mapa',
 
         // Destinations
         'dest.reception': 'Recepcion',
@@ -85,6 +86,9 @@
         'books.return_message': 'Para devolver un libro, por favor dirigete a Recepcion o utiliza el buzon de devolucion disponible en el primer piso.',
         'books.go_reception': 'Llevame a Recepcion',
         'books.back_options': 'Volver a opciones',
+        'books.hero_eyebrow': 'Servicios disponibles',
+        'books.hero_title': 'Prestamo y devolucion sin perderte',
+        'books.hero_copy': 'Selecciona lo que quieres hacer y te mostrare los pasos mas claros para continuar en la biblioteca.',
 
         // Info
         'info.screen_title': 'Informacion',
@@ -92,6 +96,10 @@
         'info.news': 'Noticias',
         'info.faq': 'Preguntas frecuentes',
         'info.today': 'Hoy',
+        'info.news_title': 'Noticias Uniandes',
+        'info.news_copy': 'Consulta las noticias mas recientes directamente desde el portal oficial de la Universidad.',
+        'info.news_cta': 'Abrir noticias',
+        'info.news_hint': 'Si el panel no carga, usa este acceso directo.',
         'info.hours_value': '7:00 AM - 9:00 PM',
         'info.day_mon': 'Lunes',
         'info.day_tue': 'Martes',
@@ -117,23 +125,36 @@
         'events.result_ok': 'Sigue intentando!',
         'events.play_again': 'Jugar de nuevo',
         'events.back_menu': 'Volver al menu',
+        'events.select_activity': 'Elige una actividad',
+        'events.available_now': 'Disponible ahora',
+        'events.coming_soon': 'Proximamente',
+        'events.badge_trivia': 'Trivia',
+        'events.badge_game': 'Juego',
+        'events.library_arcade': 'Zona de eventos',
 
         // Shelves search
         'shelves.screen_title': 'Buscar libro por tema',
         'shelves.panel_hint': 'Toca una estanteria para ver sus temas',
         'shelves.search_placeholder': 'Busca un tema...',
+        'shelves.search_meta_default': 'Explora las estanterias o escribe un tema.',
+        'shelves.search_results': 'resultados',
+        'shelves.search_empty': 'No encontramos coincidencias. Intenta con otra palabra clave.',
         'shelves.select_hint': 'Selecciona una estanteria para ver su ubicacion',
         'shelves.shelf_label': 'Estanteria',
         'shelves.section_label': 'Seccion',
         'shelves.no_results': 'Sin resultados para tu busqueda',
         'shelves.topics_count': 'temas',
+        'shelves.view_topics': 'Ver temas',
+        'shelves.hide_topics': 'Ocultar temas',
+        'shelves.tap_topic': 'Toca un tema para ver la ubicacion',
 
         // Feedback
         'feedback.title': 'Como fue tu experiencia?',
         'feedback.bad': 'Mala',
         'feedback.ok': 'Regular',
         'feedback.great': 'Buena',
-        'feedback.thanks': 'Gracias por tu opinion!'
+        'feedback.thanks': 'Gracias por tu opinion!',
+        'feedback.caption': 'Tu opinion ayuda a que Nova atienda mejor'
       },
 
       en: {
@@ -148,6 +169,7 @@
         'help.title': 'Need help?',
         'help.message': 'A librarian has been notified and will come to assist you. Please wait here.',
         'help.dismiss': 'Close',
+        'help.location_unknown': 'Not recorded',
 
         // Menu
         'menu.title': 'How can I help you?',
@@ -169,11 +191,11 @@
         'nav.cat.rooms': 'Study rooms',
         'nav.cat.services': 'Services',
         'nav.cat.access': 'Access points',
-        'nav.cat.collections': 'Collections',
         'nav.guide_me': 'Guide me',
         'nav.done': 'Done',
         'nav.directions': 'Directions',
         'nav.map_label': 'Floor map',
+        'nav.quick_hint': 'Choose a destination and I will show the route on the map',
 
         // Destinations
         'dest.reception': 'Reception',
@@ -212,6 +234,9 @@
         'books.return_message': 'To return a book, please go to Reception or use the return drop-box available on the first floor.',
         'books.go_reception': 'Take me to Reception',
         'books.back_options': 'Back to options',
+        'books.hero_eyebrow': 'Available services',
+        'books.hero_title': 'Borrowing and returns without the guesswork',
+        'books.hero_copy': 'Choose what you need and I will show the clearest next step inside the library.',
 
         // Info
         'info.screen_title': 'Information',
@@ -219,6 +244,10 @@
         'info.news': 'News',
         'info.faq': 'Frequently asked questions',
         'info.today': 'Today',
+        'info.news_title': 'Uniandes news',
+        'info.news_copy': 'Check the latest stories directly from the official Universidad de los Andes news portal.',
+        'info.news_cta': 'Open news',
+        'info.news_hint': 'If the panel does not load, use this direct access.',
         'info.hours_value': '7:00 AM - 9:00 PM',
         'info.day_mon': 'Monday',
         'info.day_tue': 'Tuesday',
@@ -244,23 +273,36 @@
         'events.result_ok': 'Keep trying!',
         'events.play_again': 'Play again',
         'events.back_menu': 'Back to menu',
+        'events.select_activity': 'Choose an activity',
+        'events.available_now': 'Available now',
+        'events.coming_soon': 'Coming soon',
+        'events.badge_trivia': 'Trivia',
+        'events.badge_game': 'Game',
+        'events.library_arcade': 'Events arcade',
 
         // Shelves search
         'shelves.screen_title': 'Find book by topic',
         'shelves.panel_hint': 'Tap a shelf to see its topics',
         'shelves.search_placeholder': 'Search a topic...',
+        'shelves.search_meta_default': 'Browse the shelves or type a topic.',
+        'shelves.search_results': 'results',
+        'shelves.search_empty': 'No matches found. Try another keyword.',
         'shelves.select_hint': 'Select a shelf to see its location',
         'shelves.shelf_label': 'Shelf',
         'shelves.section_label': 'Section',
         'shelves.no_results': 'No results for your search',
         'shelves.topics_count': 'topics',
+        'shelves.view_topics': 'View topics',
+        'shelves.hide_topics': 'Hide topics',
+        'shelves.tap_topic': 'Tap a topic to see its location',
 
         // Feedback
         'feedback.title': 'How was your experience?',
         'feedback.bad': 'Bad',
         'feedback.ok': 'Okay',
         'feedback.great': 'Great',
-        'feedback.thanks': 'Thank you for your feedback!'
+        'feedback.thanks': 'Thank you for your feedback!',
+        'feedback.caption': 'Your feedback helps Nova assist better'
       }
     },
 
@@ -275,6 +317,11 @@
       var elements = document.querySelectorAll('[data-i18n]');
       for (var i = 0; i < elements.length; i++) {
         elements[i].textContent = this.t(elements[i].getAttribute('data-i18n'));
+      }
+
+      var placeholders = document.querySelectorAll('[data-i18n-placeholder]');
+      for (var j = 0; j < placeholders.length; j++) {
+        placeholders[j].setAttribute('placeholder', this.t(placeholders[j].getAttribute('data-i18n-placeholder')));
       }
     }
   };

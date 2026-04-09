@@ -3,8 +3,8 @@
     {
       "id": "reception",
       "category": "services",
-      "name": { "es": "Recepcion", "en": "Reception" },
-      "description": { "es": "Escritorio de recepcion y atencion", "en": "Reception and service desk" }
+      "name": { "es": "Recepción", "en": "Reception" },
+      "description": { "es": "Escritorio de recepción y atención", "en": "Reception and service desk" }
     },
     {
       "id": "elevator",
@@ -25,12 +25,12 @@
     {
       "id": "restroom_m",
       "category": "services",
-      "name": { "es": "Bano hombres", "en": "Men's restroom" }
+      "name": { "es": "Baño hombres", "en": "Men's restroom" }
     },
     {
       "id": "restroom_f",
       "category": "services",
-      "name": { "es": "Bano mujeres", "en": "Women's restroom" }
+      "name": { "es": "Baño mujeres", "en": "Women's restroom" }
     },
     {
       "id": "room_251",
@@ -85,37 +85,12 @@
     {
       "id": "entry_exit",
       "category": "access",
-      "name": { "es": "Entrada / Salida", "en": "Entry / Exit" }
+      "name": { "es": "Entrada/Salida", "en": "Entry/Exit" }
     },
     {
       "id": "equipment_workshop",
       "category": "services",
       "name": { "es": "Taller de equipos", "en": "Equipment workshop" }
-    },
-    {
-      "id": "col_engineering",
-      "category": "collections",
-      "name": { "es": "Ingenieria", "en": "Engineering" }
-    },
-    {
-      "id": "col_sciences",
-      "category": "collections",
-      "name": { "es": "Ciencias", "en": "Sciences" }
-    },
-    {
-      "id": "col_humanities",
-      "category": "collections",
-      "name": { "es": "Humanidades", "en": "Humanities" }
-    },
-    {
-      "id": "col_social",
-      "category": "collections",
-      "name": { "es": "Ciencias sociales", "en": "Social sciences" }
-    },
-    {
-      "id": "col_arts",
-      "category": "collections",
-      "name": { "es": "Artes", "en": "Arts" }
     }
   ]
 }
