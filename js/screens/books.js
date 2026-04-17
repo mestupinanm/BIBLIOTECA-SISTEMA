@@ -98,19 +98,22 @@
       '    <p class="books-detail-message">' + PepperLib.i18n.t(msgKey) + '</p>' +
       '  </div>' +
       '  <div class="books-detail-actions">' +
-      '    <button class="btn btn--primary" id="btn-books-reception">' + PepperLib.i18n.t('books.go_reception') + '</button>' +
-      '    <button class="btn btn--secondary" id="btn-books-back">' + PepperLib.i18n.t('books.back_options') + '</button>' +
+      '    <button class="btn btn--primary" id="btn-books-llevame">' + PepperLib.i18n.t('nav.guide_me') + '</button>' +
+      '    <button class="btn btn--secondary" id="btn-books-listo">' + PepperLib.i18n.t('nav.done') + '</button>' +
       '  </div>' +
       '</article>';
 
-    document.getElementById('btn-books-reception').addEventListener('click', function () {
-      // Count "llevame a recepcion" from books
+    document.getElementById('btn-books-llevame').addEventListener('click', function () {
+      var tipo = (currentAction === 'borrow') ? 'Préstamo' : 'Devolución';
+      PepperLib.Analytics.insertServiciosLibros(tipo, 'Llévame');
       PepperLib.Analytics.count('books_reception', currentAction || action);
       PepperLib.State.go(PepperLib.SCREENS.NAVIGATION_GUIDE, { destination: 'reception' });
     });
 
-    document.getElementById('btn-books-back').addEventListener('click', function () {
-      resetToOptions();
+    document.getElementById('btn-books-listo').addEventListener('click', function () {
+      var tipo = (currentAction === 'borrow') ? 'Préstamo' : 'Devolución';
+      PepperLib.Analytics.insertServiciosLibros(tipo, 'Listo');
+      PepperLib.State.go(PepperLib.SCREENS.MENU);
     });
   }
 

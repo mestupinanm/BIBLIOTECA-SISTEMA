@@ -320,6 +320,7 @@
       if (btnGuide) {
         btnGuide.addEventListener('click', function () {
           if (activeShelf) {
+            PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Llévame');
             PepperLib.Robot.navigateTo('shelf_' + activeShelf);
           }
         });
@@ -327,6 +328,9 @@
 
       if (btnDone) {
         btnDone.addEventListener('click', function () {
+          if (activeShelf) {
+            PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Listo');
+          }
           PepperLib.State.go(PepperLib.SCREENS.FEEDBACK);
         });
       }

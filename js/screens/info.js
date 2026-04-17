@@ -142,6 +142,12 @@
     if (tab === 'faq') bindFaqToggles();
   }
 
+  var TAB_SERVICE_MAP = {
+    'hours': 'Información',
+    'news':  'Noticias',
+    'faq':   'Preguntas frecuentes'
+  };
+
   PepperLib.State.registerScreen('info', {
     init: function () {
       var tabs = document.querySelectorAll('.info-tab');
@@ -153,6 +159,7 @@
           PepperLib.LastAction = PepperLib.i18n.t('info.screen_title') + ' — ' + PepperLib.i18n.t('info.' + tab);
           PepperLib.LastActionItem = 'tab_' + tab;
           PepperLib.LastActionCategory = 'info';
+          PepperLib.Analytics.insertInformacion(TAB_SERVICE_MAP[tab] || tab);
         });
       }
     },

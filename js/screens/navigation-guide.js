@@ -62,6 +62,12 @@
     stairs_main: 'access', stairs_emergency: 'access'
   };
 
+  var DEST_CATEGORY_LABELS = {
+    'rooms':    'Salas de estudio',
+    'services': 'Servicios',
+    'access':   'Accesos'
+  };
+
   var currentDestination = null;
 
   function getMapSrc(lang) {
@@ -83,6 +89,38 @@
 
   function getDestinationLabel(destId) {
     return PepperLib.i18n.t('dest.' + destId);
+  }
+
+  // Retorna solo el código/número del destino sin prefijo "Sala " o "Room "
+  function getShortLabel(destId) {
+    var full = getDestinationLabel(destId);
+    return full.replace(/^Sala\s+/i, '').replace(/^Room\s+/i, '');
+  }
+
+  function showSimOverlay(destLabel, onDone) {
+    var overlay = document.getElementById('guide-sim-overlay');
+    var msg = document.getElementById('guide-sim-msg');
+    var lang = PepperLib.State.language;
+    if (!overlay) { onDone(); return; }
+
+    var navigatingText = lang === 'en'
+      ? 'Navigating to ' + destLabel + '...'
+      : 'Navegando hacia ' + destLabel + '...';
+    var arrivedText = lang === 'en'
+      ? 'You have arrived at ' + destLabel
+      : 'Has llegado a ' + destLabel;
+
+    if (msg) msg.textContent = navigatingText;
+    overlay.classList.remove('hidden');
+
+    // Simula llegada después de 3 s
+    setTimeout(function () {
+      if (msg) msg.textContent = arrivedText;
+      setTimeout(function () {
+        overlay.classList.add('hidden');
+        onDone();
+      }, 1500);
+    }, 3000);
   }
 
   function renderGuide(destId) {
@@ -122,19 +160,31 @@
 
       if (btnGuide) {
         btnGuide.addEventListener('click', function () {
-          if (currentDestination) {
-            PepperLib.Robot.navigateTo(currentDestination);
-          }
+          if (!currentDestination) return;
+          var cat = NAV_CATEGORIES[currentDestination] || 'other';
+          PepperLib.Analytics.insertNavegacion(
+            DEST_CATEGORY_LABELS[cat] || cat,
+            getShortLabel(currentDestination),
+            'Llévame'
+          );
+          PepperLib.Robot.navigateTo(currentDestination);
+          showSimOverlay(getShortLabel(currentDestination), function () {
+            PepperLib.State.go(PepperLib.SCREENS.FEEDBACK);
+          });
         });
       }
 
       if (btnDone) {
         btnDone.addEventListener('click', function () {
-          // Count this destination interaction in Supabase
           if (currentDestination) {
             var cat = NAV_CATEGORIES[currentDestination] || 'other';
             PepperLib.Analytics.count('navigation', currentDestination);
             PepperLib.Analytics.count('navigation_category', cat);
+            PepperLib.Analytics.insertNavegacion(
+              DEST_CATEGORY_LABELS[cat] || cat,
+              getShortLabel(currentDestination),
+              'Listo'
+            );
           }
           PepperLib.State.go(PepperLib.SCREENS.FEEDBACK);
         });

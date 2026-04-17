@@ -153,8 +153,16 @@
         'feedback.bad': 'Mala',
         'feedback.ok': 'Regular',
         'feedback.great': 'Buena',
+        'feedback.excelente': 'Excelente',
+        'feedback.bueno': 'Bueno',
+        'feedback.regular': 'Regular',
+        'feedback.malo': 'Malo',
+        'feedback.pesimo': 'Pesimo',
         'feedback.thanks': 'Gracias por tu opinion!',
-        'feedback.caption': 'Tu opinion ayuda a que Nova atienda mejor'
+        'feedback.caption': 'Tu opinion ayuda a que Nova atienda mejor',
+        'feedback.comment_prompt': 'Quieres agregar algun comentario? (opcional)',
+        'feedback.comment_placeholder': 'Escribe aqui tu comentario...',
+        'feedback.send': 'Enviar'
       },
 
       en: {
@@ -301,8 +309,16 @@
         'feedback.bad': 'Bad',
         'feedback.ok': 'Okay',
         'feedback.great': 'Great',
+        'feedback.excelente': 'Excellent',
+        'feedback.bueno': 'Good',
+        'feedback.regular': 'Okay',
+        'feedback.malo': 'Bad',
+        'feedback.pesimo': 'Very bad',
         'feedback.thanks': 'Thank you for your feedback!',
-        'feedback.caption': 'Your feedback helps Nova assist better'
+        'feedback.caption': 'Your feedback helps Nova assist better',
+        'feedback.comment_prompt': 'Would you like to add a comment? (optional)',
+        'feedback.comment_placeholder': 'Write your comment here...',
+        'feedback.send': 'Send'
       }
     },
 

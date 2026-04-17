@@ -133,6 +133,10 @@
       }
     }
 
+    if (activeActivity) {
+      PepperLib.Analytics.insertEventos(getLangText(activeActivity.title));
+    }
+
     state.currentQuestion = 0;
     state.score = 0;
     state.answered = false;

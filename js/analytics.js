@@ -131,6 +131,162 @@
     clear: function () {
       try { localStorage.removeItem(this.STORAGE_KEY); } catch (e) {}
       this.buffer = [];
+    },
+
+    /* ----------------------------------------------------------
+       insertGeneralInteraction(categoria, callback)
+       INSERT en interacciones_generales y retorna el id via callback.
+       El id se guarda en PepperLib.CurrentGeneralId para uso de las
+       tablas hijas.
+    ---------------------------------------------------------- */
+    insertGeneralInteraction: function (categoria, callback) {
+      try {
+        if (PepperLib.SupabaseClient) {
+          PepperLib.SupabaseClient
+            .from('interacciones_generales')
+            .insert({ categoria: categoria })
+            .select('id')
+            .single()
+            .then(function (result) {
+              if (result.error) {
+                console.warn('Supabase interacciones_generales error:', result.error.message);
+                if (callback) callback(null);
+              } else {
+                PepperLib.CurrentGeneralId = result.data.id;
+                if (callback) callback(result.data.id);
+              }
+            });
+        } else {
+          if (callback) callback(null);
+        }
+      } catch (e) {
+        if (callback) callback(null);
+      }
+    },
+
+    /* ----------------------------------------------------------
+       insertNavegacion(destino, especificacion, eleccion)
+    ---------------------------------------------------------- */
+    insertNavegacion: function (destino, especificacion, eleccion) {
+      try {
+        if (PepperLib.SupabaseClient) {
+          PepperLib.SupabaseClient
+            .from('navegacion')
+            .insert({
+              id_general:     PepperLib.CurrentGeneralId || null,
+              destino:        destino,
+              especificacion: especificacion,
+              eleccion:       eleccion
+            })
+            .then(function (result) {
+              if (result.error) console.warn('Supabase navegacion error:', result.error.message);
+            });
+        }
+      } catch (e) {}
+    },
+
+    /* ----------------------------------------------------------
+       insertBuscarLibro(numeroEstanteria, tema, eleccion)
+    ---------------------------------------------------------- */
+    insertBuscarLibro: function (numeroEstanteria, tema, eleccion) {
+      try {
+        if (PepperLib.SupabaseClient) {
+          PepperLib.SupabaseClient
+            .from('buscar_libro')
+            .insert({
+              id_general:        PepperLib.CurrentGeneralId || null,
+              numero_estanteria: numeroEstanteria ? parseInt(numeroEstanteria, 10) : null,
+              tema:              tema || null,
+              eleccion:          eleccion
+            })
+            .then(function (result) {
+              if (result.error) console.warn('Supabase buscar_libro error:', result.error.message);
+            });
+        }
+      } catch (e) {}
+    },
+
+    /* ----------------------------------------------------------
+       insertServiciosLibros(tipo, eleccion)
+    ---------------------------------------------------------- */
+    insertServiciosLibros: function (tipo, eleccion) {
+      try {
+        if (PepperLib.SupabaseClient) {
+          PepperLib.SupabaseClient
+            .from('servicios_libros')
+            .insert({
+              id_general: PepperLib.CurrentGeneralId || null,
+              tipo:       tipo,
+              eleccion:   eleccion
+            })
+            .then(function (result) {
+              if (result.error) console.warn('Supabase servicios_libros error:', result.error.message);
+            });
+        }
+      } catch (e) {}
+    },
+
+    /* ----------------------------------------------------------
+       insertInformacion(servicio)
+    ---------------------------------------------------------- */
+    insertInformacion: function (servicio) {
+      try {
+        if (PepperLib.SupabaseClient) {
+          PepperLib.SupabaseClient
+            .from('informacion')
+            .insert({
+              id_general: PepperLib.CurrentGeneralId || null,
+              servicio:   servicio
+            })
+            .then(function (result) {
+              if (result.error) console.warn('Supabase informacion error:', result.error.message);
+            });
+        }
+      } catch (e) {}
+    },
+
+    /* ----------------------------------------------------------
+       insertEventos(actividad)
+    ---------------------------------------------------------- */
+    insertEventos: function (actividad) {
+      try {
+        if (PepperLib.SupabaseClient) {
+          PepperLib.SupabaseClient
+            .from('eventos')
+            .insert({
+              id_general: PepperLib.CurrentGeneralId || null,
+              actividad:  actividad
+            })
+            .then(function (result) {
+              if (result.error) console.warn('Supabase eventos error:', result.error.message);
+            });
+        }
+      } catch (e) {}
+    },
+
+    /* ----------------------------------------------------------
+       insertCalidadServicio(puntuacion, comentarios)
+       Reemplaza insertFeedback para la nueva tabla.
+       insertFeedback se mantiene por compatibilidad histórica.
+    ---------------------------------------------------------- */
+    insertCalidadServicio: function (puntuacion, comentarios) {
+      try {
+        if (PepperLib.SupabaseClient) {
+          PepperLib.SupabaseClient
+            .from('calidad_servicio')
+            .insert({
+              puntuacion:  puntuacion,
+              comentarios: comentarios || null,
+              id_caso:     PepperLib.CurrentGeneralId || null
+            })
+            .then(function (result) {
+              if (result.error) console.warn('Supabase calidad_servicio error:', result.error.message);
+            });
+        }
+      } catch (e) {}
     }
   };
+
+  // ID global de la interacción general activa
+  PepperLib.CurrentGeneralId = null;
 })();
