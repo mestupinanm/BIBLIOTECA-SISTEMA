@@ -26,9 +26,7 @@ export default function GreetingScreen() {
             <rect x="3" y="11" width="18" height="10" rx="2" />
             <circle cx="12" cy="5" r="3" />
             <line x1="12" y1="8" x2="12" y2="11" />
-            <circle cx="8" cy="16" r="1" fill="var(--color-primary)" />
-            <circle cx="16" cy="16" r="1" fill="var(--color-primary)" />
-            <path d="M9 19h6" />
+            <path d="M9.5 18.5h5" />
           </svg>
           <div className="greeting-robot-eyes">
             <div className="greeting-eye" />

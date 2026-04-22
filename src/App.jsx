@@ -15,8 +15,8 @@ import FeedbackScreen from './screens/FeedbackScreen.jsx';
 export default function App() {
   return (
     <>
-      <TopBar />
       <main id="app">
+        <TopBar />
         <IdleScreen />
         <GreetingScreen />
         <MenuScreen />
