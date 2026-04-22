@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [
     react(),
     legacy({
-      targets: ['chrome >= 30', 'android >= 4.4', 'safari >= 8', 'ios >= 8'],
-      additionalLegacyPolyfills: ['whatwg-fetch', 'core-js/proposals/global-this']
+      targets: ['chrome >= 44'],
+      additionalLegacyPolyfills: ['regenerator-runtime/runtime']
     })
   ]
 });
