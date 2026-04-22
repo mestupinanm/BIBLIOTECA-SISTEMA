@@ -7,8 +7,8 @@
   window.PepperLib = window.PepperLib || {};
 
   var MAP_COORDS = {
-    you_are_here:         { x: 48, y: 9  },
-    reception:            { x: 48, y: 9  },
+    you_are_here:         { x: 56.5, y: 45  },
+    reception:            { x: 45, y: 25 },
     elevator:             { x: 46, y: 9  },
     stairs_main:          { x: 50, y: 9  },
     stairs_emergency:     { x: 26, y: 9  },
