@@ -43,7 +43,7 @@ export default function FeedbackScreen() {
   }
 
   return (
-    <section id="screen-feedback" className={`screen${isActive ? ' active with-topbar' : ''}`}>
+    <section id="screen-feedback" className={`screen${isActive ? ' active' : ''}`}>
       <div className="feedback-container" data-selected-rating={selectedRating || undefined}>
         <h1 className="feedback-title">{t('feedback.title')}</h1>
         <p className="feedback-caption">{t('feedback.caption')}</p>

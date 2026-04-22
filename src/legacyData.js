@@ -1,6 +1,6 @@
 export const MAP_IMAGE_ES = new URL('../assets/imagenes/ESPAÑOL.png', import.meta.url).href;
 export const MAP_IMAGE_EN = new URL('../assets/imagenes/INGLES.png', import.meta.url).href;
-export const ACTIVITIES_URL = new URL('../assets/data/events/activities.json', import.meta.url).href;
+export const ACTIVITIES_URL = '/activities.json';
 
 export const STRINGS = {
   es: {
