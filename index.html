@@ -4,9 +4,331 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1280, height=800, user-scalable=no" />
     <title>Pepper Library Assistant</title>
+    <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <div id="root"></div>
+    <main id="app">
+      <header id="topbar" class="hidden">
+        <button id="btn-back" class="topbar-btn topbar-btn--back" aria-label="Back" style="visibility: hidden">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span data-i18n="nav.back">Volver</span>
+        </button>
+
+        <h2 id="screen-title" class="topbar-title"></h2>
+
+        <div class="topbar-right">
+          <button id="btn-lang-toggle" class="topbar-btn topbar-btn--lang" aria-label="Toggle language">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span id="lang-label">EN</span>
+          </button>
+
+          <button id="btn-help" class="topbar-btn topbar-btn--help" aria-label="Help">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span data-i18n="help.button">Ayuda</span>
+          </button>
+        </div>
+      </header>
+
+      <section id="screen-idle" class="screen active">
+        <div class="idle-container">
+          <div class="idle-logo">
+            <svg width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+              <circle cx="12" cy="5" r="3"></circle>
+              <line x1="12" y1="8" x2="12" y2="11"></line>
+            </svg>
+            <div class="idle-robot-eyes">
+              <div class="idle-eye"></div>
+              <div class="idle-eye"></div>
+            </div>
+          </div>
+          <h1 class="idle-title">Biblioteca General</h1>
+          <p class="idle-subtitle">Sala de Ciencias e Ingenieria</p>
+          <div class="idle-divider"></div>
+          <div class="idle-clock" id="idle-clock"></div>
+          <p class="idle-hint" data-i18n="idle.hint">Toca la pantalla para comenzar</p>
+          <div class="idle-pulse"></div>
+        </div>
+      </section>
+
+      <section id="screen-greeting" class="screen">
+        <div class="greeting-container">
+          <div class="greeting-robot">
+            <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+              <circle cx="12" cy="5" r="3"></circle>
+              <line x1="12" y1="8" x2="12" y2="11"></line>
+              <path d="M9.5 18.5h5"></path>
+            </svg>
+            <div class="greeting-robot-eyes">
+              <div class="greeting-eye"></div>
+              <div class="greeting-eye"></div>
+            </div>
+          </div>
+          <h1 class="greeting-title">
+            <span class="greeting-line1">Bienvenido</span>
+            <span class="greeting-line2">Welcome</span>
+          </h1>
+          <p class="greeting-subtitle">Selecciona tu idioma / Choose your language</p>
+          <div class="greeting-buttons">
+            <button class="greeting-lang-btn" data-lang="es">
+              <span class="greeting-lang-flag">ES</span>
+              <span class="greeting-lang-name">Espanol</span>
+            </button>
+            <button class="greeting-lang-btn" data-lang="en">
+              <span class="greeting-lang-flag">EN</span>
+              <span class="greeting-lang-name">English</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-menu" class="screen">
+        <div class="menu-container">
+          <h1 class="menu-title" data-i18n="menu.title">Como puedo ayudarte?</h1>
+          <div class="menu-grid">
+            <button class="menu-card" data-target="navigation">
+              <div class="menu-card-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+                </svg>
+              </div>
+              <span class="menu-card-label" data-i18n="menu.navigation">A donde voy?</span>
+              <span class="menu-card-desc" data-i18n="menu.navigation.desc">Te guio a tu destino</span>
+            </button>
+
+            <button class="menu-card" data-target="shelves">
+              <div class="menu-card-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="7" height="18"></rect>
+                  <rect x="9" y="3" width="7" height="18"></rect>
+                  <rect x="16" y="3" width="6" height="18"></rect>
+                  <line x1="2" y1="21" x2="22" y2="21"></line>
+                </svg>
+              </div>
+              <span class="menu-card-label" data-i18n="menu.shelves">Buscar libro</span>
+              <span class="menu-card-desc" data-i18n="menu.shelves.desc">Busca por tema en las estanterias</span>
+            </button>
+
+            <button class="menu-card" data-target="books">
+              <div class="menu-card-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                  <line x1="9" y1="7" x2="15" y2="7"></line>
+                  <line x1="9" y1="11" x2="13" y2="11"></line>
+                </svg>
+              </div>
+              <span class="menu-card-label" data-i18n="menu.books">Servicios de libros</span>
+              <span class="menu-card-desc" data-i18n="menu.books.desc">Prestamo y devolucion</span>
+            </button>
+
+            <button class="menu-card" data-target="info">
+              <div class="menu-card-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="16" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+              </div>
+              <span class="menu-card-label" data-i18n="menu.info">Informacion</span>
+              <span class="menu-card-desc" data-i18n="menu.info.desc">Horarios, noticias y preguntas</span>
+            </button>
+
+            <button class="menu-card menu-card--accent" data-target="events">
+              <div class="menu-card-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3l2.8 5.67 6.26.91-4.53 4.41 1.07 6.24L12 17.27 6.4 20.23l1.07-6.24L2.94 9.58l6.26-.91L12 3z"></path>
+                </svg>
+              </div>
+              <span class="menu-card-label" data-i18n="menu.events">Eventos</span>
+              <span class="menu-card-desc" data-i18n="menu.events.desc">Trivia y actividades</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-navigation" class="screen">
+        <div class="nav-container">
+          <div class="nav-categories" id="nav-categories"></div>
+        </div>
+      </section>
+
+      <section id="screen-navigation-guide" class="screen">
+        <div class="guide-container">
+          <div class="guide-map-full">
+            <div class="map-inner">
+              <div class="map-image-wrapper" id="guide-map-wrapper">
+                <img class="map-img" id="guide-map-img" src="./assets/imagenes/ESPANOL.png" alt="Floor map" />
+                <div class="map-markers" id="guide-map-markers"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="guide-sim-overlay hidden" id="guide-sim-overlay">
+            <div class="guide-sim-content">
+              <div class="guide-sim-spinner"></div>
+              <p class="guide-sim-msg" id="guide-sim-msg"></p>
+            </div>
+          </div>
+
+          <div class="guide-overlay-bar">
+            <div class="guide-overlay-info">
+              <h2 class="guide-destination" id="guide-destination"></h2>
+              <div class="guide-legend">
+                <span class="guide-legend-here">
+                  <span class="guide-legend-dot"></span>
+                  <span data-i18n="nav.you_are_here">Aqui estas</span>
+                </span>
+                <span class="guide-legend-dest">
+                  <span class="guide-legend-dot"></span>
+                  <span data-i18n="nav.your_dest">Tu destino</span>
+                </span>
+              </div>
+            </div>
+            <div class="guide-actions">
+              <button class="btn btn--primary guide-btn" id="btn-guide-me" data-i18n="nav.guide_me">Llevame</button>
+              <button class="btn btn--secondary guide-btn" id="btn-guide-done" data-i18n="nav.done">Listo</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-shelves" class="screen">
+        <div class="shelves-container">
+          <div class="shelves-list-panel">
+            <div class="shelves-panel-header">
+              <h3 data-i18n="shelves.screen_title">Buscar libro por tema</h3>
+              <p data-i18n="shelves.panel_hint">Toca una estanteria para ver sus temas</p>
+            </div>
+            <div class="shelves-search-wrap">
+              <label class="sr-only" for="shelves-search" data-i18n="shelves.search_placeholder">Busca un tema...</label>
+              <div class="shelves-search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input id="shelves-search" type="text" autocomplete="off" placeholder="Busca un tema..." />
+              </div>
+              <div class="shelves-search-meta" id="shelves-search-meta"></div>
+            </div>
+            <div class="shelves-list" id="shelves-list"></div>
+          </div>
+
+          <div class="shelves-map-panel">
+            <div class="shelves-map-area">
+              <div class="map-inner">
+                <div class="map-image-wrapper" id="shelves-map-wrapper">
+                  <img class="map-img" id="shelves-map-img" src="./assets/imagenes/ESPANOL.png" alt="Floor map" />
+                  <div class="map-markers" id="shelves-map-markers"></div>
+                </div>
+              </div>
+            </div>
+            <div class="shelves-map-footer">
+              <span class="shelves-map-hint" id="shelves-map-hint" data-i18n="shelves.select_hint">Selecciona una estanteria para ver su ubicacion</span>
+              <div class="shelves-map-actions hidden" id="shelves-info-actions">
+                <button class="btn btn--primary" id="btn-shelves-guide-me" data-i18n="nav.guide_me">Llevame</button>
+                <button class="btn btn--secondary" id="btn-shelves-done" data-i18n="nav.done">Listo</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-books" class="screen">
+        <div class="books-container">
+          <div id="books-options" class="books-options"></div>
+          <div id="books-detail" class="books-detail hidden"></div>
+        </div>
+      </section>
+
+      <section id="screen-info" class="screen">
+        <div class="info-container">
+          <div class="info-tabs">
+            <button class="info-tab active" data-tab="hours" data-i18n="info.hours">Horarios</button>
+            <button class="info-tab" data-tab="news" data-i18n="info.news">Noticias</button>
+            <button class="info-tab" data-tab="faq" data-i18n="info.faq">Preguntas frecuentes</button>
+          </div>
+          <div class="info-content" id="info-content"></div>
+        </div>
+      </section>
+
+      <section id="screen-events" class="screen">
+        <div class="events-container">
+          <div class="events-intro" id="events-intro"></div>
+          <div class="events-question hidden" id="events-question"></div>
+          <div class="events-result hidden" id="events-result"></div>
+        </div>
+      </section>
+
+      <section id="screen-feedback" class="screen">
+        <div class="feedback-container">
+          <h1 class="feedback-title" data-i18n="feedback.title">Como fue tu experiencia?</h1>
+          <p class="feedback-caption" data-i18n="feedback.caption">Tu opinion ayuda a que Nova atienda mejor</p>
+
+          <div class="feedback-options">
+            <button class="feedback-btn" data-rating="excelente">
+              <span class="feedback-emoji">&#129395;</span>
+              <span data-i18n="feedback.excelente">Excelente</span>
+            </button>
+            <button class="feedback-btn" data-rating="bueno">
+              <span class="feedback-emoji">&#128077;</span>
+              <span data-i18n="feedback.bueno">Bueno</span>
+            </button>
+            <button class="feedback-btn" data-rating="regular">
+              <span class="feedback-emoji">&#128528;</span>
+              <span data-i18n="feedback.regular">Regular</span>
+            </button>
+            <button class="feedback-btn" data-rating="malo">
+              <span class="feedback-emoji">&#128078;</span>
+              <span data-i18n="feedback.malo">Malo</span>
+            </button>
+            <button class="feedback-btn" data-rating="pesimo">
+              <span class="feedback-emoji">&#128552;</span>
+              <span data-i18n="feedback.pesimo">Pesimo</span>
+            </button>
+          </div>
+
+          <div class="feedback-comment-section hidden" id="feedback-comment-section">
+            <p class="feedback-comment-prompt" data-i18n="feedback.comment_prompt">Quieres agregar algun comentario? (opcional)</p>
+            <textarea class="feedback-comment-input" id="feedback-comment-input" rows="4" data-i18n-placeholder="feedback.comment_placeholder" placeholder="Escribe aqui tu comentario..."></textarea>
+            <button class="btn btn--primary" id="btn-feedback-send" data-i18n="feedback.send">Enviar</button>
+          </div>
+
+          <div class="feedback-thanks hidden" id="feedback-thanks">
+            <h2 data-i18n="feedback.thanks">Gracias por tu opinion!</h2>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="help-overlay" class="overlay hidden">
+      <div class="overlay-card">
+        <div class="overlay-icon">
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
+        <h2 class="overlay-title" data-i18n="help.title">Necesitas ayuda?</h2>
+        <p class="overlay-message" data-i18n="help.message">Un bibliotecario ha sido notificado y vendra a asistirte. Por favor espera aqui.</p>
+        <button class="btn btn--secondary overlay-dismiss" id="btn-help-dismiss" data-i18n="help.dismiss">Cerrar</button>
+      </div>
+    </div>
+
+    <script src="./js/data.js"></script>
+    <script src="./js/robot-logic.js"></script>
+    <script src="./js/ui-logic.js"></script>
   </body>
 </html>
-
