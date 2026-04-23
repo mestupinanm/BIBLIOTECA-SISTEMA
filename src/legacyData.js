@@ -1,5 +1,5 @@
-export const MAP_IMAGE_ES = new URL('../assets/imagenes/ESPAÑOL.png', import.meta.url).href;
-export const MAP_IMAGE_EN = new URL('../assets/imagenes/INGLES.png', import.meta.url).href;
+export var MAP_IMAGE_ES = './assets/imagenes/ESPAÑOL.png';
+export var MAP_IMAGE_EN = './assets/imagenes/INGLES.png';
 export const ACTIVITIES_URL = '/activities.json';
 
 export const STRINGS = {

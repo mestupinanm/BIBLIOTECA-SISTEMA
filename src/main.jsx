@@ -1,11 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
 import './App.css';
-import App from './App.jsx';
-import { AppProvider } from './contexts/AppContext.jsx';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from './App.jsx'
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <AppProvider>
-    <App />
-  </AppProvider>
-);
+// 1. IMPORTA TU PROVIDER (asegúrate de que la ruta sea correcta según tu proyecto)
+import { AppProvider } from './contexts/AppContext.jsx' // o de donde sea que venga
+
+ReactDOM.render(
+  <React.StrictMode>
+    {/* 2. ENVUELVE TU APLICACIÓN CON EL PROVIDER */}
+    <AppProvider>
+      <App />
+    </AppProvider>
+  </React.StrictMode>,
+  document.getElementById('root')
+)
