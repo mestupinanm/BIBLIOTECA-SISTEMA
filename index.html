@@ -5,28 +5,6 @@
     <meta name="viewport" content="width=1280, height=800, user-scalable=no" />
     <title>Pepper Library Assistant</title>
     <link rel="stylesheet" href="./css/pepper-legacy.css" />
-    <link rel="stylesheet" href="./css/styles.css" id="pepper-modern-styles" />
-    <script>
-      (function () {
-        var modernLink = document.getElementById('pepper-modern-styles');
-        var supports = false;
-
-        try {
-          supports = !!(window.CSS &&
-            window.CSS.supports &&
-            window.CSS.supports('--pepper-test', '0') &&
-            window.CSS.supports('display', 'grid'));
-        } catch (error) {
-          supports = false;
-        }
-
-        window.__pepperSupportsModernStyles = supports;
-
-        if (!supports && modernLink && modernLink.parentNode) {
-          modernLink.parentNode.removeChild(modernLink);
-        }
-      })();
-    </script>
   </head>
   <body>
     <main id="app">
