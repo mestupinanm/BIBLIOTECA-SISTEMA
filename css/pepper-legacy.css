@@ -5,7 +5,7 @@ body {
   width: 1280px;
   height: 800px;
   overflow: hidden;
-  background: #0f3b63;
+  background: #0f2942;
   color: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -47,8 +47,11 @@ button {
   right: 0;
   height: 74px;
   padding: 12px 18px;
+  padding: 14px 22px;
   background: #082743;
+  background: linear-gradient(180deg, #103c61 0%, #082743 100%);
   color: #ffffff;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
   z-index: 50;
 }
 
@@ -68,14 +71,16 @@ button {
 
 .topbar-btn {
   display: inline-block;
-  min-width: 86px;
+  min-width: 104px;
   margin-left: 8px;
-  padding: 10px 14px;
-  border: 1px solid #8fb1d1;
-  border-radius: 12px;
+  padding: 11px 16px;
+  border: 1px solid #84a9cb;
+  border-radius: 14px;
   background: #114f83;
+  background: linear-gradient(180deg, #1e639e 0%, #114f83 100%);
   color: #ffffff;
   vertical-align: middle;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .topbar-btn svg {
@@ -110,6 +115,7 @@ button {
 #screen-greeting,
 #screen-feedback {
   background: #0f3b63;
+  background: radial-gradient(circle at top center, #1d5b8d 0%, #0f3b63 48%, #082743 100%);
 }
 
 .idle-container,
@@ -117,7 +123,7 @@ button {
 .feedback-container {
   width: 100%;
   height: 100%;
-  padding: 60px 70px;
+  padding: 72px 70px;
   text-align: center;
 }
 
@@ -129,10 +135,11 @@ button {
 .idle-title,
 .greeting-line1,
 .feedback-title {
-  margin: 12px 0;
+  margin: 14px 0;
   color: #ffffff;
-  font-size: 54px;
+  font-size: 60px;
   font-weight: bold;
+  letter-spacing: -1px;
 }
 
 .idle-subtitle,
@@ -144,9 +151,10 @@ button {
 }
 
 .idle-clock {
-  margin: 24px 0;
+  margin: 28px 0;
   font-size: 42px;
   font-weight: bold;
+  color: #f8d88f;
 }
 
 .greeting-buttons,
@@ -174,11 +182,12 @@ button {
   margin: 10px;
   padding: 16px 20px;
   border: 2px solid #c9a24c;
-  border-radius: 16px;
+  border-radius: 20px;
   background: #ffffff;
   color: #123b63;
   vertical-align: top;
   text-decoration: none;
+  box-shadow: 0 10px 22px rgba(11, 35, 58, 0.12);
 }
 
 .menu-container,
@@ -192,6 +201,7 @@ button {
   height: 100%;
   padding: 24px;
   background: #eef3f8;
+  background: linear-gradient(180deg, #f5f8fb 0%, #e8eef5 100%);
   color: #123b63;
 }
 
@@ -206,7 +216,8 @@ button {
 
 .menu-card {
   width: 220px;
-  min-height: 180px;
+  min-height: 196px;
+  padding: 22px 18px;
 }
 
 .menu-card-label,
@@ -243,11 +254,12 @@ button {
 .events-question-card,
 .events-result-card {
   margin: 12px 0;
-  padding: 16px;
+  padding: 18px;
   border: 1px solid #b9cadb;
-  border-radius: 16px;
+  border-radius: 20px;
   background: #ffffff;
   color: #123b63;
+  box-shadow: 0 10px 20px rgba(16, 47, 77, 0.08);
 }
 
 .nav-categories,
@@ -261,10 +273,13 @@ button {
 .shelves-map-area {
   position: relative;
   width: 100%;
-  height: 460px;
-  margin-bottom: 14px;
-  border: 1px solid #b9cadb;
+  height: 408px;
+  margin-bottom: 18px;
+  border: 1px solid #aebfd1;
+  border-radius: 18px;
   background: #dfe8f0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  overflow: hidden;
 }
 
 .map-inner,
@@ -321,11 +336,12 @@ button {
 .shelves-search input,
 .feedback-comment-input {
   width: 100%;
-  padding: 12px;
+  padding: 14px 16px;
   border: 1px solid #9fb6cd;
-  border-radius: 10px;
+  border-radius: 14px;
   background: #ffffff;
   color: #123b63;
+  box-shadow: inset 0 1px 3px rgba(16, 47, 77, 0.08);
 }
 
 .shelf-item-header,
@@ -357,6 +373,7 @@ button {
 .feedback-btn.is-selected,
 .shelf-topic-tag.is-active {
   background: #123b63;
+  background: linear-gradient(180deg, #1d5b8d 0%, #123b63 100%);
   color: #ffffff;
 }
 
@@ -420,8 +437,76 @@ button {
 }
 
 .guide-overlay-bar {
-  padding: 14px 0;
+  position: relative;
+  z-index: 6;
+  padding: 10px 0 0;
   text-align: center;
+}
+
+.guide-destination {
+  margin: 0 0 8px;
+  font-size: 34px;
+  font-weight: bold;
+}
+
+.guide-actions .btn,
+.shelves-map-actions .btn,
+.books-detail-actions .btn,
+.overlay-dismiss,
+#btn-feedback-send {
+  min-width: 190px;
+}
+
+.guide-btn,
+#btn-shelves-guide-me,
+#btn-shelves-done,
+#btn-books-llevame,
+#btn-books-listo,
+#btn-feedback-send,
+#btn-guide-me,
+#btn-guide-done {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.menu-title,
+.books-hero-title,
+.books-detail-title,
+.events-question-text,
+.overlay-title {
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+
+.menu-card-icon,
+.books-card-icon {
+  display: block;
+  margin: 0 auto 10px;
+  width: 74px;
+  height: 74px;
+  line-height: 74px;
+  border-radius: 18px;
+  background: #eef4fa;
+}
+
+.menu-card-icon svg,
+.books-card-icon svg {
+  margin-top: 13px;
+  stroke: #123b63;
+}
+
+.feedback-options {
+  margin-top: 18px;
+}
+
+.feedback-btn {
+  min-width: 150px;
+}
+
+.feedback-emoji {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 44px;
 }
 
 .feedback-comment-section,

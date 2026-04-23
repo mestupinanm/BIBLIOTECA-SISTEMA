@@ -370,7 +370,7 @@
 
   PepperLib.Inactivity = {
     timer: null,
-    TIMEOUT_MS: 120000,
+    TIMEOUT_MS: 60000,
 
     reset: function () {
       clearTimeout(this.timer);
@@ -628,21 +628,65 @@
     sendEmail: function (onSuccess, onError) {
       var config = DATA.HELP_CONFIG || {};
       var payload = this.buildEmailPayload();
-      var endpoint = (config.formsubmit && config.formsubmit.endpointBase ? config.formsubmit.endpointBase : 'https://formsubmit.co/ajax/') + encodeURIComponent(payload.recipient);
+      var form;
+      var iframe;
+      var hiddenFields;
+      var endpoint;
+      var fieldName;
 
-      xhrJson('POST', endpoint, {
-        Accept: 'application/json'
-      }, {
+      endpoint = 'https://formsubmit.co/' + encodeURIComponent(payload.recipient);
+      iframe = document.createElement('iframe');
+      iframe.name = 'pepper-help-target';
+      iframe.id = 'pepper-help-target';
+      iframe.className = 'hidden';
+      document.body.appendChild(iframe);
+
+      form = document.createElement('form');
+      form.method = 'POST';
+      form.action = endpoint;
+      form.target = 'pepper-help-target';
+      form.className = 'hidden';
+
+      hiddenFields = {
         name: config.senderName || 'Nova',
         subject: (config.formsubmit && config.formsubmit.subject ? config.formsubmit.subject : 'Nova necesita ayuda') + ' - ' + payload.lastAction,
         message: payload.message,
         _captcha: config.formsubmit && config.formsubmit.captcha === false ? 'false' : 'true',
-        _template: config.formsubmit && config.formsubmit.template ? config.formsubmit.template : 'table'
-      }, function (response) {
-        if (onSuccess) {
-          onSuccess(response);
+        _template: config.formsubmit && config.formsubmit.template ? config.formsubmit.template : 'table',
+        _next: 'about:blank'
+      };
+
+      for (fieldName in hiddenFields) {
+        if (hiddenFields.hasOwnProperty(fieldName)) {
+          var input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = fieldName;
+          input.value = hiddenFields[fieldName];
+          form.appendChild(input);
         }
-      }, onError);
+      }
+
+      document.body.appendChild(form);
+
+      try {
+        form.submit();
+        if (onSuccess) {
+          onSuccess({ method: 'form_post' });
+        }
+      } catch (error) {
+        if (onError) {
+          onError(error);
+        }
+      }
+
+      setTimeout(function () {
+        if (form && form.parentNode) {
+          form.parentNode.removeChild(form);
+        }
+        if (iframe && iframe.parentNode) {
+          iframe.parentNode.removeChild(iframe);
+        }
+      }, 2500);
     }
   };
 
@@ -922,21 +966,9 @@
     PepperLib.State.registerScreen('navigation-guide', {
       init: function () {
         byId('btn-guide-me').onclick = function () {
-          var category;
-          var categoryLabel;
-
           if (!currentDestination) {
             return;
           }
-
-          category = (DATA.NAV_DEST_CATEGORIES && DATA.NAV_DEST_CATEGORIES[currentDestination]) || 'navigation';
-          categoryLabel = (DATA.DEST_CATEGORY_LABELS && DATA.DEST_CATEGORY_LABELS[category]) || category;
-
-          PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Llevame');
-          PepperRobot.navigateTo(currentDestination);
-          showSimulation(getShortLabel(currentDestination), function () {
-            PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-          });
         };
 
         byId('btn-guide-done').onclick = function () {
@@ -950,7 +982,7 @@
             PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Listo');
           }
 
-          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+          PepperLib.State.go(PepperLib.SCREENS.MENU, {}, { pushHistory: false });
         };
       },
 
@@ -2035,7 +2067,15 @@
     };
 
     document.addEventListener('touchstart', reset);
+    document.addEventListener('touchend', reset);
     document.addEventListener('click', reset);
+    document.addEventListener('mousedown', reset);
+    document.addEventListener('mouseup', reset);
+    document.addEventListener('keydown', reset);
+    document.addEventListener('keyup', reset);
+    document.addEventListener('input', reset);
+    document.addEventListener('change', reset);
+    document.addEventListener('focus', reset, true);
     window.addEventListener('robot:presence', function () {
       if (PepperLib.State.current === PepperLib.SCREENS.IDLE) {
         PepperLib.State.go(PepperLib.SCREENS.GREETING, {}, { pushHistory: false });
@@ -2060,10 +2100,6 @@
     PepperLib.i18n.applyToDOM();
     PepperRobot.init();
     PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
-    window.__pepperBootState.ok = true;
-    if (window.__pepperHideBootMessage) {
-      window.__pepperHideBootMessage();
-    }
   }
 
   if (document.readyState === 'loading') {
