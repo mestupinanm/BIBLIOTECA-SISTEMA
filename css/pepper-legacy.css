@@ -1,0 +1,432 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+  background: #0f3b63;
+  color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  position: relative;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a,
+button,
+input,
+textarea {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#app {
+  position: relative;
+  width: 1280px;
+  height: 800px;
+  overflow: hidden;
+}
+
+#topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 74px;
+  padding: 12px 18px;
+  background: #082743;
+  color: #ffffff;
+  z-index: 50;
+}
+
+.topbar-title {
+  margin: 0;
+  line-height: 50px;
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.topbar-right {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+}
+
+.topbar-btn {
+  display: inline-block;
+  min-width: 86px;
+  margin-left: 8px;
+  padding: 10px 14px;
+  border: 1px solid #8fb1d1;
+  border-radius: 12px;
+  background: #114f83;
+  color: #ffffff;
+  vertical-align: middle;
+}
+
+.topbar-btn svg {
+  display: none;
+}
+
+#btn-back {
+  position: absolute;
+  top: 12px;
+  left: 18px;
+}
+
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1280px;
+  height: 800px;
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+.screen.with-topbar {
+  top: 74px;
+  height: 726px;
+}
+
+#screen-idle,
+#screen-greeting,
+#screen-feedback {
+  background: #0f3b63;
+}
+
+.idle-container,
+.greeting-container,
+.feedback-container {
+  width: 100%;
+  height: 100%;
+  padding: 60px 70px;
+  text-align: center;
+}
+
+.idle-logo,
+.greeting-robot {
+  margin: 0 auto 24px;
+}
+
+.idle-title,
+.greeting-line1,
+.feedback-title {
+  margin: 12px 0;
+  color: #ffffff;
+  font-size: 54px;
+  font-weight: bold;
+}
+
+.idle-subtitle,
+.greeting-line2,
+.feedback-caption,
+.idle-hint,
+.greeting-subtitle {
+  color: #dce8f4;
+}
+
+.idle-clock {
+  margin: 24px 0;
+  font-size: 42px;
+  font-weight: bold;
+}
+
+.greeting-buttons,
+.feedback-options,
+.guide-actions,
+.books-detail-actions,
+.shelves-map-actions,
+.events-result-actions,
+.topbar-right,
+.books-card-grid,
+.menu-grid,
+.info-tabs {
+  text-align: center;
+}
+
+.greeting-lang-btn,
+.menu-card,
+.books-card,
+.feedback-btn,
+.info-tab,
+.btn,
+.events-activity-btn,
+.events-option-btn {
+  display: inline-block;
+  margin: 10px;
+  padding: 16px 20px;
+  border: 2px solid #c9a24c;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #123b63;
+  vertical-align: top;
+  text-decoration: none;
+}
+
+.menu-container,
+.nav-container,
+.guide-container,
+.shelves-container,
+.books-container,
+.info-container,
+.events-container {
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  background: #eef3f8;
+  color: #123b63;
+}
+
+.menu-title,
+.guide-destination,
+.books-hero-title,
+.books-detail-title,
+.events-question-text,
+.overlay-title {
+  color: #123b63;
+}
+
+.menu-card {
+  width: 220px;
+  min-height: 180px;
+}
+
+.menu-card-label,
+.books-card-label {
+  display: block;
+  margin-top: 12px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.menu-card-desc,
+.books-card-desc,
+.books-hero-copy,
+.overlay-message,
+.events-activity-card p,
+.news-stage-copy,
+.feedback-comment-prompt {
+  display: block;
+  margin-top: 10px;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.nav-item,
+.shelf-item,
+.faq-item,
+.events-activity-card,
+.books-detail-panel,
+.news-feature-card,
+.news-card,
+.hours-today,
+.hours-day,
+.overlay-card,
+.events-question-card,
+.events-result-card {
+  margin: 12px 0;
+  padding: 16px;
+  border: 1px solid #b9cadb;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #123b63;
+}
+
+.nav-categories,
+.shelves-list,
+.info-content {
+  height: 620px;
+  overflow: auto;
+}
+
+.guide-map-full,
+.shelves-map-area {
+  position: relative;
+  width: 100%;
+  height: 460px;
+  margin-bottom: 14px;
+  border: 1px solid #b9cadb;
+  background: #dfe8f0;
+}
+
+.map-inner,
+.map-image-wrapper,
+.map-markers {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.map-img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0 auto;
+}
+
+.marker,
+.map-marker,
+.marker-here,
+.marker-dest {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  margin-top: -9px;
+  border: 2px solid #ffffff;
+  border-radius: 18px;
+}
+
+.marker-here {
+  background: #17b26a;
+}
+
+.marker-dest {
+  background: #d6a348;
+}
+
+.shelves-list-panel,
+.shelves-map-panel {
+  float: left;
+  height: 100%;
+}
+
+.shelves-list-panel {
+  width: 42%;
+  padding-right: 16px;
+}
+
+.shelves-map-panel {
+  width: 58%;
+}
+
+.shelves-search input,
+.feedback-comment-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #9fb6cd;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #123b63;
+}
+
+.shelf-item-header,
+.faq-question {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  color: #123b63;
+}
+
+.shelf-item-body,
+.faq-answer {
+  margin-top: 12px;
+}
+
+.faq-answer {
+  display: none;
+}
+
+.faq-item.open .faq-answer {
+  display: block;
+}
+
+.info-tab.active,
+.events-option-btn.correct,
+.feedback-btn.is-selected,
+.shelf-topic-tag.is-active {
+  background: #123b63;
+  color: #ffffff;
+}
+
+.events-option-btn.wrong {
+  background: #d92d20;
+  color: #ffffff;
+}
+
+.news-feature-grid,
+.news-card-grid {
+  display: block;
+}
+
+.news-feature-card,
+.news-card {
+  overflow: hidden;
+}
+
+.news-feature-image img,
+.news-card-image img {
+  display: block;
+  max-width: 100%;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1280px;
+  height: 800px;
+  background: #0b2238;
+  background: rgba(11, 34, 56, 0.86);
+  z-index: 90;
+}
+
+.overlay-card {
+  width: 640px;
+  margin: 120px auto 0;
+  padding: 28px;
+  text-align: center;
+}
+
+.guide-sim-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(11, 34, 56, 0.72);
+  z-index: 10;
+}
+
+.guide-sim-content {
+  width: 340px;
+  margin: 180px auto 0;
+  padding: 24px;
+  text-align: center;
+  background: #ffffff;
+  color: #123b63;
+  border-radius: 14px;
+}
+
+.guide-overlay-bar {
+  padding: 14px 0;
+  text-align: center;
+}
+
+.feedback-comment-section,
+.feedback-thanks,
+.events-question,
+.events-result {
+  margin-top: 20px;
+}

@@ -4,7 +4,157 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1280, height=800, user-scalable=no" />
     <title>Pepper Library Assistant</title>
-    <link rel="stylesheet" href="./css/styles.css" />
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 1280px;
+        height: 800px;
+        overflow: hidden;
+        background: #0f3b63;
+        color: #ffffff;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      #app {
+        position: relative;
+        width: 1280px;
+        height: 800px;
+        overflow: hidden;
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      #screen-idle {
+        display: block;
+        background: #0f3b63;
+      }
+
+      .idle-container {
+        padding: 96px 48px;
+        text-align: center;
+      }
+
+      .idle-title {
+        margin: 24px 0 12px;
+        font-size: 56px;
+        font-weight: bold;
+        color: #ffffff;
+      }
+
+      .idle-subtitle,
+      .idle-hint,
+      .boot-copy,
+      .boot-hint {
+        color: #d9e6f2;
+      }
+
+      #pepper-boot-status {
+        position: absolute;
+        left: 40px;
+        right: 40px;
+        bottom: 40px;
+        z-index: 9999;
+        padding: 18px 22px;
+        border: 2px solid #c9a24c;
+        border-radius: 18px;
+        background: #ffffff;
+        color: #123b63;
+      }
+
+      #pepper-boot-status.hidden {
+        display: none;
+      }
+
+      .boot-title {
+        margin: 0 0 8px;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .boot-copy {
+        margin: 0;
+        color: #34516d;
+        font-size: 18px;
+        line-height: 1.4;
+      }
+
+      .boot-hint {
+        margin-top: 10px;
+        color: #6a7f96;
+        font-size: 16px;
+      }
+    </style>
+    <link rel="stylesheet" href="./css/pepper-legacy.css" />
+    <link rel="stylesheet" href="./css/styles.css" id="pepper-modern-styles" />
+    <script>
+      window.__pepperBootState = {
+        startedAt: new Date().getTime(),
+        ok: false
+      };
+
+      window.__pepperSupportsModernStyles = false;
+
+      window.__pepperShowBootMessage = function (title, copy, isError) {
+        var box = document.getElementById('pepper-boot-status');
+        var titleEl = document.getElementById('pepper-boot-title');
+        var copyEl = document.getElementById('pepper-boot-copy');
+        var hintEl = document.getElementById('pepper-boot-hint');
+
+        if (!box) {
+          return;
+        }
+
+        box.className = '';
+        box.style.borderColor = isError ? '#d92d20' : '#c9a24c';
+        titleEl.innerHTML = title;
+        copyEl.innerHTML = copy;
+        hintEl.innerHTML = isError
+          ? 'La pagina cargo, pero una parte del navegador antiguo no pudo procesarla.'
+          : 'Si esto no desaparece en unos segundos, hay un problema de compatibilidad.';
+      };
+
+      window.__pepperHideBootMessage = function () {
+        var box = document.getElementById('pepper-boot-status');
+        if (box) {
+          box.className = 'hidden';
+        }
+      };
+
+      window.onerror = function (message, source, lineNumber) {
+        window.__pepperShowBootMessage(
+          'Pepper detecto un error al iniciar',
+          'Mensaje: ' + message + '<br />Archivo: ' + (source || 'desconocido') + '<br />Linea: ' + (lineNumber || 0),
+          true
+        );
+      };
+
+      (function () {
+        var modernLink = document.getElementById('pepper-modern-styles');
+        var supports = false;
+
+        try {
+          supports = !!(window.CSS &&
+            window.CSS.supports &&
+            window.CSS.supports('--pepper-test', '0') &&
+            window.CSS.supports('display', 'grid'));
+        } catch (error) {
+          supports = false;
+        }
+
+        window.__pepperSupportsModernStyles = supports;
+
+        if (!supports && modernLink && modernLink.parentNode) {
+          modernLink.parentNode.removeChild(modernLink);
+        }
+      })();
+    </script>
   </head>
   <body>
     <main id="app">
@@ -311,6 +461,12 @@
         </div>
       </section>
     </main>
+
+    <div id="pepper-boot-status">
+      <div id="pepper-boot-title" class="boot-title">Cargando interfaz de Pepper</div>
+      <div id="pepper-boot-copy" class="boot-copy">Si ves este mensaje, el HTML base ya esta cargando correctamente.</div>
+      <div id="pepper-boot-hint" class="boot-hint">Ahora estamos comprobando CSS y JavaScript.</div>
+    </div>
 
     <div id="help-overlay" class="overlay hidden">
       <div class="overlay-card">

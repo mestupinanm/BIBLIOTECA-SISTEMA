@@ -300,7 +300,7 @@
         oldScreen.onExit();
       }
 
-      if (oldScreenName && oldScreenName !== this.SCREENS.IDLE && oldScreenName !== this.SCREENS.GREETING && pushHistory) {
+      if (oldScreenName && oldScreenName !== PepperLib.SCREENS.IDLE && oldScreenName !== PepperLib.SCREENS.GREETING && pushHistory) {
         this.history.push({
           screen: oldScreenName,
           params: this.params
@@ -338,7 +338,7 @@
       var previous;
 
       if (!this.history.length) {
-        this.go(this.SCREENS.MENU, {}, { pushHistory: false });
+        this.go(PepperLib.SCREENS.MENU, {}, { pushHistory: false });
         return;
       }
 
@@ -355,7 +355,7 @@
       toggleClass(topbar, 'hidden', !showTopbar);
 
       if (backButton) {
-        if (this.current === this.SCREENS.MENU || this.current === this.SCREENS.FEEDBACK) {
+        if (this.current === PepperLib.SCREENS.MENU || this.current === PepperLib.SCREENS.FEEDBACK) {
           backButton.style.visibility = 'hidden';
         } else {
           backButton.style.visibility = 'visible';
@@ -2060,6 +2060,10 @@
     PepperLib.i18n.applyToDOM();
     PepperRobot.init();
     PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+    window.__pepperBootState.ok = true;
+    if (window.__pepperHideBootMessage) {
+      window.__pepperHideBootMessage();
+    }
   }
 
   if (document.readyState === 'loading') {
