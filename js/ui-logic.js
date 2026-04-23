@@ -691,8 +691,23 @@
   };
 
   PepperLib.Utils = {
+    getBogotaNow: function () {
+      var now = new Date();
+      var utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+      return new Date(utcTime + (-5 * 60 * 60000));
+    },
+
     getMapSrc: function () {
       return PepperLib.State.language === 'en' ? DATA.MAP_IMAGE_EN : DATA.MAP_IMAGE_ES;
+    },
+
+    getAssetPath: function (relativePath) {
+      var prefix = window.location.pathname.indexOf('/src/') !== -1 ? '../assets/' : './assets/';
+      return prefix + relativePath;
+    },
+
+    getFeedbackImagePath: function (rating) {
+      return this.getAssetPath('imagenes/feedback-' + rating + '.png');
     },
 
     buildMarker: function (x, y, type) {
@@ -713,10 +728,13 @@
 
   (function registerIdleScreen() {
     var clockTimer = null;
+    var weekdaysEs = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+    var monthsEs = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
     function updateClock() {
       var clock = byId('idle-clock');
-      var now = new Date();
+      var date = byId('idle-date');
+      var now = PepperLib.Utils.getBogotaNow();
       var hours = now.getHours();
       var minutes = now.getMinutes();
       var suffix = hours >= 12 ? 'PM' : 'AM';
@@ -726,6 +744,10 @@
 
       if (clock) {
         clock.textContent = hours + ':' + (minutes < 10 ? '0' + minutes : minutes) + ' ' + suffix;
+      }
+
+      if (date) {
+        date.textContent = weekdaysEs[now.getDay()] + ', ' + now.getDate() + ' de ' + monthsEs[now.getMonth()] + ' de ' + now.getFullYear();
       }
     }
 
@@ -901,6 +923,7 @@
 
     function renderGuide(destinationId) {
       var destinationEl = byId('guide-destination');
+      var roomCodeEl = byId('guide-room-code');
       var mapImage = byId('guide-map-img');
       var markers = byId('guide-map-markers');
       var here = DATA.MAP_COORDS ? DATA.MAP_COORDS.you_are_here : null;
@@ -909,6 +932,10 @@
 
       if (destinationEl) {
         destinationEl.textContent = getDestinationLabel(destinationId);
+      }
+
+      if (roomCodeEl) {
+        roomCodeEl.textContent = getShortLabel(destinationId);
       }
 
       if (mapImage) {
@@ -982,7 +1009,7 @@
             PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Listo');
           }
 
-          PepperLib.State.go(PepperLib.SCREENS.MENU, {}, { pushHistory: false });
+          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
         };
       },
 
@@ -1264,6 +1291,7 @@
       }
 
       container.innerHTML =
+        '<div class="books-shell">' +
         '<section class="books-hero">' +
         '<span class="books-hero-eyebrow" data-i18n="books.hero_eyebrow">' + PepperLib.i18n.t('books.hero_eyebrow') + '</span>' +
         '<h2 class="books-hero-title" data-i18n="books.hero_title">' + PepperLib.i18n.t('books.hero_title') + '</h2>' +
@@ -1278,6 +1306,7 @@
         '<div class="books-card-icon"><svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><polyline points="16 12 12 16 8 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></div>' +
         '<div class="books-card-copy"><span class="books-card-label">' + PepperLib.i18n.t('books.return') + '</span><span class="books-card-desc">' + PepperLib.i18n.t('books.return_desc') + '</span></div>' +
         '</button>' +
+        '</div>' +
         '</div>';
 
       var cards = container.querySelectorAll('.books-card');
@@ -1435,7 +1464,7 @@
     }
 
     function renderHours() {
-      var today = new Date().getDay();
+      var today = PepperLib.Utils.getBogotaNow().getDay();
       var todayIndex = today === 0 ? 6 : today - 1;
       var schedule = DATA.HOURS ? DATA.HOURS.schedule : [];
       var todaySchedule = schedule[todayIndex];
@@ -1445,6 +1474,7 @@
       var day;
       var time;
 
+      html += '<section class="hours-panel">';
       html += '<div class="hours-today">';
       html += '<div class="hours-today-label" data-i18n="info.today">' + PepperLib.i18n.t('info.today') + '</div>';
       html += '<div class="hours-today-value">' + todayTime + '</div>';
@@ -1461,6 +1491,7 @@
       }
 
       html += '</div>';
+      html += '</section>';
       return html;
     }
 
@@ -1474,7 +1505,6 @@
       html += '<section class="news-panel"><div class="news-stage">';
       html += '<header class="news-stage-header">';
       html += '<div class="news-stage-copy"><div class="news-stage-kicker">Portal Uniandes</div><h3>' + PepperLib.i18n.t('info.news_title') + '</h3><p>' + PepperLib.i18n.t('info.news_copy') + '</p></div>';
-      html += '<a class="btn btn--secondary news-stage-link" id="btn-news-open" href="' + NEWS_LINK + '" target="_blank" rel="noopener noreferrer">' + PepperLib.i18n.t('info.news_cta') + '</a>';
       html += '</header>';
 
       if (newsState.loading && !newsState.items.length) {
@@ -1507,9 +1537,6 @@
         if (leadStory.summary) {
           html += '<p class="news-feature-summary">' + escapeHtml(leadStory.summary) + '</p>';
         }
-        if (leadStory.articleUrl) {
-          html += '<a class="news-card-link news-card-link--feature" href="' + escapeHtml(leadStory.articleUrl) + '" target="_blank" rel="noopener noreferrer">Leer noticia</a>';
-        }
         html += '</div></article>';
 
         if (secondary.length) {
@@ -1537,9 +1564,6 @@
             if (item.summary) {
               html += '<p class="news-card-summary">' + escapeHtml(item.summary) + '</p>';
             }
-            if (item.articleUrl) {
-              html += '<a class="news-card-link" href="' + escapeHtml(item.articleUrl) + '" target="_blank" rel="noopener noreferrer">Leer noticia</a>';
-            }
             html += '</div></article>';
           }
           html += '</div>';
@@ -1563,7 +1587,8 @@
     }
 
     function renderFaq() {
-      var html = '<div class="faq-list">';
+      var introCopy = PepperLib.State.language === 'en' ? 'Tap a common question to see the answer on screen.' : 'Toca una pregunta comun para ver la respuesta en pantalla.';
+      var html = '<section class="faq-panel"><div class="faq-panel-header"><h3>' + PepperLib.i18n.t('info.faq') + '</h3><p>' + introCopy + '</p></div><div class="faq-list">';
       var faqs = DATA.FAQS || [];
       var i;
       var faq;
@@ -1583,7 +1608,7 @@
         html += '</article>';
       }
 
-      html += '</div>';
+      html += '</div></section>';
       return html;
     }
 
@@ -1766,7 +1791,7 @@
       var stateKey;
 
       html += '<section class="events-library">';
-      html += '<div class="events-library-head"><span class="events-library-badge" data-i18n="events.library_arcade">' + PepperLib.i18n.t('events.library_arcade') + '</span><h2 data-i18n="events.select_activity">' + PepperLib.i18n.t('events.select_activity') + '</h2></div>';
+      html += '<div class="events-library-head"><span class="events-library-kicker" data-i18n="events.screen_title">' + PepperLib.i18n.t('events.screen_title') + '</span><h2 data-i18n="events.select_activity">' + PepperLib.i18n.t('events.select_activity') + '</h2><p class="events-library-copy">' + PepperLib.i18n.t('menu.events.desc') + '</p></div>';
       html += '<div class="events-activity-grid">';
 
       for (i = 0; i < activities.length; i++) {
@@ -1981,10 +2006,41 @@
       autoReturnTimer = null;
     }
 
+    function prepareFeedbackImages() {
+      var images = document.querySelectorAll('.feedback-icon-image');
+      var i;
+
+      for (i = 0; i < images.length; i++) {
+        (function (image) {
+          var rating = image.getAttribute('data-rating-image');
+          var button = image.parentNode;
+          var emoji = button ? button.querySelector('.feedback-emoji') : null;
+
+          image.onload = function () {
+            removeClass(image, 'hidden');
+            if (emoji) {
+              addClass(emoji, 'hidden');
+            }
+          };
+
+          image.onerror = function () {
+            addClass(image, 'hidden');
+            if (emoji) {
+              removeClass(emoji, 'hidden');
+            }
+          };
+
+          image.src = PepperLib.Utils.getFeedbackImagePath(rating);
+        })(images[i]);
+      }
+    }
+
     PepperLib.State.registerScreen('feedback', {
       init: function () {
         var buttons = document.querySelectorAll('.feedback-btn');
         var i;
+
+        prepareFeedbackImages();
 
         for (i = 0; i < buttons.length; i++) {
           buttons[i].onclick = function () {
@@ -2017,6 +2073,7 @@
       onEnter: function () {
         PepperLib.Inactivity.stop();
         clearAutoReturn();
+        prepareFeedbackImages();
         removeClass(document.querySelector('.feedback-options'), 'hidden');
         addClass(byId('feedback-comment-section'), 'hidden');
         addClass(byId('feedback-thanks'), 'hidden');
