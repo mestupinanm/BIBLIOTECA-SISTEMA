@@ -1,0 +1,96 @@
+{
+  "destinations": [
+    {
+      "id": "reception",
+      "category": "services",
+      "name": { "es": "Recepción", "en": "Reception" },
+      "description": { "es": "Escritorio de recepción y atención", "en": "Reception and service desk" }
+    },
+    {
+      "id": "elevator",
+      "category": "access",
+      "name": { "es": "Ascensor", "en": "Elevator" },
+      "description": { "es": "Acceso al ascensor", "en": "Elevator access" }
+    },
+    {
+      "id": "stairs_main",
+      "category": "access",
+      "name": { "es": "Escaleras principales", "en": "Main stairs" }
+    },
+    {
+      "id": "stairs_emergency",
+      "category": "access",
+      "name": { "es": "Escaleras de emergencia", "en": "Emergency stairs" }
+    },
+    {
+      "id": "restroom_m",
+      "category": "services",
+      "name": { "es": "Baño hombres", "en": "Men's restroom" }
+    },
+    {
+      "id": "restroom_f",
+      "category": "services",
+      "name": { "es": "Baño mujeres", "en": "Women's restroom" }
+    },
+    {
+      "id": "room_251",
+      "category": "rooms",
+      "name": { "es": "Sala 251", "en": "Room 251" }
+    },
+    {
+      "id": "room_254",
+      "category": "rooms",
+      "name": { "es": "Sala 254", "en": "Room 254" }
+    },
+    {
+      "id": "room_255a",
+      "category": "rooms",
+      "name": { "es": "Sala 255A", "en": "Room 255A" }
+    },
+    {
+      "id": "room_255b",
+      "category": "rooms",
+      "name": { "es": "Sala 255B", "en": "Room 255B" }
+    },
+    {
+      "id": "room_255c",
+      "category": "rooms",
+      "name": { "es": "Sala 255C", "en": "Room 255C" }
+    },
+    {
+      "id": "room_255d",
+      "category": "rooms",
+      "name": { "es": "Sala 255D", "en": "Room 255D" }
+    },
+    {
+      "id": "room_257",
+      "category": "rooms",
+      "name": { "es": "Sala 257", "en": "Room 257" }
+    },
+    {
+      "id": "room_ml253",
+      "category": "rooms",
+      "name": { "es": "Sala multimedia ML-253", "en": "Multimedia room ML-253" }
+    },
+    {
+      "id": "book_lift",
+      "category": "services",
+      "name": { "es": "Subidor de libros", "en": "Book lift" }
+    },
+    {
+      "id": "reference",
+      "category": "services",
+      "name": { "es": "Referencia", "en": "Reference" }
+    },
+    {
+      "id": "entry_exit",
+      "category": "access",
+      "name": { "es": "Entrada/Salida", "en": "Entry/Exit" }
+    },
+    {
+      "id": "equipment_workshop",
+      "category": "services",
+      "name": { "es": "Taller de equipos", "en": "Equipment workshop" }
+    }
+  ]
+}

@@ -348,7 +348,6 @@
 
     updateChrome: function () {
       var topbar = byId('topbar');
-      var titleEl = byId('screen-title');
       var backButton = byId('btn-back');
       var showTopbar = DATA.TOPBAR_SCREENS && DATA.TOPBAR_SCREENS.indexOf(this.current) !== -1;
 
@@ -362,9 +361,6 @@
         }
       }
 
-      if (titleEl) {
-        titleEl.textContent = PepperLib.i18n.t((DATA.SCREEN_TITLES && DATA.SCREEN_TITLES[this.current]) || 'menu.title');
-      }
     }
   };
 

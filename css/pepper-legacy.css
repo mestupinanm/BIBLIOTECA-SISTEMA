@@ -141,13 +141,13 @@ button {
 }
 
 .greeting-intro {
-  margin-bottom: 18px;
+  margin-top: 30px;
 }
 
 .greeting-kicker {
   display: inline-block;
   margin-bottom: 18px;
-  padding: 8px 14px;
+  padding: 0px 14px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.12);
   color: #f3d48f;
@@ -176,6 +176,7 @@ button {
 
 .greeting-title {
   margin: 0;
+  padding-top: 95px;
 }
 
 .greeting-line1,
@@ -184,7 +185,7 @@ button {
 }
 
 .greeting-line2 {
-  margin-top: 10px;
+  margin-top: 100px;
   color: #f5e7c2;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 24px;
@@ -999,7 +1000,7 @@ body,
 .idle-container,
 .greeting-container,
 .feedback-container {
-  padding: 76px 70px 64px;
+  padding: 0px;
 }
 
 .idle-title {
@@ -1031,11 +1032,21 @@ body,
 }
 
 .idle-divider {
-  width: 184px;
+  width: 250px;
   height: 4px;
-  margin: 0 auto 22px;
+  margin: auto;
   border-radius: 999px;
   background: #d8aa45;
+}
+
+.idle-spacer-110 {
+  height: 110px;
+  display: block;
+}
+
+.idle-spacer-180 {
+  height: 180px;
+  display: block;
 }
 
 .idle-hint {
@@ -1085,7 +1096,7 @@ body,
 }
 
 .greeting-lang-btn {
-  width: 322px;
+  width: 280px;
   height: 152px;
   margin: 10px 16px;
   padding: 24px 22px;
