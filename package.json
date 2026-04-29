@@ -1,0 +1,35 @@
+{
+  "name": "biblioteca-sistema",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:roslib": "webpack --config webpack.roslib.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mestupinanm/BIBLIOTECA-SISTEMA.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mestupinanm/BIBLIOTECA-SISTEMA/issues"
+  },
+  "homepage": "https://github.com/mestupinanm/BIBLIOTECA-SISTEMA#readme",
+  "dependencies": {
+    "core-js": "^3.49.0",
+    "regenerator-runtime": "^0.14.1",
+    "roslib": "^1.4.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.28.6",
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.2",
+    "babel-loader": "^10.1.1",
+    "webpack": "^5.106.2",
+    "webpack-cli": "^7.0.2"
+  }
+}

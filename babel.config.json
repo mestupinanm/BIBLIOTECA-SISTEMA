@@ -1,0 +1,15 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "ie": "11"
+        },
+        "bugfixes": true,
+        "modules": false,
+        "useBuiltIns": false
+      }
+    ]
+  ]
+}
