@@ -536,6 +536,8 @@ window.LibraryData.SHELF_TOPICS = [
   { topics: ['MANUFACTURA', 'CONSTRUCCION Y ACABADOS', 'LIBROS DE GRAN FORMATO'], shelf: '22', coordKey: 'shelf_22' }
 ];
 
+window.LibraryData.ROS_NAVIGATION = window.NavigationUtilitiesData || null;
+
 window.LibraryData.HELP_CONFIG = {
   provider: 'formsubmit',
   recipient: 'm.estupinanm@uniandes.edu.co',

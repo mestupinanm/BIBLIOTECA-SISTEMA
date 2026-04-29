@@ -986,12 +986,62 @@
       simulationTimers.push(timerOne);
     }
 
+    function showNavigationNotice(text, onDone) {
+      var overlay = byId('guide-sim-overlay');
+      var message = byId('guide-sim-msg');
+      var timer;
+
+      if (!overlay) {
+        if (onDone) {
+          onDone();
+        }
+        return;
+      }
+
+      clearSimulationTimers();
+      if (message) {
+        message.textContent = text;
+      }
+      removeClass(overlay, 'hidden');
+
+      timer = setTimeout(function () {
+        addClass(overlay, 'hidden');
+        if (onDone) {
+          onDone();
+        }
+      }, 2200);
+      simulationTimers.push(timer);
+    }
+
     PepperLib.State.registerScreen('navigation-guide', {
       init: function () {
         byId('btn-guide-me').onclick = function () {
+          var category;
+          var categoryLabel;
+
           if (!currentDestination) {
             return;
           }
+
+          category = (DATA.NAV_DEST_CATEGORIES && DATA.NAV_DEST_CATEGORIES[currentDestination]) || 'navigation';
+          categoryLabel = (DATA.DEST_CATEGORY_LABELS && DATA.DEST_CATEGORY_LABELS[category]) || category;
+          PepperLib.Analytics.count('navigation', currentDestination);
+          PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Llevame');
+          showNavigationNotice(PepperLib.State.language === 'en' ? 'Sending destination to Pepper...' : 'Enviando destino a Pepper...');
+          PepperRobot.navigateTo(currentDestination, {
+            onSuccess: function () {
+              showNavigationNotice(PepperLib.State.language === 'en' ? 'Destination sent to Pepper.' : 'Destino enviado a Pepper.');
+            },
+            onFallback: function () {
+              showNavigationNotice(PepperLib.State.language === 'en' ? 'ROSBridge unavailable. Trying local robot event.' : 'ROSBridge no disponible. Intentando evento local del robot.');
+            },
+            onSimulated: function () {
+              showNavigationNotice(PepperLib.State.language === 'en' ? 'Development mode: route shown on screen.' : 'Modo desarrollo: ruta mostrada en pantalla.');
+            },
+            onError: function () {
+              showNavigationNotice(PepperLib.State.language === 'en' ? 'Navigation command could not be sent.' : 'No se pudo enviar la navegacion.');
+            }
+          });
         };
 
         byId('btn-guide-done').onclick = function () {

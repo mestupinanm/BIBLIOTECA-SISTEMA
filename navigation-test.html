@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1280, height=800, user-scalable=no" />
+    <title>Navigation Utilities Test</title>
+    <link rel="stylesheet" href="./css/navigation-test.css" />
+  </head>
+  <body>
+    <main class="nav-test">
+      <section class="panel">
+        <h1 class="panel-title">ROSBridge</h1>
+        <label class="field" for="rosbridge-url">
+          <span>URL</span>
+          <input id="rosbridge-url" type="text" autocomplete="off" />
+        </label>
+        <label class="field" for="graph-value">
+          <span>Grafo</span>
+          <select id="graph-value">
+            <option value="1">1</option>
+            <option value="0">0</option>
+          </select>
+        </label>
+        <div class="status-card">
+          <span class="status-dot" id="status-dot"></span>
+          <strong id="status-text">Desconectado</strong>
+        </div>
+        <div class="actions">
+          <button class="button primary" id="btn-connect">Conectar</button>
+          <button class="button" id="btn-disconnect">Cerrar</button>
+        </div>
+        <p class="hint">Esta pagina llama los servicios publicados por navigation_utilities desde rosbridge_websocket.</p>
+      </section>
+
+      <section class="panel places-panel">
+        <h1 class="panel-title">Puntos de prueba</h1>
+        <div class="places-grid" id="places-grid"></div>
+      </section>
+
+      <section class="panel">
+        <h1 class="panel-title">Comandos</h1>
+        <div class="command-stack">
+          <button class="button" id="btn-set-current">Definir ubicacion actual</button>
+          <button class="button primary" id="btn-go-to">Navegar al punto</button>
+          <button class="button danger" id="btn-stop">Detener robot</button>
+          <label class="field" for="spin-degrees">
+            <span>Giro en grados</span>
+            <input id="spin-degrees" type="number" value="30" />
+          </label>
+          <button class="button" id="btn-spin">Girar</button>
+        </div>
+        <div class="log" id="log"></div>
+      </section>
+    </main>
+
+    <script src="./js/vendor/roslib-legacy.js"></script>
+    <script src="./js/ros-navigation-data.js"></script>
+    <script src="./js/ros-navigation.js"></script>
+    <script src="./js/navigation-test.js"></script>
+  </body>
+</html>

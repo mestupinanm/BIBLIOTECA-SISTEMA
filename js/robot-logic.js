@@ -29,6 +29,10 @@
 
       this.initialized = true;
 
+      if (window.PepperRosNavigation && window.LibraryData && window.LibraryData.ROS_NAVIGATION) {
+        window.PepperRosNavigation.configure(window.LibraryData.ROS_NAVIGATION);
+      }
+
       if (typeof window.QiSession === 'undefined') {
         console.log('[Robot] QiSession no disponible. Modo desarrollo.');
         return;
@@ -103,17 +107,51 @@
       });
     },
 
-    navigateTo: function (destinationId) {
+    navigateTo: function (destinationId, callbacks) {
+      callbacks = callbacks || {};
+
+      if (window.PepperRosNavigation && window.LibraryData && window.LibraryData.ROS_NAVIGATION) {
+        window.PepperRosNavigation.configure(window.LibraryData.ROS_NAVIGATION);
+        window.PepperRosNavigation.navigateToDestination(destinationId, function (response, destination) {
+          console.log('[Robot] Navegacion ROS enviada:', destination.place, response);
+          if (callbacks.onSuccess) {
+            callbacks.onSuccess(response, destination);
+          }
+        }, function (error) {
+          console.log('[Robot] Navegacion ROS no disponible:', error);
+          if (callbacks.onFallback) {
+            callbacks.onFallback(error);
+          }
+          Robot.navigateToWithMemory(destinationId, callbacks);
+        });
+        return;
+      }
+
+      this.navigateToWithMemory(destinationId, callbacks);
+    },
+
+    navigateToWithMemory: function (destinationId, callbacks) {
+      callbacks = callbacks || {};
+
       if (!this.session) {
         console.log('[Robot] Navegacion simulada hacia:', destinationId);
+        if (callbacks.onSimulated) {
+          callbacks.onSimulated(destinationId);
+        }
         return;
       }
 
       this.getService('ALMemory', function (memory) {
         try {
           memory.raiseEvent('PepperLibrary/NavigateTo', destinationId);
+          if (callbacks.onSuccess) {
+            callbacks.onSuccess({}, { place: destinationId, transport: 'ALMemory' });
+          }
         } catch (error) {
           console.log('[Robot] Error enviando navegacion.', error);
+          if (callbacks.onError) {
+            callbacks.onError(error);
+          }
         }
       });
     },
