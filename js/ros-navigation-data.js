@@ -31,10 +31,47 @@
   }
 
   window.NavigationUtilitiesData = {
-    rosbridgeUrl: 'ws://127.0.0.1:9090',
+    rosbridgeUrl: 'ws://192.168.0.208:9090',
+    rosbridgeStorageKey: 'pepperLibraryRosbridgeUrl',
+    graphStorageKey: 'pepperLibraryNavigationGraph',
+    basePlaceStorageKey: 'pepperLibraryBasePlace',
+    includeDemoPlaces: false,
     defaultGraph: 1,
     reconnectBeforeCommand: true,
+    prepareBeforeNavigate: true,
     services: {
+      navigationTools: {
+        name: '/robot_toolkit/navigation_tools_srv',
+        type: 'robot_toolkit_msgs/navigation_tools_srv'
+      },
+      motionTools: {
+        name: '/robot_toolkit/motion_tools_srv',
+        type: 'robot_toolkit_msgs/motion_tools_srv'
+      },
+      miscTools: {
+        name: '/robot_toolkit/misc_tools_srv',
+        type: 'robot_toolkit_msgs/misc_tools_srv'
+      },
+      rosapiServices: {
+        name: '/rosapi/services',
+        type: 'rosapi/Services'
+      },
+      rosapiNodes: {
+        name: '/rosapi/nodes',
+        type: 'rosapi/Nodes'
+      },
+      rosapiServiceRequestDetails: {
+        name: '/rosapi/service_request_details',
+        type: 'rosapi/ServiceRequestDetails'
+      },
+      pyToolkitMoveRelative: {
+        name: '/pytoolkit/ALMotion/move_relative_srv',
+        type: 'robot_toolkit_msgs/navigate_to_srv'
+      },
+      pyToolkitNavigateTo: {
+        name: '/pytoolkit/ALNavigation/navigate_to_srv',
+        type: 'robot_toolkit_msgs/navigate_to_srv'
+      },
       goToPlace: {
         name: '/navigation_utilities/go_to_place_srv',
         type: 'navigation_msgs/go_to_place_srv'
@@ -54,9 +91,29 @@
       goToRelativePoint: {
         name: '/navigation_utilities/go_to_relative_point_srv',
         type: 'navigation_msgs/go_to_relative_point_srv'
+      },
+      addPlace: {
+        name: '/navigation_utilities/add_place_srv',
+        type: 'navigation_msgs/add_place_srv'
+      },
+      addPlaceWithCoordinates: {
+        name: '/navigation_utilities/add_place_with_coordinates_srv',
+        type: 'navigation_msgs/add_place_with_coordinates_srv'
+      },
+      getAbsolutePosition: {
+        name: '/navigation_utilities/get_absolute_position_srv',
+        type: 'navigation_msgs/get_absolute_position_srv'
+      },
+      getRouteGuidance: {
+        name: '/navigation_utilities/get_route_guidance_srv',
+        type: 'navigation_msgs/get_route_guidance_srv'
       }
     },
     topics: {
+      amclPose: {
+        name: '/amcl_pose',
+        type: 'geometry_msgs/PoseWithCovarianceStamped'
+      },
       simpleFeedback: {
         name: '/navigation_utilities/simple_feedback',
         type: 'navigation_msgs/simple_feedback_msg'
@@ -67,28 +124,7 @@
       }
     },
     appDestinations: appDestinations,
-    testPlaces: [
-      { name: 'house_door', x: 3.48, y: 1.45, theta: 270, known: true },
-      { name: 'kitchen', x: 4.3, y: 1.45, theta: 0, known: true },
-      { name: 'living_room', x: 1.86, y: 1.4, theta: 180, known: true },
-      { name: 'dining', x: 3.75, y: 3.4, theta: 180, known: true },
-      { name: 'bedroom', x: 3.7, y: 3.75, theta: 0, known: true },
-      { name: 'init_gpsr', x: 2.35, y: 2.17, theta: 0.41, known: true },
-      { name: 'gpsr_location', x: 4.3, y: 1.45, theta: 180, known: true },
-      { name: 'hallway_dining', x: 3.77, y: 2.45, theta: 90, known: true },
-      { name: 'hallway_door', x: 3.77, y: 2.45, theta: 270, known: true }
-    ],
-    testEdges: [
-      ['house_door', 'kitchen'],
-      ['house_door', 'living_room'],
-      ['house_door', 'hallway_dining'],
-      ['house_door', 'bedroom'],
-      ['house_door', 'gpsr_location'],
-      ['bedroom', 'dining'],
-      ['init_gpsr', 'house_door'],
-      ['gpsr_location', 'kitchen'],
-      ['hallway_dining', 'dining'],
-      ['hallway_door', 'house_door']
-    ]
+    testPlaces: [],
+    testEdges: []
   };
 })();

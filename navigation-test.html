@@ -4,17 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1280, height=800, user-scalable=no" />
     <title>Navigation Utilities Test</title>
-    <link rel="stylesheet" href="./css/navigation-test.css" />
+    <link rel="stylesheet" href="./css/navigation-test.css?v=27" />
   </head>
   <body>
     <main class="nav-test">
-      <section class="panel">
-        <h1 class="panel-title">ROSBridge</h1>
+      <section class="panel connection-panel">
+        <h1 class="panel-title">Conexion</h1>
         <label class="field" for="rosbridge-url">
           <span>URL</span>
           <input id="rosbridge-url" type="text" autocomplete="off" />
         </label>
-        <label class="field" for="graph-value">
+        <label class="field hidden-control" for="graph-value">
           <span>Grafo</span>
           <select id="graph-value">
             <option value="1">1</option>
@@ -29,33 +29,91 @@
           <button class="button primary" id="btn-connect">Conectar</button>
           <button class="button" id="btn-disconnect">Cerrar</button>
         </div>
-        <p class="hint">Esta pagina llama los servicios publicados por navigation_utilities desde rosbridge_websocket.</p>
+        <p class="hint">Conecta la tablet al rosbridge del robot para guardar puntos y navegar con move_base.</p>
       </section>
 
       <section class="panel places-panel">
-        <h1 class="panel-title">Puntos de prueba</h1>
+        <h1 class="panel-title">Puntos guardados</h1>
         <div class="places-grid" id="places-grid"></div>
       </section>
 
-      <section class="panel">
+      <section class="panel commands-panel">
         <h1 class="panel-title">Comandos</h1>
         <div class="command-stack">
-          <button class="button" id="btn-set-current">Definir ubicacion actual</button>
-          <button class="button primary" id="btn-go-to">Navegar al punto</button>
+          <button class="button primary hidden-control" id="btn-prepare">Preparar navegacion</button>
+          <button class="button hidden-control" id="btn-diagnostics">Diagnosticar servicios</button>
+          <button class="button" id="btn-new-place">Nuevo punto</button>
+          <button class="button set-current-button" id="btn-set-current">1. Definir ubicacion actual</button>
+          <button class="button base-button" id="btn-set-base">Marcar seleccionado como base</button>
+          <div class="command-separator"></div>
+          <button class="button primary go-to-button" id="btn-go-to">2. Navegar al punto</button>
+          <button class="button primary" id="btn-go-base">Volver a base</button>
           <button class="button danger" id="btn-stop">Detener robot</button>
-          <label class="field" for="spin-degrees">
+          <div class="tool-row hidden-control">
+            <button class="button" id="btn-position">Leer posicion</button>
+            <button class="button" id="btn-spin">Girar</button>
+          </div>
+          <div class="tool-row hidden-control">
+            <label class="field compact-field" for="relative-x">
+              <span>Rel X</span>
+              <input id="relative-x" type="number" value="0.2" />
+            </label>
+            <label class="field compact-field" for="relative-y">
+              <span>Ignorado</span>
+              <input id="relative-y" type="number" value="0" disabled />
+            </label>
+          </div>
+          <button class="button hidden-control" id="btn-move-relative">Mover relativo pytoolkit</button>
+          <label class="field hidden-control" for="move-payload">
+            <span>JSON pytoolkit opcional</span>
+            <textarea id="move-payload" class="small-json" placeholder='{"x_coordinate":0.2,"y_coordinate":0}'></textarea>
+          </label>
+          <label class="field hidden-control" for="spin-degrees">
             <span>Giro en grados</span>
             <input id="spin-degrees" type="number" value="30" />
           </label>
-          <button class="button" id="btn-spin">Girar</button>
+          <label class="field" for="place-name">
+            <span>Nombre del punto</span>
+            <input id="place-name" type="text" autocomplete="off" placeholder="ej. recepcion" />
+          </label>
+          <label class="field" for="place-edges">
+            <span>Conectado con</span>
+            <input id="place-edges" type="text" autocomplete="off" placeholder="punto_a,punto_b" />
+          </label>
+          <label class="field" for="edge-advance">
+            <span>Avanzar antes de girar (m)</span>
+            <input id="edge-advance" type="number" value="0" />
+          </label>
+          <label class="field" for="edge-turn">
+            <span>Girar despues (+ izq / - der)</span>
+            <input id="edge-turn" type="number" value="0" />
+          </label>
+          <label class="checkbox-row hidden-control" for="place-persist">
+            <input id="place-persist" type="checkbox" checked />
+            Guardar en el grafo permanente
+          </label>
+          <button class="button" id="btn-add-place">Guardar punto actual</button>
+          <button class="button danger" id="btn-delete-place">Borrar punto seleccionado</button>
+          <button class="button" id="btn-export-graph">Exportar grafo JSON</button>
+          <button class="button" id="btn-import-graph">Importar JSON del panel</button>
+          <button class="button danger" id="btn-clear-graph">Borrar grafo local</button>
         </div>
+      </section>
+
+      <section class="panel log-panel">
+        <h1 class="panel-title">Terminal</h1>
         <div class="log" id="log"></div>
+      </section>
+
+      <section class="panel json-panel">
+        <h1 class="panel-title">JSON / grafo</h1>
+        <textarea id="diagnostics-json" class="diagnostics-json"></textarea>
       </section>
     </main>
 
     <script src="./js/vendor/roslib-legacy.js"></script>
-    <script src="./js/ros-navigation-data.js"></script>
-    <script src="./js/ros-navigation.js"></script>
-    <script src="./js/navigation-test.js"></script>
+    <script src="./js/ros-navigation-data.js?v=27"></script>
+    <script src="./js/ros-navigation.js?v=27"></script>
+    <script src="./js/navigation-test.js?v=27"></script>
   </body>
 </html>
