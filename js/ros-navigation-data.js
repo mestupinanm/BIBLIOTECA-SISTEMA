@@ -31,7 +31,7 @@
   }
 
   window.NavigationUtilitiesData = {
-    rosbridgeUrl: 'ws://192.168.0.208:9090',
+    rosbridgeUrl: '',
     rosbridgeStorageKey: 'pepperLibraryRosbridgeUrl',
     graphStorageKey: 'pepperLibraryNavigationGraph',
     basePlaceStorageKey: 'pepperLibraryBasePlace',

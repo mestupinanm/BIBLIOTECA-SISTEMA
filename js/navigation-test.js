@@ -146,7 +146,39 @@
   }
 
   function currentUrl() {
-    return els.url.value || data.rosbridgeUrl || 'ws://127.0.0.1:9090';
+    return normalizeRosbridgeValue(els.url.value || data.rosbridgeUrl || '');
+  }
+
+  function normalizeRosbridgeValue(value) {
+    var clean = value || '';
+
+    clean = clean.replace(/^\s+|\s+$/g, '');
+    if (!clean) {
+      return '';
+    }
+
+    if (clean.indexOf('ws://') === 0 || clean.indexOf('wss://') === 0) {
+      return clean;
+    }
+
+    clean = clean.replace(/^https?:\/\//, '');
+    clean = clean.replace(/\/.*$/, '');
+    clean = clean.replace(/:\d+$/, '');
+
+    return 'ws://' + clean + ':9090';
+  }
+
+  function ipFromRosbridgeUrl(value) {
+    var clean = value || '';
+
+    clean = clean.replace(/^wss?:\/\//, '');
+    clean = clean.replace(/:\d+.*$/, '');
+    clean = clean.replace(/\/.*$/, '');
+    if (clean === '127.0.0.1' || clean === 'localhost') {
+      return '';
+    }
+
+    return clean;
   }
 
   function currentGraph() {
@@ -269,12 +301,13 @@
   }
 
   function bindCommands() {
-    els.connect.onclick = function () {
-      setStatus('Conectando...', '');
+    function connectToUrl(url) {
+      setStatus('Conectando...', 'scanning');
       window.PepperRosNavigation.configure(data);
-      window.PepperRosNavigation.setRosbridgeUrl(currentUrl());
-      window.PepperRosNavigation.connect(currentUrl(), function () {
-        setStatus('Conectado a ' + currentUrl(), 'connected');
+      window.PepperRosNavigation.setRosbridgeUrl(url);
+      els.url.value = ipFromRosbridgeUrl(url);
+      window.PepperRosNavigation.connect(url, function () {
+        setStatus('Conectado a ' + url, 'connected');
         log('ROSBridge conectado.');
         window.PepperRosNavigation.startPoseTracking(function (pose) {
           if (!firstPoseLogged) {
@@ -288,6 +321,18 @@
         setStatus('Error de conexion', 'error');
         log('No se pudo conectar ROSBridge: ' + error);
       });
+    }
+
+    els.connect.onclick = function () {
+      var url = currentUrl();
+
+      if (!url) {
+        setStatus('Falta IP del robot', 'error');
+        log('Escribe la IP del robot. Ejemplo: 192.168.0.208');
+        return;
+      }
+
+      connectToUrl(url);
     };
 
     els.disconnect.onclick = function () {
@@ -466,6 +511,14 @@
           return;
         }
         if (feedback && typeof feedback.turnDegrees === 'number') {
+          if (feedback.returnPreparation) {
+            log('Girando 180 grados para iniciar regreso a base.');
+            return;
+          }
+          if (feedback.finalAlignment) {
+            log('Alineando en base con giro final de 180 grados.');
+            return;
+          }
           log('Girando ' + feedback.turnDegrees + ' grados antes de volver via ' + place.name + '.');
           return;
         }
@@ -576,7 +629,7 @@
     els.deletePlace = byId('btn-delete-place');
 
     window.PepperRosNavigation.configure(data);
-    els.url.value = window.PepperRosNavigation.getRosbridgeUrl();
+    els.url.value = ipFromRosbridgeUrl(window.PepperRosNavigation.getRosbridgeUrl());
     els.graph.value = data.defaultGraph || 1;
     els.movePayload.value = '{"x_coordinate":0.2,"y_coordinate":0}';
     renderPlaces();

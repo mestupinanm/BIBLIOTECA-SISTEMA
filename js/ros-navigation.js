@@ -238,7 +238,7 @@
     if (reverse && reverse.invertOnReturn) {
       meta = {};
       meta.advanceMeters = Number(reverse.advanceMeters) || 0;
-      meta.turnDegrees = Number(reverse.turnDegrees) || 0;
+      meta.turnDegrees = -(Number(reverse.turnDegrees) || 0);
       meta.actionOrder = 'turn-advance';
       meta.invertOnReturn = true;
       return meta;
@@ -773,7 +773,7 @@
       return;
     }
 
-    yaw = poseYawRadians(pose) + ((Number(degrees) || 0) * Math.PI / 180);
+    yaw = poseYawRadians(pose) - ((Number(degrees) || 0) * Math.PI / 180);
     goal = new window.ROSLIB.Goal({
       actionClient: ensureMoveBaseClient(),
       goalMessage: {
@@ -887,7 +887,30 @@
       return;
     }
 
-    Navigation.navigateGraphClient(basePlace, true, onSuccess, onError, onStep);
+    if (onStep) {
+      onStep({ turnDegrees: 180, returnPreparation: true }, { name: currentPlace || '' }, [], 0);
+    }
+    Navigation.rotateInPlace(180, function (prepareResponse) {
+      Navigation.navigateGraphClient(basePlace, true, function (response) {
+        response.returnPreparation = prepareResponse || {};
+        if (onStep) {
+          onStep({ turnDegrees: 180, finalAlignment: true }, { name: basePlace }, response.route || [], (response.route || []).length);
+        }
+        Navigation.rotateInPlace(180, function (alignResponse) {
+          response.finalAlignment = alignResponse || {};
+          if (onSuccess) {
+            onSuccess(response);
+          }
+        }, onError);
+      }, onError, onStep);
+    }, onError);
+  };
+
+  Navigation.turnAroundForReturn = function (onSuccess, onError, onStep) {
+    if (onStep) {
+      onStep({ turnDegrees: 180, returnPreparation: true }, { name: currentPlace || '' }, [], 0);
+    }
+    Navigation.rotateInPlace(180, onSuccess, onError);
   };
 
   Navigation.exportGraph = function () {
