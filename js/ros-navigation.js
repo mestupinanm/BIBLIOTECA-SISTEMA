@@ -239,7 +239,7 @@
       meta = {};
       meta.advanceMeters = Number(reverse.advanceMeters) || 0;
       meta.turnDegrees = -(Number(reverse.turnDegrees) || 0);
-      meta.actionOrder = 'turn-advance';
+      meta.actionOrder = 'turn-navigate-advance';
       meta.invertOnReturn = true;
       return meta;
     }
@@ -501,6 +501,7 @@
       poseTopic.unsubscribe();
     }
     poseTopic = null;
+    lastAmclPose = null;
     moveBaseClient = null;
     activeGoal = null;
 
@@ -710,9 +711,10 @@
     }
   };
 
-  Navigation.sendMoveBasePlace = function (placeName, onSuccess, onError, onFeedback) {
+  Navigation.sendMoveBasePlace = function (placeName, onSuccess, onError, onFeedback, invertOrientation, useCurrentOrientation) {
     var place = findPlace(placeName);
     var goal;
+    var theta;
 
     if (!place) {
       if (onError) {
@@ -728,6 +730,15 @@
       return;
     }
 
+    if (useCurrentOrientation && lastAmclPose) {
+      theta = poseYawRadians(lastAmclPose);
+    } else {
+      theta = Number(place.theta) || 0;
+      if (invertOrientation) {
+        theta = Math.abs(theta) > 6.283185307179586 ? theta + 180 : theta + Math.PI;
+      }
+    }
+
     goal = new window.ROSLIB.Goal({
       actionClient: ensureMoveBaseClient(),
       goalMessage: {
@@ -741,7 +752,7 @@
               y: Number(place.y) || 0,
               z: 0
             },
-            orientation: thetaToQuaternion(place.theta)
+            orientation: thetaToQuaternion(theta)
           }
         }
       }
@@ -815,63 +826,80 @@
 
       var fromPlace = currentPlace;
       var toPlace = route[index];
+
+      if (fromPlace === toPlace) {
+        index += 1;
+        next();
+        return;
+      }
+
       var meta = fromPlace ? getEdgeMeta(fromPlace, toPlace) : { advanceMeters: 0, turnDegrees: 0, actionOrder: 'advance-turn' };
-      var sendNext = function () {
+      var finishStep = function () {
+        currentPlace = toPlace;
+        index += 1;
+        next();
+      };
+      var sendGoal = function (afterGoal, invertOrientation) {
+        var useCurrentOrientation = !invertOrientation
+          && meta.actionOrder !== 'navigate-turn-advance'
+          && meta.actionOrder !== 'turn-navigate-advance'
+          && !meta.turnDegrees
+          && !meta.advanceMeters;
         Navigation.sendMoveBasePlace(toPlace, function () {
           currentPlace = toPlace;
-          index += 1;
-          next();
+          afterGoal();
         }, onError, function (feedback, place) {
           if (onStep) {
             onStep(feedback, place, route, index);
           }
-        });
+        }, invertOrientation, useCurrentOrientation);
       };
-      var rotateThenSend = function () {
+      var rotateThen = function (afterRotate) {
         if (meta.turnDegrees) {
           if (onStep) {
             onStep({ turnDegrees: meta.turnDegrees }, { name: toPlace }, route, index);
           }
-          Navigation.rotateInPlace(meta.turnDegrees, sendNext, onError);
+          Navigation.rotateInPlace(meta.turnDegrees, afterRotate, onError);
           return;
         }
 
-        sendNext();
+        afterRotate();
       };
-      var advanceThenSend = function () {
+      var advanceThen = function (afterAdvance) {
         if (meta.advanceMeters) {
           if (onStep) {
             onStep({ advanceMeters: meta.advanceMeters }, { name: toPlace }, route, index);
           }
-          Navigation.moveRelativeWithPyToolkit(meta.advanceMeters, 0, sendNext, onError);
+          Navigation.moveRelativeWithPyToolkit(meta.advanceMeters, 0, afterAdvance, onError);
           return;
         }
 
-        sendNext();
+        afterAdvance();
       };
 
-      if (meta.actionOrder === 'turn-advance') {
-        if (meta.turnDegrees) {
-          if (onStep) {
-            onStep({ turnDegrees: meta.turnDegrees }, { name: toPlace }, route, index);
-          }
-          Navigation.rotateInPlace(meta.turnDegrees, advanceThenSend, onError);
-          return;
-        }
-
-        advanceThenSend();
+      if (meta.actionOrder === 'navigate-turn-advance') {
+        sendGoal(function () {
+          rotateThen(function () {
+            advanceThen(finishStep);
+          });
+        });
         return;
       }
 
-      if (meta.advanceMeters) {
-        if (onStep) {
-          onStep({ advanceMeters: meta.advanceMeters }, { name: toPlace }, route, index);
-        }
-        Navigation.moveRelativeWithPyToolkit(meta.advanceMeters, 0, rotateThenSend, onError);
+      if (meta.actionOrder === 'turn-navigate-advance') {
+        rotateThen(function () {
+          sendGoal(function () {
+            advanceThen(finishStep);
+          }, true);
+        });
         return;
       }
 
-      rotateThenSend();
+      advanceThen(function () {
+        rotateThen(function () {
+          sendGoal(finishStep);
+        });
+      });
     };
 
     next();
@@ -1283,6 +1311,22 @@
       }
     });
     feedbackSubscriptions[topicConfig.name] = topic;
+  };
+
+  Navigation.clearCostmaps = function (onSuccess, onError) {
+    if (!ros || status !== 'connected') {
+      return;
+    }
+    var svc = new window.ROSLIB.Service({
+      ros: ros,
+      name: '/move_base/clear_costmaps',
+      serviceType: 'std_srvs/Empty'
+    });
+    svc.callService(new window.ROSLIB.ServiceRequest({}), function () {
+      if (onSuccess) { onSuccess(); }
+    }, function (err) {
+      if (onError) { onError(err); }
+    });
   };
 
   window.PepperRosNavigation = Navigation;

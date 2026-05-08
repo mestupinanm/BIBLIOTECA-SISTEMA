@@ -6,6 +6,34 @@
   var els = {};
   var firstPoseLogged = false;
   var lastSetCurrentAt = 0;
+  var clearCostmapInterval = null;
+  var autoClearEnabled = false;
+
+  function startAutoClearCostmap() {
+    if (clearCostmapInterval) { return; }
+    autoClearEnabled = true;
+    clearCostmapInterval = setInterval(function () {
+      if (window.PepperRosNavigation) {
+        window.PepperRosNavigation.clearCostmaps(null, null);
+      }
+    }, 3000);
+    if (els.toggleClear) {
+      els.toggleClear.textContent = 'Auto costmap: ON';
+      els.toggleClear.classList.add('active');
+    }
+  }
+
+  function stopAutoClearCostmap() {
+    if (clearCostmapInterval) {
+      clearInterval(clearCostmapInterval);
+      clearCostmapInterval = null;
+    }
+    autoClearEnabled = false;
+    if (els.toggleClear) {
+      els.toggleClear.textContent = 'Auto costmap: OFF';
+      els.toggleClear.classList.remove('active');
+    }
+  }
 
   function byId(id) {
     return document.getElementById(id);
@@ -309,6 +337,7 @@
       window.PepperRosNavigation.connect(url, function () {
         setStatus('Conectado a ' + url, 'connected');
         log('ROSBridge conectado.');
+        startAutoClearCostmap();
         window.PepperRosNavigation.startPoseTracking(function (pose) {
           if (!firstPoseLogged) {
             firstPoseLogged = true;
@@ -337,6 +366,8 @@
 
     els.disconnect.onclick = function () {
       window.PepperRosNavigation.disconnect();
+      stopAutoClearCostmap();
+      firstPoseLogged = false;
       setStatus('Desconectado', '');
       log('ROSBridge desconectado.');
     };
@@ -535,6 +566,16 @@
       });
     };
 
+    els.toggleClear.onclick = function () {
+      if (autoClearEnabled) {
+        stopAutoClearCostmap();
+        log('Auto-clear costmap desactivado.');
+      } else {
+        startAutoClearCostmap();
+        log('Auto-clear costmap activado (cada 3 s).');
+      }
+    };
+
     els.spin.onclick = function () {
       if (!requireConnection(true)) {
         return;
@@ -619,6 +660,7 @@
     els.goTo = byId('btn-go-to');
     els.goBase = byId('btn-go-base');
     els.stop = byId('btn-stop');
+    els.toggleClear = byId('btn-toggle-clear');
     els.spin = byId('btn-spin');
     els.addPlace = byId('btn-add-place');
     els.position = byId('btn-position');
