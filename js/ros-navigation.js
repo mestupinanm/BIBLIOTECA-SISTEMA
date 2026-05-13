@@ -239,7 +239,7 @@
       meta = {};
       meta.advanceMeters = Number(reverse.advanceMeters) || 0;
       meta.turnDegrees = -(Number(reverse.turnDegrees) || 0);
-      meta.actionOrder = 'turn-navigate-advance';
+      meta.actionOrder = 'navigate-turn-advance';
       meta.invertOnReturn = true;
       return meta;
     }

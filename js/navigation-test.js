@@ -17,7 +17,7 @@
         window.PepperRosNavigation.clearCostmaps(null, null);
         window.PepperRosNavigation.standPosture(null, null);
       }
-    }, 12000);
+    }, 6000);
     if (els.toggleClear) {
       els.toggleClear.textContent = 'Auto costmap: ON';
       els.toggleClear.classList.add('active');
