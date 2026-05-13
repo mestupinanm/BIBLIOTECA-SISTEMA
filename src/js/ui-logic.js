@@ -996,6 +996,15 @@
           if (!currentDestination) {
             return;
           }
+          var nav = window.PepperRosNavigation;
+          if (!nav) { return; }
+          var label = getDestinationLabel(currentDestination);
+          showSimulation(label, function () {});
+          nav.navigateGraphToDestination(
+            currentDestination,
+            function () { /* navegación completada */ },
+            function (err) { console.log('[Guide] Error navegando:', err); }
+          );
         };
 
         byId('btn-guide-done').onclick = function () {

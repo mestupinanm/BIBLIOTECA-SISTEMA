@@ -15,6 +15,7 @@
     clearCostmapInterval = setInterval(function () {
       if (window.PepperRosNavigation) {
         window.PepperRosNavigation.clearCostmaps(null, null);
+        window.PepperRosNavigation.standPosture(null, null);
       }
     }, 3000);
     if (els.toggleClear) {

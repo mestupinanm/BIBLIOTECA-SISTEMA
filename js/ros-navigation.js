@@ -711,7 +711,7 @@
     }
   };
 
-  Navigation.sendMoveBasePlace = function (placeName, onSuccess, onError, onFeedback, invertOrientation, useCurrentOrientation) {
+  Navigation.sendMoveBasePlace = function (placeName, onSuccess, onError, onFeedback) {
     var place = findPlace(placeName);
     var goal;
     var theta;
@@ -730,13 +730,10 @@
       return;
     }
 
-    if (useCurrentOrientation && lastAmclPose) {
+    if (lastAmclPose) {
       theta = poseYawRadians(lastAmclPose);
     } else {
       theta = Number(place.theta) || 0;
-      if (invertOrientation) {
-        theta = Math.abs(theta) > 6.283185307179586 ? theta + 180 : theta + Math.PI;
-      }
     }
 
     goal = new window.ROSLIB.Goal({
@@ -839,12 +836,7 @@
         index += 1;
         next();
       };
-      var sendGoal = function (afterGoal, invertOrientation) {
-        var useCurrentOrientation = !invertOrientation
-          && meta.actionOrder !== 'navigate-turn-advance'
-          && meta.actionOrder !== 'turn-navigate-advance'
-          && !meta.turnDegrees
-          && !meta.advanceMeters;
+      var sendGoal = function (afterGoal) {
         Navigation.sendMoveBasePlace(toPlace, function () {
           currentPlace = toPlace;
           afterGoal();
@@ -852,7 +844,7 @@
           if (onStep) {
             onStep(feedback, place, route, index);
           }
-        }, invertOrientation, useCurrentOrientation);
+        });
       };
       var rotateThen = function (afterRotate) {
         if (meta.turnDegrees) {
@@ -890,7 +882,7 @@
         rotateThen(function () {
           sendGoal(function () {
             advanceThen(finishStep);
-          }, true);
+          });
         });
         return;
       }
@@ -1327,6 +1319,28 @@
     }, function (err) {
       if (onError) { onError(err); }
     });
+  };
+
+  Navigation.standPosture = function (onSuccess, onError) {
+    if (!ros || status !== 'connected') {
+      return;
+    }
+    var svc = new window.ROSLIB.Service({
+      ros: ros,
+      name: '/pytoolkit/ALRobotPosture/go_to_posture_srv',
+      serviceType: 'robot_toolkit_msgs/go_to_posture_srv'
+    });
+    svc.callService(new window.ROSLIB.ServiceRequest({ posture: 'stand' }), function () {
+      if (onSuccess) { onSuccess(); }
+    }, function (err) {
+      if (onError) { onError(err); }
+    });
+  };
+
+  Navigation.navigateGraphToDestination = function (destinationId, onSuccess, onError, onStep) {
+    Navigation.connect(getRosbridgeUrl(), function () {
+      Navigation.navigateGraphClient(destinationId, true, onSuccess, onError, onStep);
+    }, onError);
   };
 
   window.PepperRosNavigation = Navigation;
