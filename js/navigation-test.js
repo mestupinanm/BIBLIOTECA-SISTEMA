@@ -16,7 +16,6 @@
       if (window.PepperRosNavigation) {
         window.PepperRosNavigation.clearCostmaps(null, null);
         window.PepperRosNavigation.standPosture(null, null);
-        window.PepperRosNavigation.disableSecurity(null, null);
       }
     }, 12000);
     if (els.toggleClear) {
@@ -339,6 +338,7 @@
       window.PepperRosNavigation.connect(url, function () {
         setStatus('Conectado a ' + url, 'connected');
         log('ROSBridge conectado.');
+        window.PepperRosNavigation.disableSecurity(null, null);
         startAutoClearCostmap();
         window.PepperRosNavigation.startPoseTracking(function (pose) {
           if (!firstPoseLogged) {
