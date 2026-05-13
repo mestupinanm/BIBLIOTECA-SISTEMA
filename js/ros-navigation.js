@@ -1364,5 +1364,30 @@
     }, onError);
   };
 
+  Navigation.showTabletWebview = function (url, onSuccess, onError) {
+    callNamedService(config.services && config.services.tabletWebview,
+      { data: url }, onSuccess, onError);
+  };
+
+  Navigation.publishSpeech = function (text) {
+    if (!ros || status !== 'connected') { return; }
+    var topic = new window.ROSLIB.Topic({
+      ros: ros,
+      name: '/speech',
+      messageType: 'std_msgs/String'
+    });
+    topic.publish(new window.ROSLIB.Message({ data: text }));
+  };
+
+  Navigation.publishAnimation = function (name) {
+    if (!ros || status !== 'connected') { return; }
+    var topic = new window.ROSLIB.Topic({
+      ros: ros,
+      name: '/animations',
+      messageType: 'std_msgs/String'
+    });
+    topic.publish(new window.ROSLIB.Message({ data: name }));
+  };
+
   window.PepperRosNavigation = Navigation;
 })();

@@ -1013,6 +1013,54 @@
       simulationTimers.push(timer);
     }
 
+    var PRE_NAV_SCRIPT = {
+      config: { name: 'inicio_navegacion', language: 'Spanish', stepDelay: 100 },
+      steps: [
+        {
+          speech: 'Lo siento si me demoro un poco,',
+          animation: 'BodyTalk/Speaking/BodyTalk_2',
+          screen: { type: 'subtitle', content: '' }
+        },
+        {
+          speech: 'es que estoy chiquita y aun aprendiendo a caminar sola',
+          animation: 'Emotions/Neutral/AskForAttention_3',
+          screen: { type: 'subtitle', content: '' }
+        }
+      ]
+    };
+
+    function updatePreNavSubtitle(text) {
+      var el = byId('pre-nav-text');
+      if (el) {
+        el.textContent = text;
+      }
+    }
+
+    function executeScript(script, onComplete) {
+      var steps = script && script.steps ? script.steps : [];
+      var idx = 0;
+
+      function next() {
+        if (idx >= steps.length) {
+          if (onComplete) { onComplete(); }
+          return;
+        }
+
+        var step = steps[idx++];
+        updatePreNavSubtitle(step.speech);
+
+        if (step.animation) {
+          PepperRobot.animate(step.animation);
+        }
+
+        PepperRobot.speakAndWait(step.speech, function () {
+          setTimeout(next, (script.config && script.config.stepDelay) || 100);
+        });
+      }
+
+      next();
+    }
+
     PepperLib.State.registerScreen('navigation-guide', {
       init: function () {
         byId('btn-guide-me').onclick = function () {
@@ -1027,21 +1075,40 @@
           categoryLabel = (DATA.DEST_CATEGORY_LABELS && DATA.DEST_CATEGORY_LABELS[category]) || category;
           PepperLib.Analytics.count('navigation', currentDestination);
           PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Llevame');
-          showNavigationNotice(PepperLib.State.language === 'en' ? 'Sending destination to Pepper...' : 'Enviando destino a Pepper...');
-          PepperRobot.navigateTo(currentDestination, {
-            onSuccess: function () {
-              showNavigationNotice(PepperLib.State.language === 'en' ? 'Destination sent to Pepper.' : 'Destino enviado a Pepper.');
-            },
-            onFallback: function () {
-              showNavigationNotice(PepperLib.State.language === 'en' ? 'ROSBridge unavailable. Trying local robot event.' : 'ROSBridge no disponible. Intentando evento local del robot.');
-            },
-            onSimulated: function () {
-              showNavigationNotice(PepperLib.State.language === 'en' ? 'Development mode: route shown on screen.' : 'Modo desarrollo: ruta mostrada en pantalla.');
-            },
-            onError: function () {
-              showNavigationNotice(PepperLib.State.language === 'en' ? 'Navigation command could not be sent.' : 'No se pudo enviar la navegacion.');
-            }
-          });
+
+          PepperRobot.setVolume(25);
+          removeClass(byId('pre-nav-overlay'), 'hidden');
+
+          function runScriptThenNavigate() {
+            executeScript(PRE_NAV_SCRIPT, function () {
+              addClass(byId('pre-nav-overlay'), 'hidden');
+              showNavigationNotice(PepperLib.State.language === 'en' ? 'Sending destination to Pepper...' : 'Enviando destino a Pepper...');
+              PepperRobot.navigateTo(currentDestination, {
+                onSuccess: function () {
+                  showNavigationNotice(PepperLib.State.language === 'en' ? 'Destination sent to Pepper.' : 'Destino enviado a Pepper.');
+                },
+                onFallback: function () {
+                  showNavigationNotice(PepperLib.State.language === 'en' ? 'ROSBridge unavailable. Trying local robot event.' : 'ROSBridge no disponible. Intentando evento local del robot.');
+                },
+                onSimulated: function () {
+                  showNavigationNotice(PepperLib.State.language === 'en' ? 'Development mode: route shown on screen.' : 'Modo desarrollo: ruta mostrada en pantalla.');
+                },
+                onError: function () {
+                  showNavigationNotice(PepperLib.State.language === 'en' ? 'Navigation command could not be sent.' : 'No se pudo enviar la navegacion.');
+                }
+              });
+            });
+          }
+
+          if (window.PepperRosNavigation && window.PepperRosNavigation.getRosbridgeUrl()) {
+            window.PepperRosNavigation.connect(
+              window.PepperRosNavigation.getRosbridgeUrl(),
+              runScriptThenNavigate,
+              runScriptThenNavigate
+            );
+          } else {
+            runScriptThenNavigate();
+          }
         };
 
         byId('btn-guide-done').onclick = function () {
@@ -2052,6 +2119,17 @@
       autoReturnTimer = null;
     }
 
+    function initiateReturn(delay) {
+      if (window.PepperRosNavigation) {
+        window.PepperRosNavigation.navigateToBase(null, null, null);
+      }
+      clearAutoReturn();
+      autoReturnTimer = setTimeout(function () {
+        PepperLib.State.endSession();
+        PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+      }, delay || 8000);
+    }
+
     function prepareFeedbackImages() {
       var images = document.querySelectorAll('.feedback-icon-image');
       var i;
@@ -2093,6 +2171,12 @@
             byId('screen-feedback').setAttribute('data-selected-rating', this.getAttribute('data-rating'));
             addClass(document.querySelector('.feedback-options'), 'hidden');
             removeClass(byId('feedback-comment-section'), 'hidden');
+            clearAutoReturn();
+            autoReturnTimer = setTimeout(function () {
+              addClass(byId('feedback-comment-section'), 'hidden');
+              removeClass(byId('feedback-thanks'), 'hidden');
+              initiateReturn(8000);
+            }, 3000);
           };
         }
 
@@ -2108,11 +2192,7 @@
           addClass(byId('feedback-comment-section'), 'hidden');
           removeClass(byId('feedback-thanks'), 'hidden');
 
-          clearAutoReturn();
-          autoReturnTimer = setTimeout(function () {
-            PepperLib.State.endSession();
-            PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
-          }, 3000);
+          initiateReturn(3000);
         };
       },
 
@@ -2125,6 +2205,9 @@
         addClass(byId('feedback-thanks'), 'hidden');
         byId('screen-feedback').removeAttribute('data-selected-rating');
         byId('feedback-comment-input').value = '';
+        autoReturnTimer = setTimeout(function () {
+          initiateReturn(8000);
+        }, 25000);
       },
 
       onExit: function () {

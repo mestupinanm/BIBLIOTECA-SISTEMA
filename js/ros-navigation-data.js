@@ -107,6 +107,10 @@
       getRouteGuidance: {
         name: '/navigation_utilities/get_route_guidance_srv',
         type: 'navigation_msgs/get_route_guidance_srv'
+      },
+      tabletWebview: {
+        name: '/pytoolkit/ALTabletService/show_web_view_srv',
+        type: 'robot_toolkit_msgs/tablet_service_srv'
       }
     },
     topics: {

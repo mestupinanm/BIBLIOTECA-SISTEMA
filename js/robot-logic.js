@@ -112,13 +112,13 @@
 
       if (window.PepperRosNavigation && window.LibraryData && window.LibraryData.ROS_NAVIGATION) {
         window.PepperRosNavigation.configure(window.LibraryData.ROS_NAVIGATION);
-        window.PepperRosNavigation.navigateToDestination(destinationId, function (response, destination) {
-          console.log('[Robot] Navegacion ROS enviada:', destination.place, response);
+        window.PepperRosNavigation.navigateGraphToDestination(destinationId, function (response) {
+          console.log('[Robot] Navegacion por grafo enviada:', destinationId, response);
           if (callbacks.onSuccess) {
-            callbacks.onSuccess(response, destination);
+            callbacks.onSuccess(response, { place: destinationId });
           }
         }, function (error) {
-          console.log('[Robot] Navegacion ROS no disponible:', error);
+          console.log('[Robot] Navegacion por grafo no disponible:', error);
           if (callbacks.onFallback) {
             callbacks.onFallback(error);
           }
@@ -167,6 +167,75 @@
           tts.say(text);
         } catch (error) {
           console.log('[Robot] Error en TTS.', error);
+        }
+      });
+    },
+
+    speakAndWait: function (text, onDone) {
+      var words = text.split(/\s+/).length;
+      var duration = Math.max(2000, words * 300);
+
+      if (window.PepperRosNavigation && window.PepperRosNavigation.publishSpeech) {
+        window.PepperRosNavigation.publishSpeech(text);
+        setTimeout(onDone || function () {}, duration);
+        return;
+      }
+
+      if (!this.session) {
+        setTimeout(onDone || function () {}, duration);
+        return;
+      }
+
+      this.getService('ALTextToSpeech', function (tts) {
+        try {
+          tts.say(text).then(function () {
+            if (onDone) { onDone(); }
+          }, function () {
+            if (onDone) { onDone(); }
+          });
+        } catch (error) {
+          if (onDone) { setTimeout(onDone, 500); }
+        }
+      });
+    },
+
+    setVolume: function (level) {
+      this.getService('ALAudioDevice', function (audio) {
+        try {
+          audio.setOutputVolume(level);
+        } catch (error) {
+          console.log('[Robot] Error al establecer volumen.', error);
+        }
+      });
+    },
+
+    animate: function (anim) {
+      if (!anim) { return; }
+      if (window.PepperRosNavigation && window.PepperRosNavigation.publishAnimation) {
+        window.PepperRosNavigation.publishAnimation(anim);
+        return;
+      }
+      var fullPath = 'animations/' + anim;
+      this.getService('ALBehaviorManager', function (bm) {
+        try {
+          bm.runBehavior(fullPath);
+        } catch (error) {
+          console.log('[Robot] Error ejecutando animación.', error);
+        }
+      });
+    },
+
+    showTabletWebview: function (url) {
+      if (window.PepperRosNavigation) {
+        window.PepperRosNavigation.showTabletWebview(url, null, null);
+        return;
+      }
+
+      this.getService('ALTabletService', function (tablet) {
+        try {
+          tablet.showWebview(url);
+        } catch (error) {
+          console.log('[Robot] Error mostrando webview en tablet.', error);
         }
       });
     }

@@ -706,6 +706,35 @@ button {
   border-radius: 14px;
 }
 
+.pre-nav-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(11, 34, 56, 0.72);
+  z-index: 10;
+}
+
+.pre-nav-content {
+  width: 380px;
+  margin: 200px auto 0;
+  padding: 28px;
+  text-align: center;
+  background: #ffffff;
+  color: #123b63;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.pre-nav-text {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: #123b63;
+}
+
 .guide-overlay-bar {
   position: relative;
   z-index: 6;

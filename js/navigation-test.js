@@ -390,6 +390,47 @@
       runDiagnostics();
     };
 
+    els.showTablet.onclick = function () {
+      var url = currentUrl();
+
+      if (!url) {
+        setStatus('Falta IP del robot', 'error');
+        log('Escribe la IP del robot para mostrar el kiosco en la tablet.');
+        return;
+      }
+
+      function doShow() {
+        log('Enviando URL a la tablet...');
+        window.PepperRosNavigation.showTabletWebview(
+          'http://192.168.0.230:8000/index.html',
+          function () {
+            log('Kiosco mostrado en la tablet.');
+          },
+          function (err) {
+            log('Error al mostrar en tablet: ' + err);
+          }
+        );
+      }
+
+      if (window.PepperRosNavigation.isConnected()) {
+        doShow();
+        return;
+      }
+
+      setStatus('Conectando...', 'scanning');
+      window.PepperRosNavigation.configure(data);
+      window.PepperRosNavigation.setRosbridgeUrl(url);
+      els.url.value = ipFromRosbridgeUrl(url);
+      window.PepperRosNavigation.connect(url, function () {
+        setStatus('Conectado a ' + url, 'connected');
+        log('ROSBridge conectado.');
+        doShow();
+      }, function (error) {
+        setStatus('Error de conexion', 'error');
+        log('No se pudo conectar: ' + error);
+      });
+    };
+
     els.newPlace.onclick = function () {
       clearPlaceForm();
       log('Campos listos para guardar un nuevo punto.');
@@ -671,6 +712,7 @@
     els.importGraph = byId('btn-import-graph');
     els.clearGraph = byId('btn-clear-graph');
     els.deletePlace = byId('btn-delete-place');
+    els.showTablet = byId('btn-show-tablet');
 
     window.PepperRosNavigation.configure(data);
     els.url.value = ipFromRosbridgeUrl(window.PepperRosNavigation.getRosbridgeUrl());

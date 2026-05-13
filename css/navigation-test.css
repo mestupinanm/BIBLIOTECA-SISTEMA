@@ -511,3 +511,25 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+.tablet-launch-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  background: #0f7c3e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+}
+
+.tablet-launch-btn:hover {
+  background: #0a5e2d;
+}
+
+.tablet-launch-btn:active {
+  background: #073d1e;
+}
