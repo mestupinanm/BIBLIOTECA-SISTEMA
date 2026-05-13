@@ -1337,6 +1337,22 @@
     });
   };
 
+  Navigation.disableSecurity = function (onSuccess, onError) {
+    if (!ros || status !== 'connected') {
+      return;
+    }
+    var svc = new window.ROSLIB.Service({
+      ros: ros,
+      name: '/pytoolkit/ALMotion/enable_security_srv',
+      serviceType: 'robot_toolkit_msgs/battery_service_srv'
+    });
+    svc.callService(new window.ROSLIB.ServiceRequest({}), function () {
+      if (onSuccess) { onSuccess(); }
+    }, function (err) {
+      if (onError) { onError(err); }
+    });
+  };
+
   Navigation.navigateGraphToDestination = function (destinationId, onSuccess, onError, onStep) {
     Navigation.connect(getRosbridgeUrl(), function () {
       Navigation.navigateGraphClient(destinationId, true, onSuccess, onError, onStep);
