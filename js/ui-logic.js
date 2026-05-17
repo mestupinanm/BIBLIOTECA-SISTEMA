@@ -78,15 +78,6 @@
     }
   }
 
-  function hasClass(element, className) {
-    if (!element) {
-      return false;
-    }
-    if (element.classList) {
-      return element.classList.contains(className);
-    }
-    return (' ' + element.className + ' ').indexOf(' ' + className + ' ') !== -1;
-  }
 
   function escapeHtml(value) {
     return String(value || '')
@@ -117,17 +108,6 @@
     return stripAccents(value).toLowerCase();
   }
 
-  function createEvent(name) {
-    if (typeof window.CustomEvent === 'function') {
-      return new CustomEvent(name);
-    }
-    if (document.createEvent) {
-      var eventObject = document.createEvent('Event');
-      eventObject.initEvent(name, true, true);
-      return eventObject;
-    }
-    return null;
-  }
 
   function xhrRequest(method, url, headers, body, onSuccess, onError) {
     var request = new XMLHttpRequest();
@@ -949,42 +929,6 @@
       }
     }
 
-    function showSimulation(destinationLabel, onDone) {
-      var overlay = byId('guide-sim-overlay');
-      var message = byId('guide-sim-msg');
-      var navigatingText = PepperLib.State.language === 'en' ? 'Navigating to ' + destinationLabel + '...' : 'Navegando hacia ' + destinationLabel + '...';
-      var arrivedText = PepperLib.State.language === 'en' ? 'You have arrived at ' + destinationLabel : 'Has llegado a ' + destinationLabel;
-      var timerOne;
-      var timerTwo;
-
-      if (!overlay) {
-        if (onDone) {
-          onDone();
-        }
-        return;
-      }
-
-      clearSimulationTimers();
-      if (message) {
-        message.textContent = navigatingText;
-      }
-      removeClass(overlay, 'hidden');
-
-      timerOne = setTimeout(function () {
-        if (message) {
-          message.textContent = arrivedText;
-        }
-        timerTwo = setTimeout(function () {
-          addClass(overlay, 'hidden');
-          if (onDone) {
-            onDone();
-          }
-        }, 1500);
-        simulationTimers.push(timerTwo);
-      }, 3000);
-
-      simulationTimers.push(timerOne);
-    }
 
     function showNavigationNotice(text, onDone) {
       var overlay = byId('guide-sim-overlay');
@@ -1478,9 +1422,7 @@
     }
 
     PepperLib.State.registerScreen('books', {
-      init: function () {
-        buildOptions();
-      },
+      init: function () {},
 
       onEnter: function () {
         PepperLib.Inactivity.reset();

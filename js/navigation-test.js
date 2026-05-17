@@ -687,7 +687,6 @@
     els.edges = byId('place-edges');
     els.edgeAdvance = byId('edge-advance');
     els.edgeTurn = byId('edge-turn');
-    els.persist = byId('place-persist');
     els.statusText = byId('status-text');
     els.statusDot = byId('status-dot');
     els.places = byId('places-grid');

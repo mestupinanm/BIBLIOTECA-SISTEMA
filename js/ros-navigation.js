@@ -571,14 +571,6 @@
     }, onSuccess, onError);
   };
 
-  Navigation.goToRelativePoint = function (x, y, theta, onSuccess, onError) {
-    callNamedService(getServices().goToRelativePoint, {
-      x: Number(x) || 0,
-      y: Number(y) || 0,
-      theta: Number(theta) || 0
-    }, onSuccess, onError);
-  };
-
   Navigation.startPoseTracking = function (onPose, onError) {
     var topicConfig = getTopics().amclPose;
 
@@ -931,13 +923,6 @@
     }, onError);
   };
 
-  Navigation.turnAroundForReturn = function (onSuccess, onError, onStep) {
-    if (onStep) {
-      onStep({ turnDegrees: 180, returnPreparation: true }, { name: currentPlace || '' }, [], 0);
-    }
-    Navigation.rotateInPlace(180, onSuccess, onError);
-  };
-
   Navigation.exportGraph = function () {
     return {
       version: 2,
@@ -1051,13 +1036,6 @@
     callNamedService(getServices().pyToolkitMoveRelative, request || {}, onSuccess, onError);
   };
 
-  Navigation.navigateToWithPyToolkit = function (x, y, onSuccess, onError) {
-    callNamedService(getServices().pyToolkitNavigateTo, {
-      x_coordinate: Number(x) || 0,
-      y_coordinate: Number(y) || 0
-    }, onSuccess, onError);
-  };
-
   Navigation.prepareNavigation = function (onSuccess, onError) {
     callNamedService(getServices().navigationTools, buildNavigationToolsRequest(), function (navigationResponse) {
       Navigation.enableMotionTools(function (motionResponse) {
@@ -1085,35 +1063,6 @@
       data: {
         command: 'enable_all'
       }
-    }, onSuccess, onError);
-  };
-
-  Navigation.addPlace = function (name, persist, edges, onSuccess, onError) {
-    callNamedService(getServices().addPlace, {
-      name: name,
-      persist: persist ? 1 : 0,
-      edges: edges || []
-    }, onSuccess, onError);
-  };
-
-  Navigation.addPlaceWithCoordinates = function (name, persist, edges, x, y, theta, onSuccess, onError) {
-    callNamedService(getServices().addPlaceWithCoordinates, {
-      name: name,
-      persist: persist ? 1 : 0,
-      edges: edges || [],
-      x: Number(x) || 0,
-      y: Number(y) || 0,
-      theta: Number(theta) || 0
-    }, onSuccess, onError);
-  };
-
-  Navigation.getAbsolutePosition = function (onSuccess, onError) {
-    callNamedService(getServices().getAbsolutePosition, {}, onSuccess, onError);
-  };
-
-  Navigation.getRouteGuidance = function (placeName, onSuccess, onError) {
-    callNamedService(getServices().getRouteGuidance, {
-      place: placeName
     }, onSuccess, onError);
   };
 
@@ -1273,43 +1222,6 @@
     }, onError);
   };
 
-  Navigation.subscribeFeedback = function (kind, onMessage, onError) {
-    var topics = getTopics();
-    var topicConfig = topics[kind || 'simpleFeedback'];
-    var topic;
-
-    if (!topicConfig || !topicConfig.name || !topicConfig.type) {
-      if (onError) {
-        onError('Topico ROS no configurado.');
-      }
-      return;
-    }
-
-    if (!ros || status !== 'connected') {
-      if (onError) {
-        onError('ROSBridge no esta conectado.');
-      }
-      return;
-    }
-
-    if (feedbackSubscriptions[topicConfig.name]) {
-      feedbackSubscriptions[topicConfig.name].unsubscribe();
-    }
-
-    topic = new window.ROSLIB.Topic({
-      ros: ros,
-      name: topicConfig.name,
-      messageType: topicConfig.type
-    });
-
-    topic.subscribe(function (message) {
-      if (onMessage) {
-        onMessage(message || {});
-      }
-    });
-    feedbackSubscriptions[topicConfig.name] = topic;
-  };
-
   Navigation.clearCostmaps = function (onSuccess, onError) {
     if (!ros || status !== 'connected') {
       return;
@@ -1356,12 +1268,6 @@
     }, function (err) {
       if (onError) { onError(err); }
     });
-  };
-
-  Navigation.navigateGraphToDestination = function (destinationId, onSuccess, onError, onStep) {
-    Navigation.connect(getRosbridgeUrl(), function () {
-      Navigation.navigateGraphClient(destinationId, true, onSuccess, onError, onStep);
-    }, onError);
   };
 
   Navigation.showTabletWebview = function (url, onSuccess, onError) {
