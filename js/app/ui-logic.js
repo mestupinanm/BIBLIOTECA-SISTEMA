@@ -683,7 +683,7 @@
     },
 
     getFeedbackImagePath: function (rating) {
-      return this.getAssetPath('imagenes/feedback-' + rating + '.png');
+      return this.getAssetPath('images/feedback-' + rating + '.png');
     },
 
     buildMarker: function (x, y, type) {

@@ -3,9 +3,9 @@
 
   window.LibraryData = window.LibraryData || {};
 
-window.LibraryData.MAP_IMAGE_ES = './assets/imagenes/ESPANOL.png';
-window.LibraryData.MAP_IMAGE_EN = './assets/imagenes/INGLES.png';
-window.LibraryData.ACTIVITIES_URL = './assets/data/events/activities.json';
+window.LibraryData.MAP_IMAGE_ES = './assets/images/ESPANOL.png';
+window.LibraryData.MAP_IMAGE_EN = './assets/images/INGLES.png';
+window.LibraryData.ACTIVITIES_URL = './assets/data/activities.json';
 
 window.LibraryData.STRINGS = {
   es: {
