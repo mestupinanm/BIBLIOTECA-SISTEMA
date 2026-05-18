@@ -109,7 +109,7 @@ window.LibraryData.STRINGS = {
     'info.day_sun': 'Domingo',
     'info.closed': 'Cerrado',
     'events.screen_title': 'Eventos',
-    'events.trivia_title': 'Trivia de la Biblioteca',
+    'events.trivia_title': 'Trivia de la biblioteca',
     'events.trivia_desc': 'Pon a prueba tus conocimientos sobre la biblioteca y la universidad.',
     'events.start': 'Comenzar',
     'events.question': 'Pregunta',

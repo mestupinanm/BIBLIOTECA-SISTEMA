@@ -1992,8 +1992,8 @@ button { cursor: pointer; }
   background: #F6E2BE;
   color: #7A5419;
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
+  font-weight: 800;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 .events-library-head h2 {
@@ -2036,18 +2036,18 @@ button { cursor: pointer; }
 .events-activity-card:nth-child(3n) { margin-right: 0; }
 
 .events-activity-top {
-  margin: 0 0 22px;
+  margin: 0 0 24px;
   font-size: 0;
 }
 .events-activity-kind,
 .events-activity-state {
   display: inline-block;
-  margin: 0 6px 0 0;
+  margin: 0 8px 0 0;
   padding: 8px 12px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   vertical-align: middle;
 }
@@ -2060,7 +2060,7 @@ button { cursor: pointer; }
   color: #7A5419;
 }
 .events-activity-card h3 {
-  margin: 0 0 14px;
+  margin: 0 0 5px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 28px;
   font-weight: 800;

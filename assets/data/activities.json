@@ -5,12 +5,12 @@
       "type": "trivia",
       "enabled": true,
       "title": {
-        "es": "Trivia de la Biblioteca",
-        "en": "Library Trivia"
+        "es": "Trivia de la biblioteca",
+        "en": "Library trivia"
       },
       "description": {
-        "es": "Pon a prueba tus conocimientos sobre la biblioteca y la universidad. 5 preguntas rapidas.",
-        "en": "Test your knowledge about the library and the university. 5 quick questions."
+        "es": "Pon a prueba tus conocimientos sobre la biblioteca y la universidad.",
+        "en": "Test your knowledge about the library and the university."
       },
       "cta": {
         "es": "Comenzar",
@@ -81,11 +81,11 @@
       "type": "wordsearch",
       "enabled": false,
       "title": {
-        "es": "Buscapalabras de la ciencia",
-        "en": "Science word search"
+        "es": "Encuentra la palabra",
+        "en": "Find the word"
       },
       "description": {
-        "es": "Encuentra terminos escondidos en una grilla. Disponible muy pronto.",
+        "es": "Encuentra los terminos escondidos en una grilla. Disponible muy pronto!",
         "en": "Find hidden terms in a grid. Available very soon."
       },
       "cta": {
