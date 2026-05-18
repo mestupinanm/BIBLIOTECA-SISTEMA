@@ -898,8 +898,14 @@
       return PepperLib.i18n.t('dest.' + destinationId);
     }
 
+    function getMapDestinationLabel(destinationId) {
+      var mapKey = 'dest.map.' + destinationId;
+      var mapLabel = PepperLib.i18n.t(mapKey);
+      return mapLabel === mapKey ? getDestinationLabel(destinationId) : mapLabel;
+    }
+
     function getShortLabel(destinationId) {
-      return getDestinationLabel(destinationId).replace(/^Sala\s+/i, '').replace(/^Room\s+/i, '');
+      return getMapDestinationLabel(destinationId).replace(/^Sala\s+/i, '').replace(/^Room\s+/i, '');
     }
 
     function renderGuide(destinationId) {
@@ -912,7 +918,7 @@
       var html = '';
 
       if (destinationEl) {
-        destinationEl.textContent = getDestinationLabel(destinationId);
+        destinationEl.textContent = getMapDestinationLabel(destinationId);
       }
 
       if (roomCodeEl) {

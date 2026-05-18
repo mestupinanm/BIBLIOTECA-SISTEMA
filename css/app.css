@@ -929,9 +929,9 @@ button { cursor: pointer; }
   top: 20px;
   left: 22px;
   z-index: 6;
-  width: 260px;
+  width: 350px;
   height: 130px;
-  padding: 20px 22px;
+  padding: 20px 20px;
   border-radius: 22px;
   background: #FFFFFF;
   border: 1px solid #D4CBB1;
