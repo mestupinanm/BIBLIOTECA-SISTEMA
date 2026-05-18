@@ -649,21 +649,21 @@ button { cursor: pointer; }
 .menu-card:nth-child(1):after {
   display: none;
 }
-/* Anillo decorativo — tarjeta 5, esquina inferior-derecha, dorado */
-.menu-card:nth-child(5):after,
+
 .menu-card--accent:after {
-  content: "";
+  background: rgba(244, 206, 141, 0.45);
+  color: #FFFFFF;
+}
+
+/* Anillo decorativo — tarjeta de eventos, esquina inferior-derecha */
+.menu-card-bg-circle {
   position: absolute;
   right: -60px;
   bottom: -60px;
-  top: auto;
   width: 200px;
   height: 200px;
   border-radius: 50%;
   background: rgba(244, 206, 141, 0.30);
-  font-size: 0;
-  line-height: 0;
-  color: transparent;
   pointer-events: none;
 }
 
