@@ -909,33 +909,22 @@ button { cursor: pointer; }
   margin: 0;
   -o-object-fit: cover;
   object-fit: cover;
-  opacity: 0.96;
+  opacity: 1;
 }
 
 /* Caption floating top-left */
 .guide-map-caption {
   position: absolute;
-  top: 18px;
-  left: 18px;
+  top: 20px;
+  left: 22px;
   z-index: 6;
-  width: 340px;
+  width: 260px;
+  height: 130px;
   padding: 20px 22px;
   border-radius: 22px;
   background: #FFFFFF;
   border: 1px solid #D4CBB1;
   box-shadow: 0 16px 32px rgba(20,35,58,0.18);
-}
-
-.guide-room-code {
-  display: block;
-  margin: 0 0 8px;
-  font-family: "SF Mono", Menlo, Consolas, monospace;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: #7A5419;
-  text-transform: uppercase;
-  line-height: 1;
 }
 
 .guide-destination {
