@@ -11,12 +11,12 @@
       id: 'library-trivia',
       type: 'trivia',
       enabled: true,
-      title: { es: 'Trivia de la biblioteca', en: 'Library trivia' },
+      title: { es: 'Trivia de la Biblioteca', en: 'Library Trivia' },
       description: {
-        es: 'Pon a prueba lo que sabes sobre la biblioteca, sus servicios y la universidad.',
-        en: 'Put your knowledge of the library, its services, and the university to the test.'
+        es: 'Pon a prueba tus conocimientos sobre la biblioteca y la universidad. 5 preguntas rapidas.',
+        en: 'Test your knowledge about the library and the university. 5 quick questions.'
       },
-      cta: { es: 'Comenzar trivia', en: 'Start trivia' },
+      cta: { es: 'Comenzar', en: 'Start' },
       content: {
         questions: [
           {
@@ -29,7 +29,92 @@
               en: ['Floor 1', 'Floor 2', 'Floor 3', 'Floor 4']
             },
             correct: 1
+          },
+          {
+            question: {
+              es: 'Cuantas salas de estudio tiene esta seccion de la biblioteca?',
+              en: 'How many study rooms does this section of the library have?'
+            },
+            options: {
+              es: ['8', '10', '11', '12'],
+              en: ['8', '10', '11', '12']
+            },
+            correct: 2
+          },
+          {
+            question: {
+              es: 'Como se llama el robot que te esta asistiendo?',
+              en: 'What is the name of the robot assisting you?'
+            },
+            options: {
+              es: ['NAO', 'Pepper', 'Spot', 'Atlas'],
+              en: ['NAO', 'Pepper', 'Spot', 'Atlas']
+            },
+            correct: 1
+          },
+          {
+            question: {
+              es: 'Cual opcion usas si quieres llegar a una sala o servicio?',
+              en: 'Which option do you use if you want to reach a room or service?'
+            },
+            options: {
+              es: ['Noticias', 'Ir a un lugar', 'Ayuda', 'Opinion'],
+              en: ['News', 'Go to a place', 'Help', 'Feedback']
+            },
+            correct: 1
+          },
+          {
+            question: {
+              es: 'Que debes seleccionar para cambiar el idioma?',
+              en: 'What should you select to change the language?'
+            },
+            options: {
+              es: ['El boton superior de idioma', 'El mapa', 'La tarjeta de salida', 'El boton listo'],
+              en: ['The top language button', 'The map', 'The exit card', 'The done button']
+            },
+            correct: 0
           }
+        ]
+      }
+    },
+    {
+      id: 'science-wordsearch',
+      type: 'wordsearch',
+      enabled: false,
+      title: { es: 'Buscapalabras de la ciencia', en: 'Science word search' },
+      description: {
+        es: 'Encuentra terminos escondidos en una grilla. Disponible muy pronto.',
+        en: 'Find hidden terms in a grid. Available very soon.'
+      },
+      cta: { es: 'Proximamente', en: 'Coming soon' },
+      content: {
+        grid: ['ROBOTABCDE', 'FGHIJLIBRO', 'CIENCIAKLM', 'NOPDATOSQR', 'STUMAPAVWX', 'YZASALABCD', 'EFGHIJKLMN', 'OPQRSTUVWX', 'YZABCDEFGH', 'IJKLMNOPQR'],
+        words: [
+          { answer: 'ROBOT', label: { es: 'Robot', en: 'Robot' } },
+          { answer: 'LIBRO', label: { es: 'Libro', en: 'Book' } },
+          { answer: 'CIENCIA', label: { es: 'Ciencia', en: 'Science' } },
+          { answer: 'DATOS', label: { es: 'Datos', en: 'Data' } },
+          { answer: 'MAPA', label: { es: 'Mapa', en: 'Map' } },
+          { answer: 'SALA', label: { es: 'Sala', en: 'Room' } }
+        ]
+      }
+    },
+    {
+      id: 'author-memory',
+      type: 'memory',
+      enabled: true,
+      title: { es: 'Memoria de autores', en: 'Author memory' },
+      description: {
+        es: 'Empareja autores con sus obras mas conocidas.',
+        en: 'Match authors with their best-known works.'
+      },
+      cta: { es: 'Comenzar', en: 'Start' },
+      content: {
+        pairs: [
+          { author: 'Gabriel Garcia Marquez', work: { es: 'Cien anos de soledad', en: 'One Hundred Years of Solitude' } },
+          { author: 'Jane Austen', work: { es: 'Orgullo y prejuicio', en: 'Pride and Prejudice' } },
+          { author: 'Miguel de Cervantes', work: { es: 'Don Quijote', en: 'Don Quixote' } },
+          { author: 'Mary Shelley', work: { es: 'Frankenstein', en: 'Frankenstein' } }
         ]
       }
     }
@@ -1837,12 +1922,86 @@
     var score = 0;
     var answered = false;
     var selectedAnswer = null;
+    var wordsearchSelection = [];
+    var wordsearchFound = {};
+    var wordsearchFoundCells = {};
+    var memoryDeck = [];
+    var memorySelected = [];
+    var memoryMatched = {};
+    var memoryAttempts = 0;
+    var memoryLocked = false;
+    var GAME_RENDERERS = {
+      trivia: startTriviaActivity,
+      wordsearch: startWordSearchActivity,
+      memory: startMemoryActivity
+    };
 
     function getLangText(value) {
       if (!value) {
         return '';
       }
       return value[PepperLib.State.language] || value.es || '';
+    }
+
+    function reverseText(value) {
+      return String(value || '').split('').reverse().join('');
+    }
+
+    function cleanAnswer(value) {
+      return stripAccents(String(value || '')).toUpperCase().replace(/[^A-Z0-9]/g, '');
+    }
+
+    function getActivityKindKey(item) {
+      return item && item.type === 'trivia' ? 'events.badge_trivia' : 'events.badge_game';
+    }
+
+    function resetWordSearch() {
+      wordsearchSelection = [];
+      wordsearchFound = {};
+      wordsearchFoundCells = {};
+    }
+
+    function resetMemory() {
+      memoryDeck = [];
+      memorySelected = [];
+      memoryMatched = {};
+      memoryAttempts = 0;
+      memoryLocked = false;
+    }
+
+    function shuffleItems(items) {
+      var shuffled = items.slice(0);
+      var i;
+      var j;
+      var temp;
+      for (i = shuffled.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        temp = shuffled[i];
+        shuffled[i] = shuffled[j];
+        shuffled[j] = temp;
+      }
+      return shuffled;
+    }
+
+    function buildMemoryDeck() {
+      var pairs = activeActivity && activeActivity.content ? activeActivity.content.pairs || [] : [];
+      var cards = [];
+      var i;
+      for (i = 0; i < pairs.length; i++) {
+        cards.push({
+          id: 'author-' + i,
+          pair: String(i),
+          kind: 'author',
+          label: pairs[i].author
+        });
+        cards.push({
+          id: 'work-' + i,
+          pair: String(i),
+          kind: 'work',
+          label: getLangText(pairs[i].work)
+        });
+      }
+      memoryDeck = shuffleItems(cards);
     }
 
     function loadActivities(callback) {
@@ -1871,18 +2030,20 @@
       var stateKey;
 
       html += '<section class="events-library">';
-      html += '<div class="events-library-head"><span class="events-library-kicker" data-i18n="events.screen_title">' + PepperLib.i18n.t('events.screen_title') + '</span><h2 data-i18n="events.select_activity">' + PepperLib.i18n.t('events.select_activity') + '</h2><p class="events-library-copy">' + PepperLib.i18n.t('menu.events.desc') + '</p></div>';
+      html += '<div class="events-library-head"><span class="events-library-kicker" data-i18n="events.library_arcade">' + PepperLib.i18n.t('events.library_arcade') + '</span><h2 data-i18n="events.select_activity">' + PepperLib.i18n.t('events.select_activity') + '</h2><p class="events-library-copy" data-i18n="events.library_copy">' + PepperLib.i18n.t('events.library_copy') + '</p></div>';
       html += '<div class="events-activity-grid">';
 
       for (i = 0; i < activities.length; i++) {
         item = activities[i];
-        badgeKey = item.type === 'game' ? 'events.badge_game' : 'events.badge_trivia';
+        badgeKey = getActivityKindKey(item);
         stateKey = item.enabled ? 'events.available_now' : 'events.coming_soon';
         html += '<article class="events-activity-card' + (item.enabled ? '' : ' is-disabled') + '">';
         html += '<div class="events-activity-top"><span class="events-activity-kind">' + PepperLib.i18n.t(badgeKey) + '</span><span class="events-activity-state">' + PepperLib.i18n.t(stateKey) + '</span></div>';
         html += '<h3>' + escapeHtml(getLangText(item.title)) + '</h3>';
         html += '<p>' + escapeHtml(getLangText(item.description)) + '</p>';
-        html += '<button class="btn ' + (item.enabled ? 'btn--primary' : 'btn--secondary') + ' events-activity-btn" data-activity="' + item.id + '"' + (item.enabled ? '' : ' disabled="disabled"') + '>' + escapeHtml(getLangText(item.cta)) + '</button>';
+        if (item.enabled) {
+          html += '<button class="btn btn--primary events-activity-btn" data-activity="' + item.id + '">' + escapeHtml(getLangText(item.cta)) + '</button>';
+        }
         html += '</article>';
       }
 
@@ -1899,6 +2060,391 @@
           startActivity(this.getAttribute('data-activity'));
         };
       }
+    }
+
+    function isWordSearchComplete() {
+      var words = activeActivity && activeActivity.content ? activeActivity.content.words || [] : [];
+      var i;
+      for (i = 0; i < words.length; i++) {
+        if (!wordsearchFound[cleanAnswer(words[i].answer)]) {
+          return false;
+        }
+      }
+      return words.length > 0;
+    }
+
+    function isCellFound(row, col) {
+      var word;
+      var cells;
+      var i;
+      for (word in wordsearchFoundCells) {
+        if (wordsearchFoundCells.hasOwnProperty(word)) {
+          cells = wordsearchFoundCells[word];
+          for (i = 0; i < cells.length; i++) {
+            if (cells[i].row === row && cells[i].col === col) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    function isCellSelected(row, col) {
+      var i;
+      for (i = 0; i < wordsearchSelection.length; i++) {
+        if (wordsearchSelection[i].row === row && wordsearchSelection[i].col === col) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function isAdjacentToLast(row, col) {
+      var last;
+      if (!wordsearchSelection.length) {
+        return true;
+      }
+      last = wordsearchSelection[wordsearchSelection.length - 1];
+      return Math.abs(last.row - row) <= 1 && Math.abs(last.col - col) <= 1;
+    }
+
+    function getSelectedWord() {
+      var value = '';
+      var i;
+      for (i = 0; i < wordsearchSelection.length; i++) {
+        value += wordsearchSelection[i].letter;
+      }
+      return cleanAnswer(value);
+    }
+
+    function findSelectedWord() {
+      var words = activeActivity && activeActivity.content ? activeActivity.content.words || [] : [];
+      var selected = getSelectedWord();
+      var reversed = reverseText(selected);
+      var answer;
+      var i;
+      for (i = 0; i < words.length; i++) {
+        answer = cleanAnswer(words[i].answer);
+        if (!wordsearchFound[answer] && (selected === answer || reversed === answer)) {
+          return answer;
+        }
+      }
+      return '';
+    }
+
+    function bindWordSearch() {
+      var container = byId('events-question');
+      var cells = container.querySelectorAll('[data-word-cell]');
+      var clearButton = byId('btn-wordsearch-clear');
+      var i;
+
+      for (i = 0; i < cells.length; i++) {
+        cells[i].onclick = function () {
+          var row = parseInt(this.getAttribute('data-row'), 10);
+          var col = parseInt(this.getAttribute('data-col'), 10);
+          var letter = this.getAttribute('data-letter');
+          var foundAnswer;
+
+          PepperLib.Inactivity.reset();
+
+          if (isCellSelected(row, col) || !isAdjacentToLast(row, col)) {
+            wordsearchSelection = [];
+          }
+
+          wordsearchSelection.push({ row: row, col: col, letter: letter });
+          foundAnswer = findSelectedWord();
+
+          if (foundAnswer) {
+            wordsearchFound[foundAnswer] = true;
+            wordsearchFoundCells[foundAnswer] = wordsearchSelection.slice(0);
+            wordsearchSelection = [];
+            PepperLib.Analytics.log('wordsearch_word_found', {
+              activity: activeActivity.id,
+              word: foundAnswer
+            });
+          }
+
+          if (isWordSearchComplete()) {
+            renderWordSearchResult();
+            return;
+          }
+
+          renderWordSearch();
+        };
+      }
+
+      if (clearButton) {
+        clearButton.onclick = function () {
+          wordsearchSelection = [];
+          renderWordSearch();
+        };
+      }
+    }
+
+    function renderWordSearch() {
+      var container = byId('events-question');
+      var intro = byId('events-intro');
+      var result = byId('events-result');
+      var content = activeActivity.content || {};
+      var grid = content.grid || [];
+      var words = content.words || [];
+      var foundCount = 0;
+      var html = '';
+      var row;
+      var col;
+      var letter;
+      var answer;
+      var cellClass;
+      var i;
+
+      addClass(intro, 'hidden');
+      addClass(result, 'hidden');
+
+      for (i = 0; i < words.length; i++) {
+        if (wordsearchFound[cleanAnswer(words[i].answer)]) {
+          foundCount += 1;
+        }
+      }
+
+      html += '<article class="wordsearch-card">';
+      html += '<div class="wordsearch-header">';
+      html += '<div><span class="events-library-kicker">' + PepperLib.i18n.t('events.library_arcade') + '</span><h3>' + escapeHtml(getLangText(activeActivity.title)) + '</h3><p>' + PepperLib.i18n.t('events.wordsearch_hint') + '</p></div>';
+      html += '<div class="wordsearch-progress"><span>' + PepperLib.i18n.t('events.wordsearch_progress') + '</span><strong>' + foundCount + '/' + words.length + '</strong></div>';
+      html += '</div>';
+      html += '<div class="wordsearch-layout">';
+      html += '<div class="wordsearch-grid" style="width:' + (grid[0] ? grid[0].length * 48 : 0) + 'px">';
+
+      for (row = 0; row < grid.length; row++) {
+        for (col = 0; col < grid[row].length; col++) {
+          letter = grid[row].charAt(col);
+          cellClass = 'wordsearch-cell';
+          if (isCellFound(row, col)) {
+            cellClass += ' is-found';
+          }
+          if (isCellSelected(row, col)) {
+            cellClass += ' is-selected';
+          }
+          html += '<button class="' + cellClass + '" data-word-cell="1" data-row="' + row + '" data-col="' + col + '" data-letter="' + escapeHtml(letter) + '">' + escapeHtml(letter) + '</button>';
+        }
+      }
+
+      html += '</div>';
+      html += '<aside class="wordsearch-side">';
+      html += '<div class="wordsearch-words">';
+      for (i = 0; i < words.length; i++) {
+        answer = cleanAnswer(words[i].answer);
+        html += '<span class="wordsearch-word' + (wordsearchFound[answer] ? ' is-found' : '') + '">' + escapeHtml(getLangText(words[i].label)) + '</span>';
+      }
+      html += '</div>';
+      html += '<button class="btn btn--secondary wordsearch-clear" id="btn-wordsearch-clear">' + PepperLib.i18n.t('events.wordsearch_clear') + '</button>';
+      html += '</aside>';
+      html += '</div>';
+      html += '</article>';
+
+      container.innerHTML = html;
+      removeClass(container, 'hidden');
+      bindWordSearch();
+    }
+
+    function renderWordSearchResult() {
+      var result = byId('events-result');
+      var question = byId('events-question');
+      var words = activeActivity && activeActivity.content ? activeActivity.content.words || [] : [];
+
+      addClass(question, 'hidden');
+      removeClass(result, 'hidden');
+
+      PepperLib.Analytics.log('wordsearch_completed', {
+        activity: activeActivity.id,
+        total: words.length
+      });
+
+      result.innerHTML =
+        '<article class="events-result-card">' +
+        '<span class="events-result-kicker">' + escapeHtml(getLangText(activeActivity.title)) + '</span>' +
+        '<div class="events-result-score">' + words.length + '/' + words.length + '</div>' +
+        '<div class="events-result-label">' + PepperLib.i18n.t('events.wordsearch_done') + '</div>' +
+        '<div class="events-result-actions">' +
+        '<button class="btn btn--primary" id="btn-trivia-replay">' + PepperLib.i18n.t('events.play_again') + '</button>' +
+        '<button class="btn btn--secondary" id="btn-trivia-menu">' + PepperLib.i18n.t('events.back_menu') + '</button>' +
+        '</div>' +
+        '</article>';
+
+      byId('btn-trivia-replay').onclick = function () {
+        startActivity(activeActivity.id);
+      };
+
+      byId('btn-trivia-menu').onclick = function () {
+        activeActivity = null;
+        renderLibrary();
+      };
+    }
+
+    function isMemoryCardSelected(cardId) {
+      var i;
+      for (i = 0; i < memorySelected.length; i++) {
+        if (memorySelected[i].id === cardId) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function getMemoryFoundCount() {
+      var count = 0;
+      var key;
+      for (key in memoryMatched) {
+        if (memoryMatched.hasOwnProperty(key) && memoryMatched[key]) {
+          count += 1;
+        }
+      }
+      return count;
+    }
+
+    function isMemoryComplete() {
+      var pairs = activeActivity && activeActivity.content ? activeActivity.content.pairs || [] : [];
+      return pairs.length > 0 && getMemoryFoundCount() >= pairs.length;
+    }
+
+    function bindMemoryCards() {
+      var container = byId('events-question');
+      var cards = container.querySelectorAll('[data-memory-card]');
+      var i;
+
+      for (i = 0; i < cards.length; i++) {
+        cards[i].onclick = function () {
+          var cardId = this.getAttribute('data-memory-card');
+          var pairId = this.getAttribute('data-pair');
+          var kind = this.getAttribute('data-kind');
+          var selectedCard = {
+            id: cardId,
+            pair: pairId,
+            kind: kind
+          };
+
+          PepperLib.Inactivity.reset();
+
+          if (memoryLocked || memoryMatched[pairId] || isMemoryCardSelected(cardId)) {
+            return;
+          }
+
+          memorySelected.push(selectedCard);
+
+          if (memorySelected.length < 2) {
+            renderMemory();
+            return;
+          }
+
+          memoryAttempts += 1;
+          if (memorySelected[0].pair === memorySelected[1].pair && memorySelected[0].kind !== memorySelected[1].kind) {
+            memoryMatched[pairId] = true;
+            memorySelected = [];
+            PepperLib.Analytics.log('memory_pair_found', {
+              activity: activeActivity.id,
+              pair: pairId
+            });
+            if (isMemoryComplete()) {
+              renderMemoryResult();
+              return;
+            }
+            renderMemory();
+            return;
+          }
+
+          memoryLocked = true;
+          renderMemory();
+          setTimeout(function () {
+            if (!activeActivity || activeActivity.type !== 'memory') {
+              return;
+            }
+            memorySelected = [];
+            memoryLocked = false;
+            renderMemory();
+          }, 700);
+        };
+      }
+    }
+
+    function renderMemory() {
+      var container = byId('events-question');
+      var intro = byId('events-intro');
+      var result = byId('events-result');
+      var pairs = activeActivity && activeActivity.content ? activeActivity.content.pairs || [] : [];
+      var foundCount = getMemoryFoundCount();
+      var html = '';
+      var i;
+      var card;
+      var cardClass;
+      var kindLabel;
+
+      addClass(intro, 'hidden');
+      addClass(result, 'hidden');
+
+      html += '<article class="memory-card">';
+      html += '<div class="memory-header">';
+      html += '<div><span class="events-library-kicker">' + PepperLib.i18n.t('events.library_arcade') + '</span><h3>' + escapeHtml(getLangText(activeActivity.title)) + '</h3><p>' + PepperLib.i18n.t('events.memory_hint') + '</p></div>';
+      html += '<div class="memory-stats"><div><span>' + PepperLib.i18n.t('events.memory_progress') + '</span><strong>' + foundCount + '/' + pairs.length + '</strong></div><div><span>' + PepperLib.i18n.t('events.memory_attempts') + '</span><strong>' + memoryAttempts + '</strong></div></div>';
+      html += '</div>';
+      html += '<div class="memory-grid">';
+
+      for (i = 0; i < memoryDeck.length; i++) {
+        card = memoryDeck[i];
+        cardClass = 'memory-tile';
+        if (memoryMatched[card.pair]) {
+          cardClass += ' is-matched';
+        }
+        if (isMemoryCardSelected(card.id)) {
+          cardClass += ' is-selected';
+        }
+        kindLabel = card.kind === 'author' ? PepperLib.i18n.t('events.memory_author') : PepperLib.i18n.t('events.memory_work');
+        html += '<button class="' + cardClass + '" data-memory-card="' + escapeHtml(card.id) + '" data-pair="' + escapeHtml(card.pair) + '" data-kind="' + escapeHtml(card.kind) + '">';
+        html += '<span class="memory-kind">' + kindLabel + '</span>';
+        html += '<span class="memory-label">' + escapeHtml(card.label) + '</span>';
+        html += '</button>';
+      }
+
+      html += '</div>';
+      html += '</article>';
+
+      container.innerHTML = html;
+      removeClass(container, 'hidden');
+      bindMemoryCards();
+    }
+
+    function renderMemoryResult() {
+      var result = byId('events-result');
+      var question = byId('events-question');
+      var pairs = activeActivity && activeActivity.content ? activeActivity.content.pairs || [] : [];
+
+      addClass(question, 'hidden');
+      removeClass(result, 'hidden');
+
+      PepperLib.Analytics.log('memory_completed', {
+        activity: activeActivity.id,
+        attempts: memoryAttempts,
+        total: pairs.length
+      });
+
+      result.innerHTML =
+        '<article class="events-result-card">' +
+        '<span class="events-result-kicker">' + escapeHtml(getLangText(activeActivity.title)) + '</span>' +
+        '<div class="events-result-score">' + pairs.length + '/' + pairs.length + '</div>' +
+        '<div class="events-result-label">' + PepperLib.i18n.t('events.memory_done') + '</div>' +
+        '<div class="events-result-actions">' +
+        '<button class="btn btn--primary" id="btn-trivia-replay">' + PepperLib.i18n.t('events.play_again') + '</button>' +
+        '<button class="btn btn--secondary" id="btn-trivia-menu">' + PepperLib.i18n.t('events.back_menu') + '</button>' +
+        '</div>' +
+        '</article>';
+
+      byId('btn-trivia-replay').onclick = function () {
+        startActivity(activeActivity.id);
+      };
+
+      byId('btn-trivia-menu').onclick = function () {
+        activeActivity = null;
+        renderLibrary();
+      };
     }
 
     function renderQuestion() {
@@ -2029,7 +2575,9 @@
 
     function startActivity(activityId) {
       var i;
+      var renderer;
 
+      activeActivity = null;
       for (i = 0; i < activities.length; i++) {
         if (activities[i].id === activityId) {
           activeActivity = activities[i];
@@ -2037,7 +2585,7 @@
         }
       }
 
-      if (!activeActivity) {
+      if (!activeActivity || !activeActivity.enabled) {
         return;
       }
 
@@ -2045,10 +2593,30 @@
       score = 0;
       answered = false;
       selectedAnswer = null;
-      PepperLib.Analytics.count('events', 'trivia_started');
+      resetWordSearch();
+      resetMemory();
+      renderer = GAME_RENDERERS[activeActivity.type];
+      if (!renderer) {
+        return;
+      }
+      PepperLib.Analytics.count('events', activeActivity.type + '_started');
       PepperLib.Analytics.insertEventos(getLangText(activeActivity.title));
       PepperLib.Utils.setLastAction(PepperLib.i18n.t('events.screen_title') + ' - ' + activityId, activityId, 'events');
+      renderer();
+    }
+
+    function startTriviaActivity() {
       renderQuestion();
+    }
+
+    function startWordSearchActivity() {
+      renderWordSearch();
+    }
+
+    function startMemoryActivity() {
+      resetMemory();
+      buildMemoryDeck();
+      renderMemory();
     }
 
     PepperLib.State.registerScreen('events', {
@@ -2063,10 +2631,27 @@
         score = 0;
         answered = false;
         selectedAnswer = null;
+        resetWordSearch();
+        resetMemory();
         loadActivities(renderLibrary);
       },
 
       onExit: function () {
+      },
+
+      onLanguageChange: function () {
+        if (!activeActivity) {
+          renderLibrary();
+          return;
+        }
+        if (activeActivity.type === 'wordsearch') {
+          renderWordSearch();
+        } else if (activeActivity.type === 'memory') {
+          buildMemoryDeck();
+          renderMemory();
+        } else if (activeActivity.type === 'trivia') {
+          renderQuestion();
+        }
       }
     });
   })();

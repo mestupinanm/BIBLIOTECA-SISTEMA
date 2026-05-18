@@ -5,23 +5,23 @@
       "type": "trivia",
       "enabled": true,
       "title": {
-        "es": "Trivia de la biblioteca",
-        "en": "Library trivia"
+        "es": "Trivia de la Biblioteca",
+        "en": "Library Trivia"
       },
       "description": {
-        "es": "Pon a prueba lo que sabes sobre la biblioteca, sus servicios y la universidad.",
-        "en": "Put your knowledge of the library, it's services, and the university to the test."
+        "es": "Pon a prueba tus conocimientos sobre la biblioteca y la universidad. 5 preguntas rapidas.",
+        "en": "Test your knowledge about the library and the university. 5 quick questions."
       },
       "cta": {
-        "es": "Comenzar trivia",
-        "en": "Start trivia"
+        "es": "Comenzar",
+        "en": "Start"
       },
       "content": {
         "questions": [
           {
             "question": {
-              "es": "En que piso se encuentra la sala de ciencias e ingenieria?",
-              "en": "On which floor is the science and engineering room located?"
+              "es": "En que piso se encuentra la Sala de Ciencias e Ingenieria?",
+              "en": "On which floor is the Science and Engineering Room located?"
             },
             "options": {
               "es": ["Piso 1", "Piso 2", "Piso 3", "Piso 4"],
@@ -35,65 +35,169 @@
               "en": "How many study rooms does this section of the library have?"
             },
             "options": {
-              "es": ["4", "6", "8", "10"],
-              "en": ["4", "6", "8", "10"]
+              "es": ["8", "10", "11", "12"],
+              "en": ["8", "10", "11", "12"]
             },
             "correct": 2
           },
           {
             "question": {
-              "es": "Como se llama el sistema de bibliotecas de la Universidad de los Andes?",
-              "en": "What is the name of the Universidad de los Andes library system?"
-            },
-            "options": {
-              "es": ["SIBILA", "IRUS", "OPAC", "ALEPH"],
-              "en": ["SIBILA", "IRUS", "OPAC", "ALEPH"]
-            },
-            "correct": 1
-          },
-          {
-            "question": {
-              "es": "Cual es el horario de la biblioteca de lunes a viernes?",
-              "en": "What are the library hours Monday through Friday?"
-            },
-            "options": {
-              "es": ["8 AM - 6 PM", "7 AM - 9 PM", "9 AM - 8 PM", "6 AM - 10 PM"],
-              "en": ["8 AM - 6 PM", "7 AM - 9 PM", "9 AM - 8 PM", "6 AM - 10 PM"]
-            },
-            "correct": 1
-          },
-          {
-            "question": {
-              "es": "Que robot te esta asistiendo ahora mismo?",
-              "en": "Which robot is assisting you right now?"
+              "es": "Como se llama el robot que te esta asistiendo?",
+              "en": "What is the name of the robot assisting you?"
             },
             "options": {
               "es": ["NAO", "Pepper", "Spot", "Atlas"],
               "en": ["NAO", "Pepper", "Spot", "Atlas"]
             },
             "correct": 1
+          },
+          {
+            "question": {
+              "es": "Cual opcion usas si quieres llegar a una sala o servicio?",
+              "en": "Which option do you use if you want to reach a room or service?"
+            },
+            "options": {
+              "es": ["Noticias", "Ir a un lugar", "Ayuda", "Opinion"],
+              "en": ["News", "Go to a place", "Help", "Feedback"]
+            },
+            "correct": 1
+          },
+          {
+            "question": {
+              "es": "Que debes seleccionar para cambiar el idioma?",
+              "en": "What should you select to change the language?"
+            },
+            "options": {
+              "es": ["El boton superior de idioma", "El mapa", "La tarjeta de salida", "El boton listo"],
+              "en": ["The top language button", "The map", "The exit card", "The done button"]
+            },
+            "correct": 0
           }
         ]
       }
     },
     {
-      "id": "memory-challenge",
-      "type": "game",
+      "id": "science-wordsearch",
+      "type": "wordsearch",
       "enabled": false,
       "title": {
-        "es": "Reto de memoria",
-        "en": "Memory challenge"
+        "es": "Buscapalabras de la ciencia",
+        "en": "Science word search"
       },
       "description": {
-        "es": "Una base preparada para agregar juegos futuros.",
-        "en": "A placeholder ready for future games."
+        "es": "Encuentra terminos escondidos en una grilla. Disponible muy pronto.",
+        "en": "Find hidden terms in a grid. Available very soon."
       },
       "cta": {
         "es": "Proximamente",
         "en": "Coming soon"
       },
       "content": {
-        "notes": "Aca se agregaran los detalles especificos del juego."
+        "grid": [
+          "ROBOTABCDE",
+          "FGHIJLIBRO",
+          "CIENCIAKLM",
+          "NOPDATOSQR",
+          "STUMAPAVWX",
+          "YZASALABCD",
+          "EFGHIJKLMN",
+          "OPQRSTUVWX",
+          "YZABCDEFGH",
+          "IJKLMNOPQR"
+        ],
+        "words": [
+          {
+            "answer": "ROBOT",
+            "label": {
+              "es": "Robot",
+              "en": "Robot"
+            }
+          },
+          {
+            "answer": "LIBRO",
+            "label": {
+              "es": "Libro",
+              "en": "Book"
+            }
+          },
+          {
+            "answer": "CIENCIA",
+            "label": {
+              "es": "Ciencia",
+              "en": "Science"
+            }
+          },
+          {
+            "answer": "DATOS",
+            "label": {
+              "es": "Datos",
+              "en": "Data"
+            }
+          },
+          {
+            "answer": "MAPA",
+            "label": {
+              "es": "Mapa",
+              "en": "Map"
+            }
+          },
+          {
+            "answer": "SALA",
+            "label": {
+              "es": "Sala",
+              "en": "Room"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "author-memory",
+      "type": "memory",
+      "enabled": true,
+      "title": {
+        "es": "Memoria de autores",
+        "en": "Author memory"
+      },
+      "description": {
+        "es": "Empareja autores con sus obras mas conocidas.",
+        "en": "Match authors with their best-known works."
+      },
+      "cta": {
+        "es": "Comenzar",
+        "en": "Start"
+      },
+      "content": {
+        "pairs": [
+          {
+            "author": "Gabriel Garcia Marquez",
+            "work": {
+              "es": "Cien anos de soledad",
+              "en": "One Hundred Years of Solitude"
+            }
+          },
+          {
+            "author": "Jane Austen",
+            "work": {
+              "es": "Orgullo y prejuicio",
+              "en": "Pride and Prejudice"
+            }
+          },
+          {
+            "author": "Miguel de Cervantes",
+            "work": {
+              "es": "Don Quijote",
+              "en": "Don Quixote"
+            }
+          },
+          {
+            "author": "Mary Shelley",
+            "work": {
+              "es": "Frankenstein",
+              "en": "Frankenstein"
+            }
+          }
+        ]
       }
     }
   ]

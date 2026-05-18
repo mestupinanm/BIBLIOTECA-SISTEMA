@@ -5,7 +5,7 @@
 
 window.LibraryData.MAP_IMAGE_ES = './assets/images/ESPANOL.png';
 window.LibraryData.MAP_IMAGE_EN = './assets/images/INGLES.png';
-window.LibraryData.ACTIVITIES_URL = './assets/data/activities.json';
+window.LibraryData.ACTIVITIES_URL = './assets/data/activities.json?v=games-3';
 
 window.LibraryData.STRINGS = {
   es: {
@@ -110,7 +110,7 @@ window.LibraryData.STRINGS = {
     'info.closed': 'Cerrado',
     'events.screen_title': 'Eventos',
     'events.trivia_title': 'Trivia de la Biblioteca',
-    'events.trivia_desc': 'Pon a prueba tus conocimientos sobre la biblioteca y la universidad. 5 preguntas rapidas!',
+    'events.trivia_desc': 'Pon a prueba tus conocimientos sobre la biblioteca y la universidad.',
     'events.start': 'Comenzar',
     'events.question': 'Pregunta',
     'events.of': 'de',
@@ -128,6 +128,17 @@ window.LibraryData.STRINGS = {
     'events.badge_trivia': 'Trivia',
     'events.badge_game': 'Juego',
     'events.library_arcade': 'Zona de eventos',
+    'events.library_copy': 'Actividades disponibles ahora mismo!',
+    'events.wordsearch_progress': 'Palabras encontradas',
+    'events.wordsearch_clear': 'Limpiar seleccion',
+    'events.wordsearch_hint': 'Toca letras vecinas para formar cada palabra.',
+    'events.wordsearch_done': 'Encontraste todas las palabras!',
+    'events.memory_progress': 'Pares encontrados',
+    'events.memory_attempts': 'Intentos',
+    'events.memory_author': 'Autor',
+    'events.memory_work': 'Obra',
+    'events.memory_hint': 'Encuentra el autor y su obra correspondiente.',
+    'events.memory_done': 'Completaste la memoria de autores!',
     'shelves.screen_title': 'Buscar libro por tema',
     'shelves.panel_hint': 'Toca una estanteria para ver sus temas',
     'shelves.search_placeholder': 'Busca un tema...',
@@ -258,7 +269,7 @@ window.LibraryData.STRINGS = {
     'info.closed': 'Closed',
     'events.screen_title': 'Events',
     'events.trivia_title': 'Library Trivia',
-    'events.trivia_desc': 'Test your knowledge about the library and the university. 5 quick questions!',
+    'events.trivia_desc': 'Test your knowledge about the library and the university.',
     'events.start': 'Start',
     'events.question': 'Question',
     'events.of': 'of',
@@ -276,6 +287,17 @@ window.LibraryData.STRINGS = {
     'events.badge_trivia': 'Trivia',
     'events.badge_game': 'Game',
     'events.library_arcade': 'Events arcade',
+    'events.library_copy': 'Activities available right now!',
+    'events.wordsearch_progress': 'Words found',
+    'events.wordsearch_clear': 'Clear selection',
+    'events.wordsearch_hint': 'Tap neighboring letters to form each word.',
+    'events.wordsearch_done': 'You found every word!',
+    'events.memory_progress': 'Pairs found',
+    'events.memory_attempts': 'Attempts',
+    'events.memory_author': 'Author',
+    'events.memory_work': 'Work',
+    'events.memory_hint': 'Find each author and the matching work.',
+    'events.memory_done': 'You completed the author memory game!',
     'shelves.screen_title': 'Find book by topic',
     'shelves.panel_hint': 'Tap a shelf to see its topics',
     'shelves.search_placeholder': 'Search a topic...',
