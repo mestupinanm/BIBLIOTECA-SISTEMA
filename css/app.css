@@ -468,8 +468,8 @@ button { cursor: pointer; }
 
 .menu-grid {
   position: relative;
-  width: 1216px;
-  height: 624px;
+  width: 100px;
+  height: 100px;
   margin: 0;
   text-align: left;
   font-size: 0;
@@ -478,7 +478,8 @@ button { cursor: pointer; }
 .menu-card {
   position: absolute;
   margin: 0;
-  padding: 28px 28px;
+  padding-left: 20px;
+  padding-right: 28px;
   border: 1px solid #D4CBB1;
   border-radius: 28px;
   background: #FFFFFF;
@@ -507,7 +508,6 @@ button { cursor: pointer; }
   background: #143562;
   color: #FFFFFF;
   border-color: #143562;
-  padding: 36px 36px;
 }
 /* Events accent (5th card) */
 .menu-card:nth-child(5),
@@ -541,8 +541,10 @@ button { cursor: pointer; }
   display: inline-block;
   width: 52px;
   height: 52px;
-  margin: 0 0 18px;
-  line-height: 52px;
+  margin-left: 5px;
+  margin-right: 0;
+  margin-top: -50px;
+  margin-bottom: 30px;
   border-radius: 14px;
   background: #DCE4F0;
   color: #143562;
@@ -573,7 +575,7 @@ button { cursor: pointer; }
 
 .menu-card-label {
   display: block;
-  margin: 0;
+  margin-left: 7px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 28px;
   font-weight: 800;
@@ -584,7 +586,8 @@ button { cursor: pointer; }
 
 .menu-card-desc {
   display: block;
-  margin-top: 10px;
+  margin-left: 8px;
+  margin-top: 4px;
   font-size: 15px;
   line-height: 1.45;
   color: #5A6678;
@@ -593,11 +596,11 @@ button { cursor: pointer; }
 
 /* Hero label/desc */
 .menu-card:nth-child(1) .menu-card-label {
-  font-size: 32px;
+  font-size: 56px;
   color: #FFFFFF;
 }
 .menu-card:nth-child(1) .menu-card-desc {
-  font-size: 17px;
+  font-size: 15px;
   color: rgba(255,255,255,0.78);
 
 }
@@ -606,7 +609,7 @@ button { cursor: pointer; }
 .menu-card:nth-child(5) .menu-card-label,
 .menu-card--accent .menu-card-label {
   color: #FFFFFF;
-  font-size: 32px;
+  font-size: 28px;
 }
 .menu-card:nth-child(5) .menu-card-desc,
 .menu-card--accent .menu-card-desc {
@@ -628,10 +631,10 @@ button { cursor: pointer; }
 
 /* Arrow chip top-right */
 .menu-card:after {
-  content: "→";
+  content: "➔";
   position: absolute;
-  top: 24px;
-  right: 28px;
+  top: 20px;
+  right: 20px;
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -643,13 +646,85 @@ button { cursor: pointer; }
   font-weight: 700;
 }
 .menu-card:nth-child(1):after {
-  background: rgba(255,255,255,0.18);
-  color: #FFFFFF;
+  display: none;
 }
 .menu-card:nth-child(5):after,
 .menu-card--accent:after {
   background: rgba(255,255,255,0.20);
   color: #FFFFFF;
+}
+
+/* Kicker — tarjeta hero */
+.menu-card-kicker {
+  display: block;
+  margin-left: 10px;
+  margin-top: -50px;
+  margin-bottom: 25px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #F4CE8D;
+}
+
+/* CTA "Comenzar" — abajo izquierda */
+.menu-card-cta {
+  position: absolute;
+  bottom: 18px;
+  left: 28px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #143562;
+}
+.menu-card:nth-child(1) .menu-card-cta {
+  bottom: 26px;
+  left: 28px;
+  color: #F4CE8D;
+}
+.menu-card:nth-child(5) .menu-card-cta,
+.menu-card--accent .menu-card-cta {
+  color: rgba(255,255,255,0.85);
+}
+
+
+
+/* Ícono hero — círculo grande, derecha, verticalmente centrado */
+.menu-card:nth-child(1) .menu-card-icon {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  width: 88px;
+  height: 88px;
+  margin: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.10);
+  line-height: 88px;
+}
+.menu-card:nth-child(1) .menu-card-icon svg {
+  margin-top: 22px;
+  width: 44px;
+  height: 44px;
+}
+
+/* Línea divisoria encima del área de footer (Comenzar + número) */
+.menu-card:not(:nth-child(1)):before {
+  content: '';
+  position: absolute;
+  width: 32px;
+  left: 0;
+  right: 0;
+  bottom: 48px;
+  height: 1px;
+  background: rgba(20, 35, 58, 0.10);
+  pointer-events: none;
+}
+.menu-card:nth-child(5):before,
+.menu-card--accent:before {
+  background: rgba(255,255,255,0.20);
 }
 
 /* =============================================================
