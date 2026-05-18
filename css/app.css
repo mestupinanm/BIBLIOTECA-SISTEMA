@@ -247,10 +247,10 @@ button { cursor: pointer; }
 .idle-title {
   position: absolute;
   left: 72px;
-  bottom: 300px;
+  bottom: 302px;
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 35px;
+  font-size: 32px;
   font-weight: 450;
   letter-spacing: -1.2px;
   color: #FFFFFF;
@@ -598,6 +598,7 @@ button { cursor: pointer; }
 .menu-card:nth-child(1) .menu-card-label {
   font-size: 56px;
   color: #FFFFFF;
+  letter-spacing: 1px;
 }
 .menu-card:nth-child(1) .menu-card-desc {
   font-size: 15px;

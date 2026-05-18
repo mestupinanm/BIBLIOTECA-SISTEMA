@@ -17,7 +17,7 @@ window.LibraryData.STRINGS = {
     'help.dismiss': 'Cerrar',
     'help.location_unknown': 'No registrada',
     'menu.title': '¿Cómo puedo ayudarte?',
-    'menu.navigation': 'A donde voy?',
+    'menu.navigation': '¿A dónde voy?',
     'menu.navigation.desc': 'Te guio a tu destino',
     'menu.shelves': 'Buscar libro',
     'menu.shelves.desc': 'Busca por tema en las estanterias',
