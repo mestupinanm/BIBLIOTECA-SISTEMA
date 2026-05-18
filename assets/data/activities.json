@@ -77,6 +77,55 @@
       }
     },
     {
+      "id": "author-memory",
+      "type": "memory",
+      "enabled": true,
+      "title": {
+        "es": "Memoria de autores",
+        "en": "Author memory"
+      },
+      "description": {
+        "es": "Empareja autores con sus obras mas conocidas.",
+        "en": "Match authors with their best-known works."
+      },
+      "cta": {
+        "es": "Comenzar",
+        "en": "Start"
+      },
+      "content": {
+        "pairs": [
+          {
+            "author": "Gabriel Garcia Marquez",
+            "work": {
+              "es": "Cien anos de soledad",
+              "en": "One Hundred Years of Solitude"
+            }
+          },
+          {
+            "author": "Jane Austen",
+            "work": {
+              "es": "Orgullo y prejuicio",
+              "en": "Pride and Prejudice"
+            }
+          },
+          {
+            "author": "Miguel de Cervantes",
+            "work": {
+              "es": "Don Quijote",
+              "en": "Don Quixote"
+            }
+          },
+          {
+            "author": "Mary Shelley",
+            "work": {
+              "es": "Frankenstein",
+              "en": "Frankenstein"
+            }
+          }
+        ]
+      }
+    },
+    {
       "id": "science-wordsearch",
       "type": "wordsearch",
       "enabled": false,
@@ -146,55 +195,6 @@
             "label": {
               "es": "Sala",
               "en": "Room"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "id": "author-memory",
-      "type": "memory",
-      "enabled": true,
-      "title": {
-        "es": "Memoria de autores",
-        "en": "Author memory"
-      },
-      "description": {
-        "es": "Empareja autores con sus obras mas conocidas.",
-        "en": "Match authors with their best-known works."
-      },
-      "cta": {
-        "es": "Comenzar",
-        "en": "Start"
-      },
-      "content": {
-        "pairs": [
-          {
-            "author": "Gabriel Garcia Marquez",
-            "work": {
-              "es": "Cien anos de soledad",
-              "en": "One Hundred Years of Solitude"
-            }
-          },
-          {
-            "author": "Jane Austen",
-            "work": {
-              "es": "Orgullo y prejuicio",
-              "en": "Pride and Prejudice"
-            }
-          },
-          {
-            "author": "Miguel de Cervantes",
-            "work": {
-              "es": "Don Quijote",
-              "en": "Don Quixote"
-            }
-          },
-          {
-            "author": "Mary Shelley",
-            "work": {
-              "es": "Frankenstein",
-              "en": "Frankenstein"
             }
           }
         ]

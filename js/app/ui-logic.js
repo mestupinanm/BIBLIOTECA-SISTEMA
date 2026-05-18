@@ -11,10 +11,10 @@
       id: 'library-trivia',
       type: 'trivia',
       enabled: true,
-      title: { es: 'Trivia de la Biblioteca', en: 'Library Trivia' },
+      title: { es: 'Trivia de la biblioteca', en: 'Library trivia' },
       description: {
-        es: 'Pon a prueba tus conocimientos sobre la biblioteca y la universidad. 5 preguntas rapidas.',
-        en: 'Test your knowledge about the library and the university. 5 quick questions.'
+        es: 'Pon a prueba tus conocimientos sobre la biblioteca y la universidad.',
+        en: 'Test your knowledge about the library and the university.'
       },
       cta: { es: 'Comenzar', en: 'Start' },
       content: {
@@ -78,28 +78,6 @@
       }
     },
     {
-      id: 'science-wordsearch',
-      type: 'wordsearch',
-      enabled: false,
-      title: { es: 'Buscapalabras de la ciencia', en: 'Science word search' },
-      description: {
-        es: 'Encuentra terminos escondidos en una grilla. Disponible muy pronto.',
-        en: 'Find hidden terms in a grid. Available very soon.'
-      },
-      cta: { es: 'Proximamente', en: 'Coming soon' },
-      content: {
-        grid: ['ROBOTABCDE', 'FGHIJLIBRO', 'CIENCIAKLM', 'NOPDATOSQR', 'STUMAPAVWX', 'YZASALABCD', 'EFGHIJKLMN', 'OPQRSTUVWX', 'YZABCDEFGH', 'IJKLMNOPQR'],
-        words: [
-          { answer: 'ROBOT', label: { es: 'Robot', en: 'Robot' } },
-          { answer: 'LIBRO', label: { es: 'Libro', en: 'Book' } },
-          { answer: 'CIENCIA', label: { es: 'Ciencia', en: 'Science' } },
-          { answer: 'DATOS', label: { es: 'Datos', en: 'Data' } },
-          { answer: 'MAPA', label: { es: 'Mapa', en: 'Map' } },
-          { answer: 'SALA', label: { es: 'Sala', en: 'Room' } }
-        ]
-      }
-    },
-    {
       id: 'author-memory',
       type: 'memory',
       enabled: true,
@@ -115,6 +93,28 @@
           { author: 'Jane Austen', work: { es: 'Orgullo y prejuicio', en: 'Pride and Prejudice' } },
           { author: 'Miguel de Cervantes', work: { es: 'Don Quijote', en: 'Don Quixote' } },
           { author: 'Mary Shelley', work: { es: 'Frankenstein', en: 'Frankenstein' } }
+        ]
+      }
+    },
+    {
+      id: 'science-wordsearch',
+      type: 'wordsearch',
+      enabled: false,
+      title: { es: 'Encuentra la palabra', en: 'Find the word' },
+      description: {
+        es: 'Encuentra los terminos escondidos en una grilla. Disponible muy pronto!',
+        en: 'Find hidden terms in a grid. Available very soon.'
+      },
+      cta: { es: 'Proximamente', en: 'Coming soon' },
+      content: {
+        grid: ['ROBOTABCDE', 'FGHIJLIBRO', 'CIENCIAKLM', 'NOPDATOSQR', 'STUMAPAVWX', 'YZASALABCD', 'EFGHIJKLMN', 'OPQRSTUVWX', 'YZABCDEFGH', 'IJKLMNOPQR'],
+        words: [
+          { answer: 'ROBOT', label: { es: 'Robot', en: 'Robot' } },
+          { answer: 'LIBRO', label: { es: 'Libro', en: 'Book' } },
+          { answer: 'CIENCIA', label: { es: 'Ciencia', en: 'Science' } },
+          { answer: 'DATOS', label: { es: 'Datos', en: 'Data' } },
+          { answer: 'MAPA', label: { es: 'Mapa', en: 'Map' } },
+          { answer: 'SALA', label: { es: 'Sala', en: 'Room' } }
         ]
       }
     }
@@ -2028,6 +2028,7 @@
       var item;
       var badgeKey;
       var stateKey;
+      var cardClass;
 
       html += '<section class="events-library">';
       html += '<div class="events-library-head"><span class="events-library-kicker" data-i18n="events.library_arcade">' + PepperLib.i18n.t('events.library_arcade') + '</span><h2 data-i18n="events.select_activity">' + PepperLib.i18n.t('events.select_activity') + '</h2><p class="events-library-copy" data-i18n="events.library_copy">' + PepperLib.i18n.t('events.library_copy') + '</p></div>';
@@ -2037,7 +2038,11 @@
         item = activities[i];
         badgeKey = getActivityKindKey(item);
         stateKey = item.enabled ? 'events.available_now' : 'events.coming_soon';
-        html += '<article class="events-activity-card' + (item.enabled ? '' : ' is-disabled') + '">';
+        cardClass = 'events-activity-card events-activity-card--' + escapeHtml(item.type || 'activity') + ' events-activity-card--' + escapeHtml(item.id || 'activity');
+        if (!item.enabled) {
+          cardClass += ' is-disabled';
+        }
+        html += '<article class="' + cardClass + '">';
         html += '<div class="events-activity-top"><span class="events-activity-kind">' + PepperLib.i18n.t(badgeKey) + '</span><span class="events-activity-state">' + PepperLib.i18n.t(stateKey) + '</span></div>';
         html += '<h3>' + escapeHtml(getLangText(item.title)) + '</h3>';
         html += '<p>' + escapeHtml(getLangText(item.description)) + '</p>';

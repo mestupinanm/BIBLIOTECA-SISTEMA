@@ -5,7 +5,7 @@
 
 window.LibraryData.MAP_IMAGE_ES = './assets/images/ESPANOL.png';
 window.LibraryData.MAP_IMAGE_EN = './assets/images/INGLES.png';
-window.LibraryData.ACTIVITIES_URL = './assets/data/activities.json?v=games-3';
+window.LibraryData.ACTIVITIES_URL = './assets/data/activities.json?v=games-5';
 
 window.LibraryData.STRINGS = {
   es: {
@@ -109,9 +109,6 @@ window.LibraryData.STRINGS = {
     'info.day_sun': 'Domingo',
     'info.closed': 'Cerrado',
     'events.screen_title': 'Eventos',
-    'events.trivia_title': 'Trivia de la biblioteca',
-    'events.trivia_desc': 'Pon a prueba tus conocimientos sobre la biblioteca y la universidad.',
-    'events.start': 'Comenzar',
     'events.question': 'Pregunta',
     'events.of': 'de',
     'events.score': 'Puntos',
@@ -268,9 +265,6 @@ window.LibraryData.STRINGS = {
     'info.day_sun': 'Sunday',
     'info.closed': 'Closed',
     'events.screen_title': 'Events',
-    'events.trivia_title': 'Library Trivia',
-    'events.trivia_desc': 'Test your knowledge about the library and the university.',
-    'events.start': 'Start',
     'events.question': 'Question',
     'events.of': 'of',
     'events.score': 'Score',
