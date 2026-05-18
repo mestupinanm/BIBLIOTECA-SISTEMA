@@ -2361,3 +2361,7 @@ button { cursor: pointer; }
 .shelf-item-body::-webkit-scrollbar-track {
   background: transparent;
 }
+
+.nav-category[data-cat="rooms"] .nav-category-items::-webkit-scrollbar-track {
+  margin-bottom: 40px;
+}
