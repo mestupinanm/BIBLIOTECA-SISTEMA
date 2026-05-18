@@ -122,9 +122,9 @@ button { cursor: pointer; }
 
 #btn-back {
   position: absolute;
-  top: 14px;
-  left: 18px;
-  padding-left: 14px;
+  top: 11px;
+  left: 14px;
+  padding: 7px 14px;
 }
 
 #btn-help,
@@ -397,7 +397,7 @@ button { cursor: pointer; }
 
 .greeting-lang-flag {
   display: inline-block;
-  min-width: 52px;
+  min-width: 60px;
   height: 30px;
   margin: 0;
   padding: 0 12px;
@@ -780,9 +780,10 @@ button { cursor: pointer; }
 
 .nav-category-badge {
   display: block;
-  width: 44px;
-  height: 44px;
-  margin: 0 0 12px;
+  width: 47px;
+  height: 47px;
+  margin-left: 0;
+  margin-bottom: 10px;
   line-height: 44px;
   border-radius: 12px;
   background: #DCE4F0;
@@ -791,14 +792,17 @@ button { cursor: pointer; }
 }
 .nav-category-badge svg {
   margin-top: 11px;
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   stroke: #143562;
   vertical-align: top;
 }
 
 .nav-category-copy h3 {
-  margin: 0 0 4px;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 14px;
+  margin-bottom: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 22px;
   font-weight: 800;
@@ -817,9 +821,11 @@ button { cursor: pointer; }
   display: block;
   height: 540px;
   padding-right: 4px;
+  padding-bottom: 28px;
   overflow-y: auto;
   overflow-x: hidden;
   text-align: left;
+  box-sizing: border-box;
 }
 
 .nav-item {
@@ -854,13 +860,13 @@ button { cursor: pointer; }
   white-space: normal;
 }
 .nav-item:after {
-  content: "→";
+  content: "➔";
   position: absolute;
   right: 16px;
   top: 14px;
-  color: #5A6678;
+  color: #143562;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 /* =============================================================

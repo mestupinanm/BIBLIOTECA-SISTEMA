@@ -3,23 +3,30 @@
 
   var appDestinations = {
     reception: { place: 'reception', graph: 1 },
-    reference: { place: 'reference', graph: 1 },
+    coordination: { place: 'coordination', graph: 1 },
     restroom_m: { place: 'restroom_m', graph: 1 },
     restroom_f: { place: 'restroom_f', graph: 1 },
+    restroom_accessible: { place: 'restroom_accessible', graph: 1 },
     book_lift: { place: 'book_lift', graph: 1 },
-    equipment_workshop: { place: 'equipment_workshop', graph: 1 },
-    entry_exit: { place: 'entry_exit', graph: 1 },
+    material_maintenance_workshop: { place: 'material_maintenance_workshop', graph: 1 },
+    sterilization_space: { place: 'sterilization_space', graph: 1 },
+    entry: { place: 'entry', graph: 1 },
+    exit: { place: 'exit', graph: 1 },
     elevator: { place: 'elevator', graph: 1 },
-    stairs_main: { place: 'stairs_main', graph: 1 },
+    stairs_up: { place: 'stairs_up', graph: 1 },
+    stairs_down: { place: 'stairs_down', graph: 1 },
     stairs_emergency: { place: 'stairs_emergency', graph: 1 },
-    room_251: { place: 'room_251', graph: 1 },
+    room_252c: { place: 'room_252c', graph: 1 },
     room_254: { place: 'room_254', graph: 1 },
+    room_255: { place: 'room_255', graph: 1 },
     room_255a: { place: 'room_255a', graph: 1 },
     room_255b: { place: 'room_255b', graph: 1 },
     room_255c: { place: 'room_255c', graph: 1 },
     room_255d: { place: 'room_255d', graph: 1 },
+    room_256: { place: 'room_256', graph: 1 },
     room_257: { place: 'room_257', graph: 1 },
-    room_ml253: { place: 'room_ml253', graph: 1 }
+    room_259a: { place: 'room_259a', graph: 1 },
+    room_259g: { place: 'room_259g', graph: 1 }
   };
 
   var i;
