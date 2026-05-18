@@ -910,6 +910,8 @@ button { cursor: pointer; }
 
 .guide-map-full .map-img,
 .shelves-map-area .map-img {
+  position: relative;
+  z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
@@ -981,7 +983,7 @@ button { cursor: pointer; }
   height: 34px;
   margin-left: -17px;
   margin-top: -17px;
-  z-index: 5;
+  z-index: 20;
 }
 .map-marker-core {
   position: absolute;

@@ -929,6 +929,8 @@
         }
         if (dest) {
           html += PepperLib.Utils.buildMarker(dest.x, dest.y, 'marker-dest');
+        } else if (window.console && window.console.warn) {
+          window.console.warn('[Navigation] No MAP_COORDS entry for destination:', destinationId);
         }
         markers.innerHTML = html;
       }
