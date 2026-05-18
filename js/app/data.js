@@ -417,7 +417,7 @@ window.LibraryData.MAP_COORDS = {
   restroom_f: { x: 5, y: 58 },
   restroom_accessible: { x: 5, y: 54 },
   room_252c: { x: 6.5, y: 90 },
-  room_254: { x: 93, y: 60 },
+  room_254: { x: 98, y: 48 },
   room_255: { x: 48, y: 74 },
   room_255a: { x: 58, y: 74 },
   room_255b: { x: 51, y: 74 },
