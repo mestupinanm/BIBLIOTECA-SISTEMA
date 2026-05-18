@@ -51,6 +51,7 @@ window.LibraryData.STRINGS = {
     'dest.restroom_m': 'Baño hombres',
     'dest.restroom_f': 'Baño mujeres',
     'dest.restroom_accessible': 'Baño minusválidos',
+    'dest.room_251': 'Sala 251',
     'dest.room_252c': 'Sala 252C',
     'dest.room_254': 'Sala 254',
     'dest.room_255': 'Sala 255',
@@ -195,6 +196,7 @@ window.LibraryData.STRINGS = {
     'dest.restroom_m': "Men's restroom",
     'dest.restroom_f': "Women's restroom",
     'dest.restroom_accessible': 'Accessible restroom',
+    'dest.room_251': 'Room 251',
     'dest.room_252c': 'Room 252C',
     'dest.room_254': 'Room 254',
     'dest.room_255': 'Room 255',
@@ -321,6 +323,7 @@ window.LibraryData.MENU_CATEGORIES = {
 };
 
 window.LibraryData.NAV_DEST_CATEGORIES = {
+  room_251: 'rooms',
   room_252c: 'rooms',
   room_254: 'rooms',
   room_255: 'rooms',
@@ -359,6 +362,7 @@ window.LibraryData.NAV_CATEGORIES = [
     id: 'rooms',
     titleKey: 'nav.cat.rooms',
     items: [
+      { id: 'room_251', nameKey: 'dest.room_251' },
       { id: 'room_252c', nameKey: 'dest.room_252c' },
       { id: 'room_254', nameKey: 'dest.room_254' },
       { id: 'room_255', nameKey: 'dest.room_255' },
@@ -416,6 +420,7 @@ window.LibraryData.MAP_COORDS = {
   restroom_m: { x: 5, y: 50 },
   restroom_f: { x: 5, y: 58 },
   restroom_accessible: { x: 5, y: 54 },
+  room_251: { x: 22.14, y: 45.8 },
   room_252c: { x: 6.5, y: 90 },
   room_254: { x: 96.3, y: 40.1 },
   room_255: { x: 96.3, y: 32.6 },

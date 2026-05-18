@@ -16,6 +16,7 @@
     stairs_up: { place: 'stairs_up', graph: 1 },
     stairs_down: { place: 'stairs_down', graph: 1 },
     stairs_emergency: { place: 'stairs_emergency', graph: 1 },
+    room_251: { place: 'room_251', graph: 1 },
     room_252c: { place: 'room_252c', graph: 1 },
     room_254: { place: 'room_254', graph: 1 },
     room_255: { place: 'room_255', graph: 1 },
