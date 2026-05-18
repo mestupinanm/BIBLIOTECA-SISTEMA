@@ -648,10 +648,22 @@ button { cursor: pointer; }
 .menu-card:nth-child(1):after {
   display: none;
 }
+/* Anillo decorativo — tarjeta 5, esquina inferior-derecha, dorado */
 .menu-card:nth-child(5):after,
 .menu-card--accent:after {
-  background: rgba(255,255,255,0.20);
-  color: #FFFFFF;
+  content: "";
+  position: absolute;
+  right: -60px;
+  bottom: -60px;
+  top: auto;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(244, 206, 141, 0.30);
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+  pointer-events: none;
 }
 
 /* Kicker — tarjeta hero */
