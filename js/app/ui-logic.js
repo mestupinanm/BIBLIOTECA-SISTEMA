@@ -916,6 +916,8 @@
       var here = DATA.MAP_COORDS ? DATA.MAP_COORDS.you_are_here : null;
       var dest = DATA.MAP_COORDS ? DATA.MAP_COORDS[destinationId] : null;
       var html = '';
+      var points;
+      var i;
 
       if (destinationEl) {
         destinationEl.textContent = getMapDestinationLabel(destinationId);
@@ -934,7 +936,10 @@
           html += PepperLib.Utils.buildMarker(here.x, here.y, 'marker-here');
         }
         if (dest) {
-          html += PepperLib.Utils.buildMarker(dest.x, dest.y, 'marker-dest');
+          points = Object.prototype.toString.call(dest) === '[object Array]' ? dest : [dest];
+          for (i = 0; i < points.length; i++) {
+            html += PepperLib.Utils.buildMarker(points[i].x, points[i].y, 'marker-dest');
+          }
         } else if (window.console && window.console.warn) {
           window.console.warn('[Navigation] No MAP_COORDS entry for destination:', destinationId);
         }

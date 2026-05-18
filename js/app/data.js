@@ -414,12 +414,21 @@ window.LibraryData.MAP_COORDS = {
   you_are_here: { x: 44.5, y: 43 },
   reception: { x: 43.76, y: 22 },
   coordination: { x: 94.6, y: 10 },
-  elevator: { x: 46, y: 9 },
-  stairs_up: { x: 50, y: 9 },
-  stairs_down: { x: 53, y: 9 },
-  stairs_emergency: { x: 26, y: 9 },
-  entry: { x: 46, y: 9 },
-  exit: { x: 49, y: 9 },
+  elevator: { x: 59.4, y: 22 },
+  stairs_up: [
+    { x: 41.7, y: 44 },
+    { x: 60.3, y: 44 }
+  ],
+  stairs_down: [
+    { x: 41.7, y: 80.5 },
+    { x: 60.3, y: 80.5 }
+  ],
+  stairs_emergency: [
+    { x: 29.9, y: 32.5 },
+    { x: 70, y: 32.5 }
+  ],
+  entry: { x: 51.2, y: 21 },
+  exit: { x: 62.92, y: 22 },
   book_lift: { x: 39.65, y: 19 },
   material_maintenance_workshop: { x: 3.5, y: 37 },
   sterilization_space: { x: 6.5, y: 76.2 },
