@@ -31,7 +31,7 @@ window.LibraryData.STRINGS = {
     'menu.start': 'Comenzar',
     'menu.start_arrow': 'Comenzar ➔',
 
-    'nav.you_are_here': 'Aqui estas',
+    'nav.you_are_here': 'Aquí estás',
     'nav.your_dest': 'Tu destino',
     'nav.screen_title': 'Selecciona un destino',
     'nav.cat.rooms': 'Salas de estudio',
@@ -401,7 +401,7 @@ window.LibraryData.NAV_CATEGORIES = [
 ];
 
 window.LibraryData.MAP_COORDS = {
-  you_are_here: { x: 58, y: 45 },
+  you_are_here: { x: 44.5, y: 43 },
   reception: { x: 48, y: 9 },
   coordination: { x: 52, y: 9 },
   elevator: { x: 46, y: 9 },
@@ -416,7 +416,7 @@ window.LibraryData.MAP_COORDS = {
   restroom_m: { x: 5, y: 50 },
   restroom_f: { x: 5, y: 58 },
   restroom_accessible: { x: 5, y: 54 },
-  room_252c: { x: 3, y: 74 },
+  room_252c: { x: 6.5, y: 90 },
   room_254: { x: 93, y: 60 },
   room_255: { x: 48, y: 74 },
   room_255a: { x: 58, y: 74 },

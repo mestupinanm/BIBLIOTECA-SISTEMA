@@ -254,9 +254,14 @@
     },
 
     setLanguage: function (lang) {
+      var currentScreen;
       this.language = lang || 'es';
       byId('lang-label').textContent = this.language === 'es' ? 'EN' : 'ES';
       PepperLib.i18n.applyToDOM();
+      currentScreen = this.screens[this.current];
+      if (currentScreen && typeof currentScreen.onLanguageChange === 'function') {
+        currentScreen.onLanguageChange();
+      }
       PepperLib.Analytics.log('language_change', { language: this.language });
     },
 
@@ -1084,6 +1089,13 @@
         clearSimulationTimers();
         currentDestination = null;
         addClass(byId('guide-sim-overlay'), 'hidden');
+      },
+
+      onLanguageChange: function () {
+        if (currentDestination) {
+          renderGuide(currentDestination);
+          PepperLib.Utils.setLastAction(getDestinationLabel(currentDestination), currentDestination, (DATA.NAV_DEST_CATEGORIES && DATA.NAV_DEST_CATEGORIES[currentDestination]) || 'navigation');
+        }
       }
     });
 
