@@ -455,7 +455,9 @@ button { cursor: pointer; }
 .menu-container { padding: 28px 32px 28px; }
 
 .menu-title {
-  margin: 0 0 24px;
+  margin-left: 6px;
+  margin-right: 0;
+  margin-bottom: 10px;
   text-align: left;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 48px;
@@ -476,7 +478,7 @@ button { cursor: pointer; }
 .menu-card {
   position: absolute;
   margin: 0;
-  padding: 24px 28px;
+  padding: 28px 28px;
   border: 1px solid #D4CBB1;
   border-radius: 28px;
   background: #FFFFFF;
@@ -500,12 +502,12 @@ button { cursor: pointer; }
 
 /* Hero (navigation = first card) */
 .menu-card:nth-child(1) {
-  left: 0; top: 0;
-  width: 808px; height: 236px;
+  left: 0; top: 40px;
+  width: 808px; height: 230px;
   background: #143562;
   color: #FFFFFF;
   border-color: #143562;
-  padding: 30px 36px;
+  padding: 36px 36px;
 }
 /* Events accent (5th card) */
 .menu-card:nth-child(5),
@@ -515,23 +517,23 @@ button { cursor: pointer; }
   border-color: #D49545;
 }
 .menu-card:nth-child(5) {
-  left: 824px; top: 0;
-  width: 392px; height: 236px;
+  left: 819px; top: 40px;
+  width: 392px; height: 230px;
 }
 /* Shelves */
 .menu-card:nth-child(2) {
-  left: 0; top: 252px;
-  width: 397px; height: 372px;
+  left: 0; top: 285px;
+  width: 397px; height:230px;
 }
 /* Books */
 .menu-card:nth-child(3) {
-  left: 410px; top: 252px;
-  width: 397px; height: 372px;
+  left: 410px; top: 285px;
+  width: 397px; height: 230px;
 }
 /* Info */
 .menu-card:nth-child(4) {
-  left: 819px; top: 252px;
-  width: 397px; height: 372px;
+  left: 819px; top: 285px;
+  width: 397px; height: 230px;
 }
 
 /* Card icon */
@@ -591,14 +593,13 @@ button { cursor: pointer; }
 
 /* Hero label/desc */
 .menu-card:nth-child(1) .menu-card-label {
-  font-size: 48px;
+  font-size: 32px;
   color: #FFFFFF;
-  max-width: 520px;
 }
 .menu-card:nth-child(1) .menu-card-desc {
   font-size: 17px;
   color: rgba(255,255,255,0.78);
-  max-width: 520px;
+
 }
 
 /* Accent label/desc */

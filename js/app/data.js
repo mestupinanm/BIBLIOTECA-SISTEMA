@@ -16,7 +16,7 @@ window.LibraryData.STRINGS = {
     'help.message': 'Un bibliotecario ha sido notificado y vendra a asistirte. Por favor espera aqui.',
     'help.dismiss': 'Cerrar',
     'help.location_unknown': 'No registrada',
-    'menu.title': 'Como puedo ayudarte?',
+    'menu.title': '¿Cómo puedo ayudarte?',
     'menu.navigation': 'A donde voy?',
     'menu.navigation.desc': 'Te guio a tu destino',
     'menu.shelves': 'Buscar libro',
