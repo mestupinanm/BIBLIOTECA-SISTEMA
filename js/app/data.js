@@ -10,7 +10,6 @@ window.LibraryData.ACTIVITIES_URL = './assets/data/activities.json?v=games-9';
 window.LibraryData.STRINGS = {
   es: {
     'nav.back': 'Volver',
-    'idle.hint': 'Toca la pantalla para comenzar',
     'help.button': 'Ayuda',
     'help.title': 'Necesitas ayuda?',
     'help.message': 'Un bibliotecario ha sido notificado y vendra a asistirte. Por favor espera aqui.',
@@ -177,7 +176,6 @@ window.LibraryData.STRINGS = {
   },
   en: {
     'nav.back': 'Back',
-    'idle.hint': 'Touch the screen to start',
     'help.button': 'Help',
     'help.title': 'Need help?',
     'help.message': 'A librarian has been notified and will come to assist you. Please wait here.',
