@@ -1955,6 +1955,7 @@
     var score = 0;
     var answered = false;
     var selectedAnswer = null;
+    var triviaStartedAt = 0;
     var wordsearchSelection = [];
     var wordsearchFound = {};
     var wordsearchFoundCells = {};
@@ -2037,6 +2038,17 @@
       memoryDeck = shuffleItems(cards);
     }
 
+    function pad2(value) {
+      return String(value < 10 ? '0' + value : value);
+    }
+
+    function formatElapsedTime(milliseconds) {
+      var totalSeconds = Math.max(0, Math.floor((milliseconds || 0) / 1000));
+      var minutes = Math.floor(totalSeconds / 60);
+      var seconds = totalSeconds % 60;
+      return minutes + ':' + pad2(seconds);
+    }
+
     function loadActivities(callback) {
       if (activities.length) {
         callback();
@@ -2056,6 +2068,7 @@
       var intro = byId('events-intro');
       var question = byId('events-question');
       var result = byId('events-result');
+      var eventsContainer = intro ? intro.parentNode : null;
       var html = '';
       var i;
       var item;
@@ -2088,6 +2101,7 @@
       html += '</div></section>';
 
       intro.innerHTML = html;
+      removeClass(eventsContainer, 'events-container--trivia-result');
       removeClass(intro, 'hidden');
       addClass(question, 'hidden');
       addClass(result, 'hidden');
@@ -2489,6 +2503,7 @@
       var container = byId('events-question');
       var intro = byId('events-intro');
       var result = byId('events-result');
+      var eventsContainer = container ? container.parentNode : null;
       var questions = activeActivity.content.questions;
       var question = questions[currentQuestion];
       var options = question.options[PepperLib.State.language] || question.options.es;
@@ -2499,6 +2514,7 @@
 
       addClass(intro, 'hidden');
       addClass(result, 'hidden');
+      removeClass(eventsContainer, 'events-container--trivia-result');
 
       html += '<article class="events-question-card">';
       html += '<div class="events-question-topbar"><div><span class="events-progress-label">' + PepperLib.i18n.t('events.question') + ' <strong>' + String(currentQuestion + 1).replace(/^(\d)$/, '0$1') + '</strong> ' + PepperLib.i18n.t('events.of') + ' ' + String(questions.length).replace(/^(\d)$/, '0$1') + '</span></div><div class="events-progress-score"><span>' + PepperLib.i18n.t('events.score') + '</span><strong id="trivia-score-value">' + displayScore + '</strong></div></div>';
@@ -2596,29 +2612,58 @@
     function renderResult() {
       var result = byId('events-result');
       var question = byId('events-question');
+      var eventsContainer = result ? result.parentNode : null;
+      var total = activeActivity.content.questions.length;
+      var incorrect = total - score;
+      var elapsed = triviaStartedAt ? formatElapsedTime(new Date().getTime() - triviaStartedAt) : '0:00';
       var percentage;
       var messageKey;
+      var copyKey;
+      var replayKey;
+      var ringClass;
+      var retryIcon;
 
       addClass(question, 'hidden');
+      addClass(eventsContainer, 'events-container--trivia-result');
       removeClass(result, 'hidden');
 
-      percentage = activeActivity && activeActivity.content && activeActivity.content.questions.length ? Math.round((score / activeActivity.content.questions.length) * 100) : 0;
+      percentage = activeActivity && activeActivity.content && total ? Math.round((score / total) * 100) : 0;
       if (percentage >= 80) {
         messageKey = 'events.result_great';
+        copyKey = 'events.result_copy_great';
+        replayKey = 'events.play_again';
+        ringClass = ' is-great';
       } else if (percentage >= 50) {
         messageKey = 'events.result_good';
+        copyKey = 'events.result_copy_great';
+        replayKey = 'events.play_again';
+        ringClass = ' is-good';
       } else {
         messageKey = 'events.result_ok';
+        copyKey = 'events.result_copy_ok';
+        replayKey = 'events.try_again';
+        ringClass = ' is-low';
       }
 
+      retryIcon = '<svg class="events-result-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.34 5.66"></path><path d="M20 5v6h-6"></path></svg>';
       result.innerHTML =
-        '<article class="events-result-card">' +
-        '<span class="events-result-kicker">' + escapeHtml(getLangText(activeActivity.title)) + '</span>' +
-        '<div class="events-result-score">' + score + '/' + activeActivity.content.questions.length + '</div>' +
-        '<div class="events-result-label">' + PepperLib.i18n.t(messageKey) + '</div>' +
+        '<article class="events-result-card events-result-card--trivia">' +
+        '<div class="events-result-layout">' +
+        '<div class="events-result-orbit' + ringClass + '"><span class="events-result-orbit-kicker">Tu puntaje</span><div><strong>' + score + '</strong><span>/' + total + '</span></div></div>' +
+        '<div class="events-result-summary">' +
+        '<h2>' + PepperLib.i18n.t(messageKey) + '</h2>' +
+        '<p>' + PepperLib.i18n.t(copyKey) + '</p>' +
+        '<div class="events-result-rule"></div>' +
+        '<div class="events-result-stats">' +
+        '<div><span>' + PepperLib.i18n.t('events.result_correct') + '</span><strong class="is-correct">' + pad2(score) + '</strong></div>' +
+        '<div><span>' + PepperLib.i18n.t('events.result_incorrect') + '</span><strong class="is-incorrect">' + pad2(incorrect) + '</strong></div>' +
+        '<div><span>' + PepperLib.i18n.t('events.result_time') + '</span><strong>' + elapsed + '</strong></div>' +
+        '</div>' +
         '<div class="events-result-actions">' +
-        '<button class="btn btn--primary" id="btn-trivia-replay">' + PepperLib.i18n.t('events.play_again') + '</button>' +
-        '<button class="btn btn--secondary" id="btn-trivia-menu">' + PepperLib.i18n.t('events.back_menu') + '</button>' +
+        '<button class="btn btn--primary events-result-replay" id="btn-trivia-replay">' + PepperLib.i18n.t(replayKey) + retryIcon + '</button>' +
+        '<button class="btn btn--secondary events-result-menu" id="btn-trivia-menu">' + PepperLib.i18n.t('events.back_menu') + '</button>' +
+        '</div>' +
+        '</div>' +
         '</div>' +
         '</article>';
 
@@ -2632,6 +2677,7 @@
         score = 0;
         answered = false;
         selectedAnswer = null;
+        triviaStartedAt = 0;
         renderLibrary();
       };
     }
@@ -2669,6 +2715,7 @@
     }
 
     function startTriviaActivity() {
+      triviaStartedAt = new Date().getTime();
       renderQuestion();
     }
 
