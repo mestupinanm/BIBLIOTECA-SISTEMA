@@ -1245,28 +1245,100 @@
 
     function buildShelfIndex() {
       var topics = DATA.SHELF_TOPICS || [];
+      var rowCounters = {};
       var i;
       var j;
       var entry;
+      var rowIndex;
+      var layout;
+      var size;
+      var normalizedEntry;
 
       shelfIndex = {};
 
       for (i = 0; i < topics.length; i++) {
         entry = topics[i];
+        rowIndex = rowCounters[entry.shelf] || 0;
+        layout = DATA.SHELF_SIZE_LAYOUT && DATA.SHELF_SIZE_LAYOUT[entry.shelf] ? DATA.SHELF_SIZE_LAYOUT[entry.shelf] : null;
+        size = entry.size || (layout && layout[rowIndex]) || 'single';
+        rowCounters[entry.shelf] = rowIndex + 1;
+
+        normalizedEntry = {
+          shelf: entry.shelf,
+          size: size,
+          coordKey: entry.size || layout ? ('shelf_' + entry.shelf + '_' + size) : (entry.coordKey || ('shelf_' + entry.shelf + '_' + size)),
+          topics: entry.topics || []
+        };
+
         if (!shelfIndex[entry.shelf]) {
           shelfIndex[entry.shelf] = {
             shelf: entry.shelf,
             coordKey: entry.coordKey,
-            topics: []
+            topics: [],
+            entries: []
           };
         }
 
-        for (j = 0; j < entry.topics.length; j++) {
-          if (shelfIndex[entry.shelf].topics.indexOf(entry.topics[j]) === -1) {
-            shelfIndex[entry.shelf].topics.push(entry.topics[j]);
+        shelfIndex[entry.shelf].entries.push(normalizedEntry);
+
+        for (j = 0; j < normalizedEntry.topics.length; j++) {
+          if (shelfIndex[entry.shelf].topics.indexOf(normalizedEntry.topics[j]) === -1) {
+            shelfIndex[entry.shelf].topics.push(normalizedEntry.topics[j]);
           }
         }
       }
+    }
+
+    function topicBelongsToEntry(entry, topic) {
+      var normalizedTopic = normalizeText(topic);
+      var i;
+
+      for (i = 0; i < entry.topics.length; i++) {
+        if (normalizeText(entry.topics[i]) === normalizedTopic) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    function getShelfEntryCoord(entry) {
+      var coords = DATA.MAP_COORDS || {};
+      var exact = coords[entry.coordKey];
+
+      if (exact && typeof exact.x === 'number' && typeof exact.y === 'number') {
+        return exact;
+      }
+
+      return null;
+    }
+
+    function getShelfTopicCoords(shelf, topic) {
+      var entries = shelf && shelf.entries ? shelf.entries : [];
+      var coords = [];
+      var used = {};
+      var i;
+      var coord;
+      var key;
+
+      for (i = 0; i < entries.length; i++) {
+        if (!topicBelongsToEntry(entries[i], topic)) {
+          continue;
+        }
+
+        coord = getShelfEntryCoord(entries[i]);
+        if (!coord) {
+          continue;
+        }
+
+        key = entries[i].coordKey + ':' + coord.x + ':' + coord.y;
+        if (!used[key]) {
+          coords.push(coord);
+          used[key] = true;
+        }
+      }
+
+      return coords;
     }
 
     function filteredShelves() {
@@ -1312,7 +1384,7 @@
     function renderMap() {
       var shelf = activeShelf ? shelfIndex[activeShelf] : null;
       var hasDestination = activeShelf && activeTopic;
-      var coord = hasDestination && shelf && DATA.MAP_COORDS ? DATA.MAP_COORDS[shelf.coordKey] : null;
+      var coords = hasDestination && shelf ? getShelfTopicCoords(shelf, activeTopic) : [];
       var hint = byId('shelves-map-hint');
       var actions = byId('shelves-info-actions');
       var guideButton = byId('btn-shelves-guide-me');
@@ -1321,6 +1393,7 @@
       var image = byId('shelves-map-img');
       var badge = byId('shelves-map-badge');
       var markerHtml = '';
+      var i;
 
       if (image) {
         image.src = PepperLib.Utils.getMapSrc();
@@ -1330,8 +1403,8 @@
         if (hasDestination && DATA.MAP_COORDS && DATA.MAP_COORDS.you_are_here) {
           markerHtml += PepperLib.Utils.buildMarker(DATA.MAP_COORDS.you_are_here.x, DATA.MAP_COORDS.you_are_here.y, 'marker-here');
         }
-        if (hasDestination && coord) {
-          markerHtml += PepperLib.Utils.buildMarker(coord.x, coord.y, 'marker-dest');
+        for (i = 0; i < coords.length; i++) {
+          markerHtml += PepperLib.Utils.buildMarker(coords[i].x, coords[i].y, 'marker-dest');
         }
         markers.innerHTML = markerHtml;
       }
