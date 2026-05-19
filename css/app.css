@@ -1259,14 +1259,15 @@ button { cursor: pointer; }
 }
 
 .shelves-list {
-  height: 93.5%;
-  padding-right: 4px;
+  height: 93%;
+  padding-right: 14px;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
 .shelf-item {
   display: block;
+  width: 99%;
   margin: 0 0 10px;
   padding: 18px 18px;
   border: 1px solid #D4CBB1;
@@ -1274,9 +1275,13 @@ button { cursor: pointer; }
   background: #FFFFFF;
   color: #0F1B2D;
   box-shadow: 0 1px 2px rgba(20,35,58,0.04);
+  box-sizing: border-box;
   -webkit-transition: background .15s ease, border-color .15s ease;
   transition: background .15s ease, border-color .15s ease;
   cursor: pointer;
+}
+.shelf-item:last-child {
+  margin-bottom: 0;
 }
 .shelf-item:active,
 .shelf-item:hover {
@@ -1367,8 +1372,8 @@ button { cursor: pointer; }
   padding-top: 6px;
   padding-left: 2px;
   border-top: 1px solid rgba(20,35,58,0.16);
-  max-height: 150px;
-  overflow-y: auto;
+  max-height: none;
+  overflow: visible;
 }
 
 .shelf-topic-list {
