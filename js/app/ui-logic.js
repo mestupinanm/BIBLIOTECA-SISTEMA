@@ -102,7 +102,7 @@
               en: 'Which tool helps you locate a book on the shelves?'
             },
             options: {
-              es: ['GPS Bibliografico', 'Cineteca', 'Sala Rubik', 'Buzon de devolucion'],
+              es: ['GPS Bibliográfico', 'Cineteca', 'Sala Rubik', 'Buzon de devolucion'],
               en: ['Bibliographic GPS', 'Film library', 'Rubik room', 'Return box']
             },
             correct: 0
@@ -113,13 +113,13 @@
     {
       id: 'author-memory',
       type: 'memory',
-      enabled: false,
+      enabled: true,
       title: { es: 'Memoria de autores', en: 'Author memory' },
       description: {
         es: 'Empareja autores con sus obras mas conocidas.',
         en: 'Match authors with their best-known works.'
       },
-      cta: { es: 'Proximamente', en: 'Coming soon' },
+      cta: { es: 'Comenzar', en: 'Start' },
       content: {
         pairs: [
           { author: 'Gabriel Garcia Marquez', work: { es: 'Cien anos de soledad', en: 'One Hundred Years of Solitude' } },
@@ -1316,7 +1316,6 @@
       var actions = byId('shelves-info-actions');
       var markers = byId('shelves-map-markers');
       var image = byId('shelves-map-img');
-      var badge = byId('shelves-map-badge');
       var label;
 
       if (image) {
@@ -1330,16 +1329,6 @@
       if (hint) {
         label = activeShelf ? ((activeTopic ? activeTopic + ' · ' : '') + PepperLib.i18n.t('shelves.shelf_label') + ' ' + activeShelf) : PepperLib.i18n.t('shelves.select_hint');
         hint.textContent = label;
-      }
-
-      if (badge) {
-        if (activeShelf) {
-          badge.innerHTML = '<span class="shelves-map-badge-num">' + activeShelf + '</span><span><em>' + PepperLib.i18n.t('shelves.shelf_label') + ' · ' + PepperLib.i18n.t('shelves.map_destination') + '</em><strong>' + escapeHtml(activeTopic || (shelf && shelf.topics && shelf.topics[0]) || '') + '</strong></span>';
-          removeClass(badge, 'hidden');
-        } else {
-          badge.innerHTML = '';
-          addClass(badge, 'hidden');
-        }
       }
 
       toggleClass(actions, 'hidden', !activeShelf);
@@ -1383,16 +1372,17 @@
 
         html += '<article class="shelf-item' + (activeShelf === shelf.shelf ? ' active' : '') + '" data-shelf="' + shelf.shelf + '">';
         html += '<button class="shelf-item-header" data-shelf-toggle="' + shelf.shelf + '">';
-        html += '<div class="shelf-item-num">' + shelf.shelf + '</div>';
+        html += '<div class="shelf-item-num">' + shelf.shelf + '.</div>';
         html += '<div class="shelf-item-info">';
-        html += '<div class="shelf-item-subtitle">' + PepperLib.i18n.t('shelves.shelf_label') + ' · ' + visibleTopics.length + ' ' + PepperLib.i18n.t('shelves.topics_count') + '</div>';
-        html += '<div class="shelf-item-title">' + PepperLib.i18n.t(expanded ? 'shelves.hide_topics' : 'shelves.view_topics') + '</div>';
+        html += '<div class="shelf-item-title">' + PepperLib.i18n.t('shelves.shelf_label') + '</div>';
+        html += '<div class="shelf-item-subtitle">' + visibleTopics.length + ' ' + PepperLib.i18n.t('shelves.topics_count') + '</div>';
         html += '</div>';
-        html += '<span class="shelf-item-cta">›</span>';
+        html += '<span class="shelf-item-cta">' + PepperLib.i18n.t(expanded ? 'shelves.hide_topics' : 'shelves.view_topics') + '</span>';
         html += '</button>';
 
         if (expanded) {
           html += '<div class="shelf-item-body">';
+          html += '<p class="shelf-item-helper">' + PepperLib.i18n.t('shelves.tap_topic') + '</p>';
           html += '<div class="shelf-topic-list">';
           for (j = 0; j < visibleTopics.length; j++) {
             html += '<button class="shelf-topic-tag' + (activeTopic === visibleTopics[j] ? ' is-active' : '') + '" data-shelf-topic="' + shelf.shelf + '" data-topic="' + escapeHtml(visibleTopics[j]) + '">' + escapeHtml(visibleTopics[j]) + '</button>';
@@ -1479,7 +1469,7 @@
         PepperLib.Inactivity.reset();
         buildShelfIndex();
         searchTerm = '';
-        activeShelf = null;
+        activeShelf = '01';
         activeTopic = null;
         byId('shelves-search').value = '';
         PepperLib.Utils.setLastAction(PepperLib.i18n.t('shelves.screen_title'), 'shelves', 'shelves');
