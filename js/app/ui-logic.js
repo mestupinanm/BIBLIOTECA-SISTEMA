@@ -1377,7 +1377,7 @@
         html += '<div class="shelf-item-title">' + PepperLib.i18n.t('shelves.shelf_label') + '</div>';
         html += '<div class="shelf-item-subtitle">' + visibleTopics.length + ' ' + PepperLib.i18n.t('shelves.topics_count') + '</div>';
         html += '</div>';
-        html += '<span class="shelf-item-cta">' + PepperLib.i18n.t(expanded ? 'shelves.hide_topics' : 'shelves.view_topics') + '</span>';
+        html += '<span class="shelf-item-cta" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg></span>';
         html += '</button>';
 
         if (expanded) {

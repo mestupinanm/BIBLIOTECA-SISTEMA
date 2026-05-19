@@ -1259,7 +1259,7 @@ button { cursor: pointer; }
 }
 
 .shelves-list {
-  height: 100%;
+  height: 93.5%;
   padding-right: 4px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -1268,7 +1268,7 @@ button { cursor: pointer; }
 .shelf-item {
   display: block;
   margin: 0 0 10px;
-  padding: 20px 18px;
+  padding: 18px 18px;
   border: 1px solid #D4CBB1;
   border-radius: 18px;
   background: #FFFFFF;
@@ -1303,11 +1303,11 @@ button { cursor: pointer; }
 
 .shelf-item-num {
   display: inline-block;
-  width: 78px;
+  width: 50px;
   margin: 0 18px 0 0;
   color: #B3A684;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 42px;
+  font-size: 38px;
   font-weight: 800;
   line-height: .95;
   letter-spacing: -1px;
@@ -1317,15 +1317,15 @@ button { cursor: pointer; }
 
 .shelf-item-info {
   display: inline-block;
-  width: 62%;
+  width: 58%;
   vertical-align: top;
 }
 .shelf-item-title {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin-top: 7px;
+  margin-top: 4.1px;
   font-size: 14px;
   font-weight: 800;
-  letter-spacing: 1.4px;
+  letter-spacing: 1px;
   color: #7A5419;
   line-height: 1.15;
   text-transform: uppercase;
@@ -1336,22 +1336,36 @@ button { cursor: pointer; }
   color: #5A6678;
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .shelf-item-cta {
   float: right;
-  margin-top: 12px;
+  width: 32px;
+  height: 32px;
+  margin-top: 5px;
   color: #5A6678;
-  font-size: 34px;
-  font-weight: 700;
-  line-height: 1;
+  line-height: 32px;
+  text-align: center;
+}
+
+.shelf-item-cta svg {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-top: 4px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .shelf-item-body {
-  margin-top: 18px;
-  padding-top: 18px;
+  margin-top: 16px;
+  padding-top: 6px;
+  padding-left: 2px;
   border-top: 1px solid rgba(20,35,58,0.16);
   max-height: 150px;
   overflow-y: auto;
@@ -1362,7 +1376,7 @@ button { cursor: pointer; }
 }
 .shelf-topic-tag {
   display: inline-block;
-  margin: 0 8px 8px 0;
+  margin: 0 6px 6px 0;
   padding: 7px 12px;
   border: 1px solid #D4CBB1;
   border-radius: 999px;
@@ -1388,11 +1402,11 @@ button { cursor: pointer; }
 .shelves-map-area {
   position: relative;
   width: 100%;
-  height: 555px;
+  height: 535px;
   margin: 0;
   border: 1px solid #D4CBB1;
   border-radius: 26px;
-  background: #229B8D;
+  background: #039587;
   overflow: hidden;
   box-shadow: 0 1px 2px rgba(20,35,58,0.04);
 }
@@ -1447,7 +1461,7 @@ button { cursor: pointer; }
 }
 
 .shelves-map-footer {
-  margin-top: 18px;
+  margin-top: 17px;
   padding-top: 0;
 }
 .shelves-map-hint {
