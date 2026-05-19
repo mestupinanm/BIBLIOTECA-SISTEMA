@@ -113,13 +113,13 @@
     {
       id: 'author-memory',
       type: 'memory',
-      enabled: true,
+      enabled: false,
       title: { es: 'Memoria de autores', en: 'Author memory' },
       description: {
         es: 'Empareja autores con sus obras mas conocidas.',
         en: 'Match authors with their best-known works.'
       },
-      cta: { es: 'Comenzar', en: 'Start' },
+      cta: { es: 'Proximamente', en: 'Coming soon' },
       content: {
         pairs: [
           { author: 'Gabriel Garcia Marquez', work: { es: 'Cien anos de soledad', en: 'One Hundred Years of Solitude' } },
@@ -1316,6 +1316,7 @@
       var actions = byId('shelves-info-actions');
       var markers = byId('shelves-map-markers');
       var image = byId('shelves-map-img');
+      var badge = byId('shelves-map-badge');
       var label;
 
       if (image) {
@@ -1329,6 +1330,16 @@
       if (hint) {
         label = activeShelf ? ((activeTopic ? activeTopic + ' · ' : '') + PepperLib.i18n.t('shelves.shelf_label') + ' ' + activeShelf) : PepperLib.i18n.t('shelves.select_hint');
         hint.textContent = label;
+      }
+
+      if (badge) {
+        if (activeShelf) {
+          badge.innerHTML = '<span class="shelves-map-badge-num">' + activeShelf + '</span><span><em>' + PepperLib.i18n.t('shelves.shelf_label') + ' · ' + PepperLib.i18n.t('shelves.map_destination') + '</em><strong>' + escapeHtml(activeTopic || (shelf && shelf.topics && shelf.topics[0]) || '') + '</strong></span>';
+          removeClass(badge, 'hidden');
+        } else {
+          badge.innerHTML = '';
+          addClass(badge, 'hidden');
+        }
       }
 
       toggleClass(actions, 'hidden', !activeShelf);
@@ -1372,17 +1383,16 @@
 
         html += '<article class="shelf-item' + (activeShelf === shelf.shelf ? ' active' : '') + '" data-shelf="' + shelf.shelf + '">';
         html += '<button class="shelf-item-header" data-shelf-toggle="' + shelf.shelf + '">';
-        html += '<div class="shelf-item-num">' + shelf.shelf + '.</div>';
+        html += '<div class="shelf-item-num">' + shelf.shelf + '</div>';
         html += '<div class="shelf-item-info">';
-        html += '<div class="shelf-item-title">' + PepperLib.i18n.t('shelves.shelf_label') + '</div>';
-        html += '<div class="shelf-item-subtitle">' + visibleTopics.length + ' ' + PepperLib.i18n.t('shelves.topics_count') + '</div>';
+        html += '<div class="shelf-item-subtitle">' + PepperLib.i18n.t('shelves.shelf_label') + ' · ' + visibleTopics.length + ' ' + PepperLib.i18n.t('shelves.topics_count') + '</div>';
+        html += '<div class="shelf-item-title">' + PepperLib.i18n.t(expanded ? 'shelves.hide_topics' : 'shelves.view_topics') + '</div>';
         html += '</div>';
-        html += '<span class="shelf-item-cta">' + PepperLib.i18n.t(expanded ? 'shelves.hide_topics' : 'shelves.view_topics') + '</span>';
+        html += '<span class="shelf-item-cta">›</span>';
         html += '</button>';
 
         if (expanded) {
           html += '<div class="shelf-item-body">';
-          html += '<p class="shelf-item-helper">' + PepperLib.i18n.t('shelves.tap_topic') + '</p>';
           html += '<div class="shelf-topic-list">';
           for (j = 0; j < visibleTopics.length; j++) {
             html += '<button class="shelf-topic-tag' + (activeTopic === visibleTopics[j] ? ' is-active' : '') + '" data-shelf-topic="' + shelf.shelf + '" data-topic="' + escapeHtml(visibleTopics[j]) + '">' + escapeHtml(visibleTopics[j]) + '</button>';
@@ -1469,7 +1479,7 @@
         PepperLib.Inactivity.reset();
         buildShelfIndex();
         searchTerm = '';
-        activeShelf = '01';
+        activeShelf = null;
         activeTopic = null;
         byId('shelves-search').value = '';
         PepperLib.Utils.setLastAction(PepperLib.i18n.t('shelves.screen_title'), 'shelves', 'shelves');
@@ -2645,7 +2655,7 @@
         ringClass = ' is-low';
       }
 
-      retryIcon = '<svg class="events-result-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.34 5.66"></path><path d="M20 5v6h-6"></path></svg>';
+      retryIcon = '<svg class="events-result-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.6 9.4a7 7 0 1 0 .3 5.1"></path><path d="M18.6 4.8v4.6h-4.6"></path></svg>';
       result.innerHTML =
         '<article class="events-result-card events-result-card--trivia">' +
         '<div class="events-result-layout">' +

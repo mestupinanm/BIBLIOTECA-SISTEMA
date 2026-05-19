@@ -101,7 +101,7 @@
               "en": "Which tool helps you locate a book on the shelves?"
             },
             "options": {
-              "es": ["GPS Bibliogrâfico", "Cineteca", "Sala Rubik", "Buzon de devolución"],
+              "es": ["GPS Bibliográfico", "Cineteca", "Sala Rubik", "Buzon de devolución"],
               "en": ["Bibliographic GPS", "Film library", "Rubik room", "Return box"]
             },
             "correct": 0
@@ -112,18 +112,18 @@
     {
       "id": "author-memory",
       "type": "memory",
-      "enabled": true,
+      "enabled": false,
       "title": {
         "es": "Memoria de autores",
         "en": "Author memory"
       },
       "description": {
-        "es": "Empareja autores con sus obras mas conocidas.",
+        "es": "Empareja autores con sus obras mas conocidas. Disponible muy pronto!",
         "en": "Match authors with their best-known works."
       },
       "cta": {
-        "es": "Comenzar",
-        "en": "Start"
+        "es": "Proximamente",
+        "en": "Coming soon"
       },
       "content": {
         "pairs": [

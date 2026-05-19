@@ -5,7 +5,7 @@
 
 window.LibraryData.MAP_IMAGE_ES = './assets/images/ESPANOL.png';
 window.LibraryData.MAP_IMAGE_EN = './assets/images/INGLES.png';
-window.LibraryData.ACTIVITIES_URL = './assets/data/activities.json?v=games-8';
+window.LibraryData.ACTIVITIES_URL = './assets/data/activities.json?v=games-9';
 
 window.LibraryData.STRINGS = {
   es: {
@@ -117,8 +117,8 @@ window.LibraryData.STRINGS = {
     'events.result_great': 'Excelente!',
     'events.result_good': 'Bien hecho!',
     'events.result_ok': 'Sigue intentando!',
-    'events.result_copy_great': 'Conoces la biblioteca a fondo. Listo para volver a probar?',
-    'events.result_copy_ok': 'No te preocupes, la practica hace al maestro. Otra vuelta?',
+    'events.result_copy_great': 'Conoces la biblioteca a fondo. ¿Listo para volver a probar?',
+    'events.result_copy_ok': 'No te preocupes, la practica hace al maestro. ¿Otra vuelta?',
     'events.result_correct': 'Correctas',
     'events.result_incorrect': 'Incorrectas',
     'events.result_time': 'Tiempo',
@@ -143,6 +143,8 @@ window.LibraryData.STRINGS = {
     'events.memory_hint': 'Encuentra el autor y su obra correspondiente.',
     'events.memory_done': 'Completaste la memoria de autores!',
     'shelves.screen_title': 'Buscar libro por tema',
+    'shelves.eyebrow': 'Estanterias · 6 secciones',
+    'shelves.map_destination': 'Tu destino',
     'shelves.panel_hint': 'Toca una estanteria para ver sus temas',
     'shelves.search_placeholder': 'Busca un tema...',
     'shelves.search_meta_default': 'Explora las estanterias o escribe un tema.',
@@ -305,6 +307,8 @@ window.LibraryData.STRINGS = {
     'events.memory_hint': 'Find each author and the matching work.',
     'events.memory_done': 'You completed the author memory game!',
     'shelves.screen_title': 'Find book by topic',
+    'shelves.eyebrow': 'Shelves · 6 sections',
+    'shelves.map_destination': 'Your destination',
     'shelves.panel_hint': 'Tap a shelf to see its topics',
     'shelves.search_placeholder': 'Search a topic...',
     'shelves.search_meta_default': 'Browse the shelves or type a topic.',
