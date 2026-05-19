@@ -116,7 +116,7 @@ button { cursor: pointer; }
 .topbar-btn svg {
   display: inline-block;
   vertical-align: middle;
-  margin-right: 5px;
+  margin-right: 1px;
   opacity: 0.85;
 }
 
