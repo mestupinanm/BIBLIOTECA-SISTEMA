@@ -119,6 +119,10 @@ button { cursor: pointer; }
   margin-right: 1px;
   opacity: 0.85;
 }
+.topbar-btn span {
+  position: relative;
+  top: 1.2px;
+}
 
 #btn-back {
   position: absolute;
