@@ -20,8 +20,8 @@
         "questions": [
           {
             "question": {
-              "es": "En que piso se encuentra la Sala de Ciencias e Ingenieria?",
-              "en": "On which floor is the Science and Engineering Room located?"
+              "es": "En que piso se encuentra la sala de ciencias e ingeniería?",
+              "en": "On which floor is the science and engineering room located?"
             },
             "options": {
               "es": ["Piso 1", "Piso 2", "Piso 3", "Piso 4"],
@@ -31,45 +31,78 @@
           },
           {
             "question": {
-              "es": "Cuantas salas de estudio tiene esta seccion de la biblioteca?",
-              "en": "How many study rooms does this section of the library have?"
+              "es": "¿En que año fue fundada la Universidad de los Andes?",
+              "en": "In what year was Universidad de los Andes founded?"
+            },
+            "options": {
+              "es": ["1948", "1956", "1972", "1986"],
+              "en": ["1948", "1956", "1972", "1986"]
+            },
+            "correct": 0
+          },
+          {
+            "question": {
+              "es": "¿Cuántas salas de estudio tiene este piso de la biblioteca?",
+              "en": "How many study rooms does this floor of the library have?"
             },
             "options": {
               "es": ["8", "10", "11", "12"],
               "en": ["8", "10", "11", "12"]
             },
+            "correct": 3
+          },
+          {
+            "question": {
+              "es": "¿Quién lideró la fundación de la Universidad de los Andes?",
+              "en": "Who led the founding of Universidad de los Andes?"
+            },
+            "options": {
+              "es": ["Mario Laserna Pinzón", "Alberto Lleras Camargo", "Ramon de Zubiria", "Albert Einstein"],
+              "en": ["Mario Laserna Pinzon", "Alberto Lleras Camargo", "Ramon de Zubiria", "Albert Einstein"]
+            },
+            "correct": 0
+          },
+          {
+            "question": {
+              "es": "¿Cómo se llama el robot que te esta asistiendo?",
+              "en": "What is the name of the robot assisting you?"
+            },
+            "options": {
+              "es": ["NAO", "Pepper", "Nova", "Atlas"],
+              "en": ["NAO", "Pepper", "Nova", "Atlas"]
+            },
             "correct": 2
           },
           {
             "question": {
-              "es": "Como se llama el robot que te esta asistiendo?",
-              "en": "What is the name of the robot assisting you?"
+              "es": "¿Cómo puedes reservar una sala de estudio?",
+              "en": "How can you reserve a study room?"
             },
             "options": {
-              "es": ["NAO", "Pepper", "Spot", "Atlas"],
-              "en": ["NAO", "Pepper", "Spot", "Atlas"]
+              "es": ["Por el portal web o codigo QR", "Solo por teléfono", "Solo en el piso 4", "Enviando un correo"],
+              "en": ["Through the web portal or QR code", "Only by phone", "Only on floor 4", "By sending an email"]
             },
-            "correct": 1
+            "correct": 0
           },
           {
             "question": {
-              "es": "Cual opcion usas si quieres llegar a una sala o servicio?",
-              "en": "Which option do you use if you want to reach a room or service?"
+              "es": "¿Cómo se llama la mascota iconica de Uniandes?",
+              "en": "What is the name of Uniandes iconic mascot?"
             },
             "options": {
-              "es": ["Noticias", "Ir a un lugar", "Ayuda", "Opinion"],
-              "en": ["News", "Go to a place", "Help", "Feedback"]
+              "es": ["Seneca", "Monserrate", "Rubik", "Nova"],
+              "en": ["Seneca", "Monserrate", "Rubik", "Nova"]
             },
-            "correct": 1
+            "correct": 0
           },
           {
             "question": {
-              "es": "Que debes seleccionar para cambiar el idioma?",
-              "en": "What should you select to change the language?"
+              "es": "¿Qué herramienta ayuda a ubicar un libro en la estantería?",
+              "en": "Which tool helps you locate a book on the shelves?"
             },
             "options": {
-              "es": ["El boton superior de idioma", "El mapa", "La tarjeta de salida", "El boton listo"],
-              "en": ["The top language button", "The map", "The exit card", "The done button"]
+              "es": ["GPS Bibliogrâfico", "Cineteca", "Sala Rubik", "Buzon de devolución"],
+              "en": ["Bibliographic GPS", "Film library", "Rubik room", "Return box"]
             },
             "correct": 0
           }

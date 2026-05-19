@@ -5,7 +5,7 @@
 
 window.LibraryData.MAP_IMAGE_ES = './assets/images/ESPANOL.png';
 window.LibraryData.MAP_IMAGE_EN = './assets/images/INGLES.png';
-window.LibraryData.ACTIVITIES_URL = './assets/data/activities.json?v=games-5';
+window.LibraryData.ACTIVITIES_URL = './assets/data/activities.json?v=games-8';
 
 window.LibraryData.STRINGS = {
   es: {
@@ -111,7 +111,7 @@ window.LibraryData.STRINGS = {
     'events.screen_title': 'Eventos',
     'events.question': 'Pregunta',
     'events.of': 'de',
-    'events.score': 'Puntos',
+    'events.score': 'Puntos:',
     'events.next': 'Siguiente',
     'events.result_title': 'Resultado final',
     'events.result_great': 'Excelente!',
@@ -267,7 +267,7 @@ window.LibraryData.STRINGS = {
     'events.screen_title': 'Events',
     'events.question': 'Question',
     'events.of': 'of',
-    'events.score': 'Score',
+    'events.score': 'Score:',
     'events.next': 'Next',
     'events.result_title': 'Final result',
     'events.result_great': 'Excellent!',

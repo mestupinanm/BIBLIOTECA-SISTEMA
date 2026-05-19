@@ -21,8 +21,8 @@
         questions: [
           {
             question: {
-              es: 'En que piso se encuentra la Sala de Ciencias e Ingenieria?',
-              en: 'On which floor is the Science and Engineering Room located?'
+              es: 'En que piso se encuentra la sala de ciencias e ingenieria?',
+              en: 'On which floor is the science and engineering room located?'
             },
             options: {
               es: ['Piso 1', 'Piso 2', 'Piso 3', 'Piso 4'],
@@ -32,14 +32,36 @@
           },
           {
             question: {
-              es: 'Cuantas salas de estudio tiene esta seccion de la biblioteca?',
-              en: 'How many study rooms does this section of the library have?'
+              es: 'En que ano fue fundada la Universidad de los Andes?',
+              en: 'In what year was Universidad de los Andes founded?'
+            },
+            options: {
+              es: ['1948', '1956', '1972', '1986'],
+              en: ['1948', '1956', '1972', '1986']
+            },
+            correct: 0
+          },
+          {
+            question: {
+              es: 'Cuantas salas de estudio tiene este piso de la biblioteca?',
+              en: 'How many study rooms does this floor of the library have?'
             },
             options: {
               es: ['8', '10', '11', '12'],
               en: ['8', '10', '11', '12']
             },
-            correct: 2
+            correct: 3
+          },
+          {
+            question: {
+              es: 'Quien lidero la fundacion de la Universidad de los Andes?',
+              en: 'Who led the founding of Universidad de los Andes?'
+            },
+            options: {
+              es: ['Mario Laserna Pinzon', 'Alberto Lleras Camargo', 'Ramon de Zubiria', 'Gabriel Garcia Marquez'],
+              en: ['Mario Laserna Pinzon', 'Alberto Lleras Camargo', 'Ramon de Zubiria', 'Gabriel Garcia Marquez']
+            },
+            correct: 0
           },
           {
             question: {
@@ -47,30 +69,41 @@
               en: 'What is the name of the robot assisting you?'
             },
             options: {
-              es: ['NAO', 'Pepper', 'Spot', 'Atlas'],
-              en: ['NAO', 'Pepper', 'Spot', 'Atlas']
+              es: ['NAO', 'Pepper', 'Nova', 'Atlas'],
+              en: ['NAO', 'Pepper', 'Nova', 'Atlas']
             },
-            correct: 1
+            correct: 2
           },
           {
             question: {
-              es: 'Cual opcion usas si quieres llegar a una sala o servicio?',
-              en: 'Which option do you use if you want to reach a room or service?'
+              es: 'Como puedes reservar una sala de estudio?',
+              en: 'How can you reserve a study room?'
             },
             options: {
-              es: ['Noticias', 'Ir a un lugar', 'Ayuda', 'Opinion'],
-              en: ['News', 'Go to a place', 'Help', 'Feedback']
+              es: ['Por el portal web o codigo QR', 'Solo por telefono', 'Solo en el piso 4', 'Enviando un correo'],
+              en: ['Through the web portal or QR code', 'Only by phone', 'Only on floor 4', 'By sending an email']
             },
-            correct: 1
+            correct: 0
           },
           {
             question: {
-              es: 'Que debes seleccionar para cambiar el idioma?',
-              en: 'What should you select to change the language?'
+              es: 'Como se llama la mascota iconica de Uniandes?',
+              en: 'What is the name of Uniandes\' iconic mascot?'
             },
             options: {
-              es: ['El boton superior de idioma', 'El mapa', 'La tarjeta de salida', 'El boton listo'],
-              en: ['The top language button', 'The map', 'The exit card', 'The done button']
+              es: ['Seneca', 'Monserrate', 'Rubik', 'Nova'],
+              en: ['Seneca', 'Monserrate', 'Rubik', 'Nova']
+            },
+            correct: 0
+          },
+          {
+            question: {
+              es: 'Que herramienta ayuda a ubicar un libro en la estanteria?',
+              en: 'Which tool helps you locate a book on the shelves?'
+            },
+            options: {
+              es: ['GPS Bibliografico', 'Cineteca', 'Sala Rubik', 'Buzon de devolucion'],
+              en: ['Bibliographic GPS', 'Film library', 'Rubik room', 'Return box']
             },
             correct: 0
           }
@@ -2461,20 +2494,31 @@
       var options = question.options[PepperLib.State.language] || question.options.es;
       var html = '';
       var i;
+      var letter;
+      var displayScore = score * 10;
 
       addClass(intro, 'hidden');
       addClass(result, 'hidden');
 
       html += '<article class="events-question-card">';
-      html += '<div class="events-question-header"><span class="events-progress-label">' + PepperLib.i18n.t('events.question') + ' ' + (currentQuestion + 1) + ' ' + PepperLib.i18n.t('events.of') + ' ' + questions.length + '</span><span class="events-progress-score">' + PepperLib.i18n.t('events.score') + ': ' + score + '</span></div>';
-      html += '<div class="events-progress-bar"><div class="events-progress-fill" style="width:' + (((currentQuestion + 1) / questions.length) * 100) + '%"></div></div>';
+      html += '<div class="events-question-topbar"><div><span class="events-progress-label">' + PepperLib.i18n.t('events.question') + ' <strong>' + String(currentQuestion + 1).replace(/^(\d)$/, '0$1') + '</strong> ' + PepperLib.i18n.t('events.of') + ' ' + String(questions.length).replace(/^(\d)$/, '0$1') + '</span></div><div class="events-progress-score"><span>' + PepperLib.i18n.t('events.score') + '</span><strong id="trivia-score-value">' + displayScore + '</strong></div></div>';
+      html += '<div class="events-progress-segments">';
+      for (i = 0; i < questions.length; i++) {
+        html += '<span class="events-progress-segment' + (i <= currentQuestion ? ' is-active' : '') + '"></span>';
+      }
+      html += '</div>';
+      html += '<div class="events-question-body">';
+      html += '<span class="events-question-kicker">' + PepperLib.i18n.t('events.question') + '</span>';
       html += '<h3 class="events-question-text">' + escapeHtml(getLangText(question.question)) + '</h3>';
       html += '<div class="events-option-list">';
 
       for (i = 0; i < options.length; i++) {
-        html += '<button class="events-option-btn" data-answer-index="' + i + '">' + escapeHtml(options[i]) + '</button>';
+        letter = String.fromCharCode(65 + i);
+        html += '<button class="events-option-btn" data-answer-index="' + i + '"><span class="events-option-letter">' + letter + '</span><span class="events-option-copy">' + escapeHtml(options[i]) + '</span><span class="events-option-check">&#10003;</span></button>';
       }
 
+      html += '</div>';
+      html += '<div class="events-question-footer"><button class="btn btn--primary events-next-btn" id="btn-trivia-next" disabled="disabled">' + PepperLib.i18n.t('events.next') + ' ➔</button></div>';
       html += '</div></article>';
 
       container.innerHTML = html;
@@ -2483,6 +2527,8 @@
       selectedAnswer = null;
 
       var answerButtons = container.querySelectorAll('[data-answer-index]');
+      var nextButton = byId('btn-trivia-next');
+      var scoreValue = byId('trivia-score-value');
       for (i = 0; i < answerButtons.length; i++) {
         answerButtons[i].onclick = function () {
           var selected = parseInt(this.getAttribute('data-answer-index'), 10);
@@ -2506,6 +2552,9 @@
           if (selected === question.correct) {
             addClass(this, 'correct');
             score += 1;
+            if (scoreValue) {
+              scoreValue.textContent = String(score * 10);
+            }
           } else {
             addClass(this, 'wrong');
           }
@@ -2518,19 +2567,28 @@
             isCorrect: selected === question.correct
           });
 
-          setTimeout(function () {
-            currentQuestion += 1;
-            if (currentQuestion < questions.length) {
-              renderQuestion();
-            } else {
-              PepperLib.Analytics.log('trivia_completed', {
-                activity: activeActivity.id,
-                score: score,
-                total: questions.length
-              });
-              renderResult();
-            }
-          }, 1300);
+          if (nextButton) {
+            nextButton.disabled = false;
+          }
+        };
+      }
+
+      if (nextButton) {
+        nextButton.onclick = function () {
+          if (!answered) {
+            return;
+          }
+          currentQuestion += 1;
+          if (currentQuestion < questions.length) {
+            renderQuestion();
+          } else {
+            PepperLib.Analytics.log('trivia_completed', {
+              activity: activeActivity.id,
+              score: score,
+              total: questions.length
+            });
+            renderResult();
+          }
         };
       }
     }
