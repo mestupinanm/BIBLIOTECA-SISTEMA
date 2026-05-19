@@ -1416,56 +1416,62 @@ button { cursor: pointer; }
 }
 .shelves-map-badge {
   position: absolute;
-  top: 18px;
-  left: 18px;
+  top: 22px;
+  left: 22px;
   z-index: 12;
-  min-width: 270px;
-  padding: 18px 22px;
+  height: 130px;
+  padding: 20px 20px;
   border: 1px solid #D4CBB1;
-  border-radius: 18px;
+  border-radius: 22px;
   background: #FFFFFF;
-  box-shadow: 0 2px 6px rgba(20,35,58,0.10);
+  box-shadow: 0 16px 32px rgba(20,35,58,0.18);
   box-sizing: border-box;
 }
-.shelves-map-badge-num {
-  display: inline-block;
-  margin-right: 18px;
-  color: #D49545;
-  font-size: 40px;
-  font-weight: 800;
-  line-height: .9;
-  letter-spacing: -1px;
-  vertical-align: top;
+.shelves-map-badge--shelf {
+  width: 250px;
 }
-.shelves-map-badge span {
-  display: inline-block;
-  max-width: 190px;
-  vertical-align: top;
-}
-.shelves-map-badge em {
-  display: block;
-  margin: 0 0 4px;
-  color: #5A6678;
-  font-style: normal;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 2.4px;
-  text-transform: uppercase;
-}
-.shelves-map-badge strong {
-  display: block;
+.shelves-map-badge h2 {
+  margin: 0 0 12px;
   color: #0F1B2D;
-  font-size: 17px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 30px;
   font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1.02;
+}
+.shelves-map-badge-legend {
+  margin: 0;
+  color: #0F1B2D;
+  font-size: 14px;
+  text-align: left;
+}
+.shelves-map-badge small {
+  display: block;
+  margin: 0 0 8px;
+  color: #0F1B2D;
+  font-size: 14px;
+  font-weight: 500;
   line-height: 1.1;
 }
+.shelves-map-badge-dot {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  border-radius: 50%;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.12);
+  vertical-align: middle;
+}
+.shelves-map-badge-dot--here { background: #D49545; }
+.shelves-map-badge-dot--dest { background: #F6E2BE; }
 
 .shelves-map-footer {
   margin-top: 17px;
   padding-top: 0;
 }
 .shelves-map-hint {
-  display: inline-block;
+  display: none;
   margin: 18px 0 0;
   font-size: 14px;
   font-weight: 500;
@@ -1479,6 +1485,18 @@ button { cursor: pointer; }
   text-align: right;
 }
 .shelves-map-actions .btn { margin: 0 0 0 12px; }
+.shelves-map-actions .btn:disabled {
+  background: #EBC99D;
+  border-color: #EBC99D;
+  color: #FFFFFF;
+  opacity: .62;
+  cursor: default;
+}
+.shelves-map-actions .btn--secondary:disabled {
+  background: #F4EFE2;
+  border-color: #D4CBB1;
+  color: #8A8170;
+}
 
 .shelves-empty {
   padding: 24px;

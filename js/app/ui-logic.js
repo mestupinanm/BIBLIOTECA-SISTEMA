@@ -1311,27 +1311,55 @@
 
     function renderMap() {
       var shelf = activeShelf ? shelfIndex[activeShelf] : null;
-      var coord = shelf && DATA.MAP_COORDS ? DATA.MAP_COORDS[shelf.coordKey] : null;
+      var hasDestination = activeShelf && activeTopic;
+      var coord = hasDestination && shelf && DATA.MAP_COORDS ? DATA.MAP_COORDS[shelf.coordKey] : null;
       var hint = byId('shelves-map-hint');
       var actions = byId('shelves-info-actions');
+      var guideButton = byId('btn-shelves-guide-me');
+      var doneButton = byId('btn-shelves-done');
       var markers = byId('shelves-map-markers');
       var image = byId('shelves-map-img');
-      var label;
+      var badge = byId('shelves-map-badge');
+      var markerHtml = '';
 
       if (image) {
         image.src = PepperLib.Utils.getMapSrc();
       }
 
       if (markers) {
-        markers.innerHTML = coord ? PepperLib.Utils.buildMarker(coord.x, coord.y, 'marker-dest') : '';
+        if (hasDestination && DATA.MAP_COORDS && DATA.MAP_COORDS.you_are_here) {
+          markerHtml += PepperLib.Utils.buildMarker(DATA.MAP_COORDS.you_are_here.x, DATA.MAP_COORDS.you_are_here.y, 'marker-here');
+        }
+        if (hasDestination && coord) {
+          markerHtml += PepperLib.Utils.buildMarker(coord.x, coord.y, 'marker-dest');
+        }
+        markers.innerHTML = markerHtml;
       }
 
       if (hint) {
-        label = activeShelf ? ((activeTopic ? activeTopic + ' · ' : '') + PepperLib.i18n.t('shelves.shelf_label') + ' ' + activeShelf) : PepperLib.i18n.t('shelves.select_hint');
-        hint.textContent = label;
+        hint.textContent = '';
       }
 
-      toggleClass(actions, 'hidden', !activeShelf);
+      if (badge) {
+        if (hasDestination) {
+          badge.innerHTML = '<h2>' + PepperLib.i18n.t('shelves.shelf_label') + ' ' + activeShelf + '</h2>' +
+            '<div class="shelves-map-badge-legend">' +
+            '<small><i class="shelves-map-badge-dot shelves-map-badge-dot--here"></i>' + PepperLib.i18n.t('nav.you_are_here') + '</small>' +
+            '<small><i class="shelves-map-badge-dot shelves-map-badge-dot--dest"></i>' + PepperLib.i18n.t('shelves.go_here') + '</small></div>';
+          removeClass(badge, 'hidden');
+        } else {
+          badge.innerHTML = '';
+          addClass(badge, 'hidden');
+        }
+      }
+
+      removeClass(actions, 'hidden');
+      if (guideButton) {
+        guideButton.disabled = !hasDestination;
+      }
+      if (doneButton) {
+        doneButton.disabled = !hasDestination;
+      }
     }
 
     function renderShelfList() {
@@ -1436,21 +1464,13 @@
 
         byId('shelves-search').onkeyup = function () {
           searchTerm = this.value || '';
-          if (searchTerm) {
-            var list = filteredShelves();
-            if (list.length) {
-              activeShelf = list[0].shelf;
-              activeTopic = list[0].topics.length ? list[0].topics[0] : null;
-            } else {
-              activeShelf = null;
-              activeTopic = null;
-            }
-          }
+          activeShelf = null;
+          activeTopic = null;
           renderShelfList();
         };
 
         byId('btn-shelves-guide-me').onclick = function () {
-          if (!activeShelf) {
+          if (!activeShelf || !activeTopic) {
             return;
           }
           PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Llevame');
@@ -1458,9 +1478,10 @@
         };
 
         byId('btn-shelves-done').onclick = function () {
-          if (activeShelf) {
-            PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Listo');
+          if (!activeShelf || !activeTopic) {
+            return;
           }
+          PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Listo');
           PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
         };
       },
@@ -1469,7 +1490,7 @@
         PepperLib.Inactivity.reset();
         buildShelfIndex();
         searchTerm = '';
-        activeShelf = '01';
+        activeShelf = null;
         activeTopic = null;
         byId('shelves-search').value = '';
         PepperLib.Utils.setLastAction(PepperLib.i18n.t('shelves.screen_title'), 'shelves', 'shelves');
