@@ -1302,6 +1302,17 @@
       return false;
     }
 
+    function getShelfTopicLabel(topic) {
+      if (PepperLib.State.language === 'en' && DATA.SHELF_TOPIC_TRANSLATIONS && DATA.SHELF_TOPIC_TRANSLATIONS[topic]) {
+        return DATA.SHELF_TOPIC_TRANSLATIONS[topic];
+      }
+      return topic;
+    }
+
+    function topicMatchesQuery(topic, query) {
+      return normalizeText(topic).indexOf(query) !== -1 || normalizeText(getShelfTopicLabel(topic)).indexOf(query) !== -1;
+    }
+
     function getShelfEntryCoord(entry) {
       var coords = DATA.MAP_COORDS || {};
       var exact = coords[entry.coordKey];
@@ -1362,7 +1373,7 @@
           filteredTopics = shelf.topics.slice();
         } else {
           for (j = 0; j < shelf.topics.length; j++) {
-            if (normalizeText(shelf.topics[j]).indexOf(query) !== -1) {
+            if (topicMatchesQuery(shelf.topics[j], query)) {
               filteredTopics.push(shelf.topics[j]);
             }
           }
@@ -1486,7 +1497,7 @@
           html += '<p class="shelf-item-helper">' + PepperLib.i18n.t('shelves.tap_topic') + '</p>';
           html += '<div class="shelf-topic-list">';
           for (j = 0; j < visibleTopics.length; j++) {
-            html += '<button class="shelf-topic-tag' + (activeTopic === visibleTopics[j] ? ' is-active' : '') + '" data-shelf-topic="' + shelf.shelf + '" data-topic="' + escapeHtml(visibleTopics[j]) + '">' + escapeHtml(visibleTopics[j]) + '</button>';
+            html += '<button class="shelf-topic-tag' + (activeTopic === visibleTopics[j] ? ' is-active' : '') + '" data-shelf-topic="' + shelf.shelf + '" data-topic="' + escapeHtml(visibleTopics[j]) + '">' + escapeHtml(getShelfTopicLabel(visibleTopics[j])) + '</button>';
           }
           html += '</div>';
           html += '</div>';
@@ -1567,6 +1578,10 @@
         activeTopic = null;
         byId('shelves-search').value = '';
         PepperLib.Utils.setLastAction(PepperLib.i18n.t('shelves.screen_title'), 'shelves', 'shelves');
+        renderShelfList();
+      },
+
+      onLanguageChange: function () {
         renderShelfList();
       },
 
