@@ -1610,10 +1610,14 @@
         '<button class="books-card books-card--borrow" data-action="borrow">' +
         '<div class="books-card-icon"><svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><polyline points="8 12 12 8 16 12"></polyline><line x1="12" y1="16" x2="12" y2="8"></line></svg></div>' +
         '<div class="books-card-copy"><span class="books-card-label">' + PepperLib.i18n.t('books.borrow') + '</span><span class="books-card-desc">' + PepperLib.i18n.t('books.borrow_desc') + '</span></div>' +
+        '<span class="books-card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13"></path><path d="M13 7l5 5-5 5"></path></svg></span>' +
+        '<span class="books-card-footer"><span>' + PepperLib.i18n.t('books.tap_continue') + '</span><em>01</em></span>' +
         '</button>' +
         '<button class="books-card books-card--return" data-action="return">' +
         '<div class="books-card-icon"><svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path><polyline points="16 12 12 16 8 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></div>' +
         '<div class="books-card-copy"><span class="books-card-label">' + PepperLib.i18n.t('books.return') + '</span><span class="books-card-desc">' + PepperLib.i18n.t('books.return_desc') + '</span></div>' +
+        '<span class="books-card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h13"></path><path d="M13 7l5 5-5 5"></path></svg></span>' +
+        '<span class="books-card-footer"><span>' + PepperLib.i18n.t('books.tap_continue') + '</span><em>02</em></span>' +
         '</button>' +
         '</div>' +
         '</div>';
@@ -1681,6 +1685,14 @@
         buildOptions();
         resetBooks();
         PepperLib.Utils.setLastAction(PepperLib.i18n.t('books.screen_title'), 'books', 'books');
+      },
+
+      onLanguageChange: function () {
+        if (currentAction) {
+          renderDetail(currentAction);
+        } else {
+          buildOptions();
+        }
       },
 
       onExit: function () {

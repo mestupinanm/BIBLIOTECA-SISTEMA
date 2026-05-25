@@ -1522,7 +1522,7 @@ button { cursor: pointer; }
    Float-based layout (no Grid)
    ============================================================= */
 .books-container {
-  padding: 28px 32px 28px;
+  padding: 22px 28px 24px;
 }
 
 .books-options {
@@ -1536,10 +1536,10 @@ button { cursor: pointer; }
 .books-hero {
   position: relative;
   float: left;
-  width: 36%;
-  height: 660px;
+  width: 35.5%;
+  height: 690px;
   margin: 0;
-  padding: 34px 32px;
+  padding: 38px 34px;
   border: 1px solid #143562;
   border-radius: 28px;
   background: #143562;
@@ -1551,16 +1551,25 @@ button { cursor: pointer; }
 .books-hero:before {
   content: "";
   position: absolute;
-  right: -80px; top: -80px;
-  width: 260px; height: 260px;
+  right: -128px; top: -170px;
+  width: 410px; height: 410px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.13);
+  pointer-events: none;
+}
+.books-hero:after {
+  content: "";
+  position: absolute;
+  right: -18px; top: -218px;
+  width: 470px; height: 470px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.08);
   pointer-events: none;
 }
 
 .books-hero-eyebrow {
   display: block;
-  margin: 0 0 18px;
+  margin: 2px 0 24px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -1568,33 +1577,38 @@ button { cursor: pointer; }
   color: #F4CE8D;
 }
 .books-hero-title {
-  margin: 0 0 16px;
+  position: relative;
+  z-index: 1;
+  margin: 0 0 20px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 42px;
+  font-size: 50px;
   font-weight: 800;
-  letter-spacing: -1.2px;
+  letter-spacing: -1.4px;
   line-height: 1.04;
   color: #FFFFFF;
 }
 .books-hero-copy {
+  position: relative;
+  z-index: 1;
   display: block;
   margin: 0;
-  font-size: 16px;
+  max-width: 360px;
+  font-size: 17px;
   line-height: 1.55;
   color: rgba(255,255,255,0.74);
 }
 
 .books-card-grid {
   float: right;
-  width: 62%;
+  width: 62.6%;
 }
 .books-card {
   display: block;
   position: relative;
   width: 100%;
-  height: 322px;
-  margin: 0 0 16px;
-  padding: 28px 30px;
+  height: 333px;
+  margin: 0 0 18px;
+  padding: 34px 36px;
   border: 1px solid #D4CBB1;
   border-radius: 28px;
   background: #FFFFFF;
@@ -1607,8 +1621,52 @@ button { cursor: pointer; }
   transition: transform .15s ease, border-color .15s ease;
   cursor: pointer;
   box-sizing: border-box;
+  overflow: hidden;
 }
 .books-card:last-child { margin-bottom: 0; }
+.books-card:before {
+  content: "";
+  position: absolute;
+  right: -8px;
+  bottom: -18px;
+  width: 72px;
+  height: 72px;
+  border-radius: 0 0 28px 0;
+  background: #E9EEF7;
+  pointer-events: none;
+}
+.books-card:after {
+  content: "";
+  position: absolute;
+  right: 36px;
+  bottom: 72px;
+  width: 58px;
+  height: 58px;
+  border-radius: 0 0 36px 36px;
+  border-bottom: 20px solid rgba(220,228,240,0.95);
+  border-right: 20px solid rgba(220,228,240,0.95);
+  pointer-events: none;
+}
+.books-card--return:before {
+  width: 96px;
+  height: 96px;
+  right: -12px;
+  bottom: -16px;
+  background: rgba(246,226,190,0.58);
+  border-radius: 50% 0 28px 0;
+}
+.books-card--return:after {
+  right: 20px;
+  bottom: 50px;
+  width: 70px;
+  height: 70px;
+  border: 24px solid rgba(246,226,190,0.72);
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
 .books-card:active,
 .books-card:hover {
   -webkit-transform: translateY(-2px);
@@ -1618,11 +1676,11 @@ button { cursor: pointer; }
 
 .books-card-icon {
   display: inline-block;
-  width: 60px;
-  height: 60px;
-  margin: 0 0 16px;
-  line-height: 60px;
-  border-radius: 16px;
+  width: 58px;
+  height: 58px;
+  margin: 0 0 20px;
+  line-height: 58px;
+  border-radius: 14px;
   background: #DCE4F0;
   text-align: center;
   vertical-align: top;
@@ -1638,14 +1696,16 @@ button { cursor: pointer; }
 
 .books-card-copy {
   display: block;
+  position: relative;
+  z-index: 1;
 }
 .books-card-label {
   display: block;
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 800;
-  letter-spacing: -1px;
+  letter-spacing: -0.8px;
   color: #0F1B2D;
   line-height: 1.05;
 }
@@ -1656,6 +1716,57 @@ button { cursor: pointer; }
   line-height: 1.55;
   color: #5A6678;
   max-width: 460px;
+}
+.books-card-arrow {
+  position: absolute;
+  top: 34px;
+  right: 34px;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  line-height: 42px;
+  border-radius: 50%;
+  background: #143562;
+  color: #FFFFFF;
+  text-align: center;
+}
+.books-card-arrow svg {
+  width: 20px;
+  height: 20px;
+  margin-top: 11px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.books-card--return .books-card-arrow {
+  background: #D49545;
+}
+.books-card-footer {
+  position: absolute;
+  left: 36px;
+  right: 36px;
+  bottom: 28px;
+  z-index: 2;
+  display: block;
+  padding-top: 14px;
+  border-top: 1px solid #E3D4B4;
+  color: #143562;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.books-card-footer em {
+  float: right;
+  font-style: normal;
+  color: #8F98A8;
+  letter-spacing: 1.5px;
+}
+.books-card--return .books-card-footer {
+  color: #D49545;
 }
 
 /* Books detail as popup overlay over the books screen */
