@@ -88,7 +88,7 @@ window.LibraryData.STRINGS = {
     'books.back_options': 'Volver a opciones',
     'books.hero_eyebrow': 'Servicios disponibles',
     'books.hero_title': 'Préstamo y devolución sin perderte',
-    'books.hero_copy': 'Selecciona lo que quieres hacer y te mostraré los pasos más claros para continuar en la biblioteca.',
+    'books.hero_copy': 'Selecciona lo que quieres hacer y te mostraré los pasos más claros para continuar.',
     'books.tap_continue': 'Toca para continuar',
     'info.screen_title': 'Informacion',
     'info.hours': 'Horarios',
