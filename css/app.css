@@ -1627,16 +1627,30 @@ button { cursor: pointer; }
 }
 .books-card:last-child { margin-bottom: 0; }
 .books-card:before {
-  content: none;
-  display: none;
+  content: "01";
+  position: absolute;
+  right: 26px;
+  bottom: 22px;
+  z-index: 0;
+  display: block;
+  color: #E9EEF7;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 104px;
+  font-weight: 900;
+  letter-spacing: -7px;
+  line-height: .82;
+  pointer-events: none;
 }
 .books-card:after {
   content: none;
   display: none;
 }
 .books-card--return:before {
-  content: none;
-  display: none;
+  content: "02";
+  right: 30px;
+  bottom: 22px;
+  display: block;
+  color: rgba(246,226,190,0.82);
 }
 .books-card--return:after {
   content: none;
@@ -1727,7 +1741,7 @@ button { cursor: pointer; }
 .books-card-footer {
   position: absolute;
   left: 36px;
-  right: 36px;
+  right: 155px;
   bottom: 32px;
   z-index: 2;
   display: block;
@@ -1744,13 +1758,13 @@ button { cursor: pointer; }
   border-top-color: #143562;
 }
 .books-card-footer em {
-  float: right;
-  font-style: normal;
-  color: #8F98A8;
-  letter-spacing: 1.5px;
+  display: none;
 }
 .books-card--return .books-card-footer {
   border-top-color: #D49545;
+  color: #D49545;
+}
+.books-card--return .books-card-footer em {
   color: #D49545;
 }
 
