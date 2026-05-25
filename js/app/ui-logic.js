@@ -1639,6 +1639,7 @@
       var titleKey = isBorrow ? 'books.borrow_title' : 'books.return_title';
       var msgKey = isBorrow ? 'books.borrow_message' : 'books.return_message';
       var actionLabel = PepperLib.i18n.t(isBorrow ? 'books.borrow' : 'books.return');
+      var stepPrefix = isBorrow ? 'books.borrow_step_' : 'books.return_step_';
 
       addClass(byId('books-options'), 'hidden');
       removeClass(detail, 'hidden');
@@ -1647,13 +1648,23 @@
 
       detail.innerHTML =
         '<article class="books-detail-panel books-detail-panel--' + action + '">' +
+        '<button class="books-detail-close" id="btn-books-close" aria-label="Cerrar">×</button>' +
         '<div class="books-detail-icon books-detail-icon--' + action + '"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>' + (isBorrow ? '<polyline points="8 12 12 8 16 12"></polyline><line x1="12" y1="16" x2="12" y2="8"></line>' : '<polyline points="16 12 12 16 8 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line>') + '</svg></div>' +
-        '<div class="books-detail-copy"><h2 class="books-detail-title">' + PepperLib.i18n.t(titleKey) + '</h2><p class="books-detail-message">' + PepperLib.i18n.t(msgKey) + '</p></div>' +
+        '<div class="books-detail-copy"><span class="books-detail-eyebrow">' + PepperLib.i18n.t('books.detail_eyebrow') + '</span><h2 class="books-detail-title">' + PepperLib.i18n.t(titleKey) + '</h2><p class="books-detail-message">' + PepperLib.i18n.t(msgKey) + '</p></div>' +
+        '<div class="books-detail-steps">' +
+        '<div class="books-detail-step"><span class="books-detail-step-num">01</span><strong>' + PepperLib.i18n.t(stepPrefix + '1_title') + '</strong><span>' + PepperLib.i18n.t(stepPrefix + '1_desc') + '</span></div>' +
+        '<div class="books-detail-step"><span class="books-detail-step-num">02</span><strong>' + PepperLib.i18n.t(stepPrefix + '2_title') + '</strong><span>' + PepperLib.i18n.t(stepPrefix + '2_desc') + '</span></div>' +
+        '<div class="books-detail-step"><span class="books-detail-step-num">03</span><strong>' + PepperLib.i18n.t(stepPrefix + '3_title') + '</strong><span>' + PepperLib.i18n.t(stepPrefix + '3_desc') + '</span></div>' +
+        '</div>' +
         '<div class="books-detail-actions">' +
-        '<button class="btn btn--primary" id="btn-books-llevame">' + PepperLib.i18n.t('nav.guide_me') + '</button>' +
         '<button class="btn btn--secondary" id="btn-books-listo">' + PepperLib.i18n.t('nav.done') + '</button>' +
+        '<button class="btn btn--primary" id="btn-books-llevame">' + PepperLib.i18n.t('books.go_reception') + '</button>' +
         '</div>' +
         '</article>';
+
+      byId('btn-books-close').onclick = function () {
+        resetBooks();
+      };
 
       byId('btn-books-llevame').onclick = function () {
         var typeLabel = currentAction === 'borrow' ? 'Prestamo' : 'Devolucion';
