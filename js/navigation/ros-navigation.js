@@ -777,7 +777,7 @@
       return;
     }
 
-    yaw = poseYawRadians(pose) - ((Number(degrees) || 0) * Math.PI / 180);
+    yaw = poseYawRadians(pose) + ((Number(degrees) || 0) * Math.PI / 180);
     lastRotationYaw = yaw;
     goal = new window.ROSLIB.Goal({
       actionClient: ensureMoveBaseClient(),
