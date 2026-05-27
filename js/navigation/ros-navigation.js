@@ -1249,6 +1249,12 @@
       if (!currentPlace) {
         currentPlace = getBasePlaceName() || 'base';
       }
+      if (!findPlace(destination.place)) {
+        if (onError) {
+          onError('Destino no encontrado en el grafo: ' + destination.place + '. Verifica que navigation-graph.json este desplegado.');
+        }
+        return;
+      }
       var sendDestination = function () {
         Navigation.navigateGraphClient(destination.place, true, function (response) {
           if (onSuccess) {

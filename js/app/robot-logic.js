@@ -119,10 +119,9 @@
           }
         }, function (error) {
           console.log('[Robot] Navegacion por grafo no disponible:', error);
-          if (callbacks.onFallback) {
-            callbacks.onFallback(error);
+          if (callbacks.onError) {
+            callbacks.onError(error);
           }
-          Robot.navigateToWithMemory(destinationId, callbacks);
         });
         return;
       }
