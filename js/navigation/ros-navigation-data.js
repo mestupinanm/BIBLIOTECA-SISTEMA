@@ -43,6 +43,7 @@
     rosbridgeStorageKey: 'pepperLibraryRosbridgeUrl',
     graphStorageKey: 'pepperLibraryNavigationGraph',
     basePlaceStorageKey: 'pepperLibraryBasePlace',
+    graphFileUrl: './assets/data/navigation-graph.json',
     includeDemoPlaces: false,
     defaultGraph: 1,
     reconnectBeforeCommand: true,

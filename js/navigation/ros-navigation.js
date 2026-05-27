@@ -1223,32 +1223,67 @@
     }, onError);
   };
 
+  Navigation.loadGraphFromUrl = function (url, onSuccess, onError) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState !== 4) { return; }
+      if (xhr.status === 200 || xhr.status === 0) {
+        try {
+          var data = JSON.parse(xhr.responseText);
+          Navigation.importGraph(data, onSuccess, onError);
+        } catch (e) {
+          if (onError) { onError('JSON parse error: ' + e.message); }
+        }
+      } else {
+        if (onError) { onError('HTTP ' + xhr.status); }
+      }
+    };
+    xhr.send();
+  };
+
   Navigation.navigateGraphToDestination = function (destinationId, onSuccess, onError, onStep) {
     var destination = Navigation.resolveDestination(destinationId);
-    if (!currentPlace) {
-      currentPlace = getBasePlaceName() || '';
-    }
-    var sendDestination = function () {
-      Navigation.navigateGraphClient(destination.place, true, function (response) {
-        if (onSuccess) {
-          onSuccess(response, destination);
-        }
-      }, onError, onStep);
-    };
 
-    Navigation.connect(getRosbridgeUrl(), function () {
-      if (config.prepareBeforeNavigate) {
-        Navigation.prepareNavigation(function () {
-          sendDestination();
-        }, function (error) {
-          console.log('[ROS Navigation] No fue posible preparar navegacion antes del grafo.', error);
-          sendDestination();
-        });
-        return;
+    function proceed() {
+      if (!currentPlace) {
+        currentPlace = getBasePlaceName() || 'base';
       }
+      var sendDestination = function () {
+        Navigation.navigateGraphClient(destination.place, true, function (response) {
+          if (onSuccess) {
+            onSuccess(response, destination);
+          }
+        }, onError, onStep);
+      };
 
-      sendDestination();
-    }, onError);
+      Navigation.connect(getRosbridgeUrl(), function () {
+        if (config.prepareBeforeNavigate) {
+          Navigation.prepareNavigation(function () {
+            sendDestination();
+          }, function (error) {
+            console.log('[ROS Navigation] No fue posible preparar navegacion antes del grafo.', error);
+            sendDestination();
+          });
+          return;
+        }
+
+        sendDestination();
+      }, onError);
+    }
+
+    var graph = getGraph();
+    if (graph.places.length === 0 && config.graphFileUrl) {
+      Navigation.loadGraphFromUrl(config.graphFileUrl, function () {
+        proceed();
+      }, function (loadError) {
+        console.log('[ROS Navigation] No se pudo cargar el grafo desde archivo.', loadError);
+        proceed();
+      });
+      return;
+    }
+
+    proceed();
   };
 
   Navigation.clearCostmaps = function (onSuccess, onError) {
