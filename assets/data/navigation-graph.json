@@ -1,0 +1,637 @@
+{
+  "version": 2,
+  "createdAt": "2026-05-27T15:29:47.799Z",
+  "basePlace": "base",
+  "graph": {
+    "places": [
+      {
+        "name": "inicio_pasillo_izquierdo",
+        "x": -8.81,
+        "y": 1.38,
+        "theta": -178.7,
+        "known": true
+      },
+      {
+        "name": "final_pasillo_izquierdo",
+        "x": -8.81,
+        "y": -9.7,
+        "theta": -91.6,
+        "known": true
+      },
+      {
+        "name": "room_255d",
+        "x": -4.04,
+        "y": -9.86,
+        "theta": 2.7,
+        "known": true
+      },
+      {
+        "name": "room_255c",
+        "x": -1.79,
+        "y": -9.81,
+        "theta": 2.1,
+        "known": true
+      },
+      {
+        "name": "room_255b",
+        "x": 0.7,
+        "y": -9.77,
+        "theta": 2.56,
+        "known": true
+      },
+      {
+        "name": "room_255a",
+        "x": 2.88,
+        "y": -9.7,
+        "theta": 1.96,
+        "known": true
+      },
+      {
+        "name": "restroom_m",
+        "x": 17.56,
+        "y": 1.49,
+        "theta": 1.11,
+        "known": true
+      },
+      {
+        "name": "room_259g",
+        "x": 17.56,
+        "y": 1.49,
+        "theta": 1.11,
+        "known": true
+      },
+      {
+        "name": "room_259a",
+        "x": 20.24,
+        "y": 1.58,
+        "theta": 1.15,
+        "known": true
+      },
+      {
+        "name": "room_254",
+        "x": 20.24,
+        "y": 1.58,
+        "theta": 1.15,
+        "known": true
+      },
+      {
+        "name": "room_255",
+        "x": 20.24,
+        "y": 1.58,
+        "theta": 1.15,
+        "known": true
+      },
+      {
+        "name": "room_256",
+        "x": 20.24,
+        "y": 1.58,
+        "theta": 1.15,
+        "known": true
+      },
+      {
+        "name": "room_257",
+        "x": 20.24,
+        "y": 1.58,
+        "theta": 1.15,
+        "known": true
+      },
+      {
+        "name": "coordinacion",
+        "x": 20.24,
+        "y": 1.58,
+        "theta": 1.15,
+        "known": true
+      },
+      {
+        "name": "room_252c",
+        "x": -10.64,
+        "y": -9.97,
+        "theta": -179.42,
+        "known": true
+      },
+      {
+        "name": "book_lift",
+        "x": -6.09,
+        "y": 1.32,
+        "theta": -178.69,
+        "known": true
+      },
+      {
+        "name": "sterilization_room",
+        "x": -9.91,
+        "y": -10.12,
+        "theta": 179.87,
+        "known": true
+      },
+      {
+        "name": "exit",
+        "x": 3.4,
+        "y": 1.55,
+        "theta": -0.67,
+        "known": true
+      },
+      {
+        "name": "elevator",
+        "x": 3.4,
+        "y": 1.55,
+        "theta": -0.67,
+        "known": true
+      },
+      {
+        "name": "shelf_13",
+        "x": -9.93,
+        "y": 1.33,
+        "theta": 178.79,
+        "known": true
+      },
+      {
+        "name": "shelf_14",
+        "x": -11.41,
+        "y": 1.38,
+        "theta": 179.19,
+        "known": true
+      },
+      {
+        "name": "shelf_15",
+        "x": -12.83,
+        "y": 1.29,
+        "theta": -179.56,
+        "known": true
+      },
+      {
+        "name": "shelf_16",
+        "x": -14.16,
+        "y": 1.27,
+        "theta": 179.2,
+        "known": true
+      },
+      {
+        "name": "shelf_12",
+        "x": 9.89,
+        "y": 1.33,
+        "theta": 2.69,
+        "known": true
+      },
+      {
+        "name": "shelf_11",
+        "x": 11.19,
+        "y": 1.33,
+        "theta": 0.7,
+        "known": true
+      },
+      {
+        "name": "shelf_10",
+        "x": 12.66,
+        "y": 1.27,
+        "theta": 2.6,
+        "known": true
+      },
+      {
+        "name": "shelf_9",
+        "x": 14.14,
+        "y": 1.47,
+        "theta": 2.01,
+        "known": true
+      },
+      {
+        "name": "shelf_8",
+        "x": 15.57,
+        "y": 1.43,
+        "theta": 0.6,
+        "known": true
+      },
+      {
+        "name": "shelf_7",
+        "x": 17.02,
+        "y": 1.46,
+        "theta": 1.58,
+        "known": true
+      },
+      {
+        "name": "shelf_6",
+        "x": 20.85,
+        "y": 1.59,
+        "theta": 0,
+        "known": true
+      },
+      {
+        "name": "shelf_5",
+        "x": 20.85,
+        "y": 1.59,
+        "theta": 0,
+        "known": true
+      },
+      {
+        "name": "shelf_4",
+        "x": 20.85,
+        "y": 1.59,
+        "theta": 0,
+        "known": true
+      },
+      {
+        "name": "shelf_3",
+        "x": 20.85,
+        "y": 1.59,
+        "theta": 0,
+        "known": true
+      },
+      {
+        "name": "shelf_2",
+        "x": 20.85,
+        "y": 1.59,
+        "theta": 0,
+        "known": true
+      },
+      {
+        "name": "shelf_1",
+        "x": 20.85,
+        "y": 1.59,
+        "theta": 0,
+        "known": true
+      },
+      {
+        "name": "shelf_17",
+        "x": -15.73,
+        "y": 1.32,
+        "theta": 178.53,
+        "known": true
+      },
+      {
+        "name": "shelf_18",
+        "x": -15.75,
+        "y": 1.31,
+        "theta": 176.08,
+        "known": true
+      },
+      {
+        "name": "shelf_19",
+        "x": -15.75,
+        "y": 1.31,
+        "theta": 176.08,
+        "known": true
+      },
+      {
+        "name": "shelf_20",
+        "x": -15.75,
+        "y": 1.31,
+        "theta": 176.08,
+        "known": true
+      },
+      {
+        "name": "shelf_21",
+        "x": -15.75,
+        "y": 1.31,
+        "theta": 176.08,
+        "known": true
+      },
+      {
+        "name": "shelf_22",
+        "x": -15.75,
+        "y": 1.31,
+        "theta": 176.08,
+        "known": true
+      },
+      {
+        "name": "restroom_f",
+        "x": -15.75,
+        "y": 1.31,
+        "theta": 176.08,
+        "known": true
+      },
+      {
+        "name": "materials_workshop ",
+        "x": -15.75,
+        "y": 1.31,
+        "theta": 176.08,
+        "known": true
+      },
+      {
+        "name": "restroom_d",
+        "x": -15.75,
+        "y": 1.31,
+        "theta": 176.08,
+        "known": true
+      },
+      {
+        "name": "base",
+        "x": -2.42,
+        "y": 0.9,
+        "theta": 133.83,
+        "known": true
+      }
+    ],
+    "edges": [
+      ["inicio_pasillo_izquierdo", "base"],
+      ["final_pasillo_izquierdo", "inicio_pasillo_izquierdo"],
+      ["room_255d", "final_pasillo_izquierdo"],
+      ["room_255c", "final_pasillo_izquierdo"],
+      ["room_255b", "final_pasillo_izquierdo"],
+      ["room_255a", "final_pasillo_izquierdo"],
+      ["restroom_m", "base"],
+      ["room_259g", "base"],
+      ["room_259a", "base"],
+      ["room_254", "base"],
+      ["room_255", "base"],
+      ["room_256", "base"],
+      ["room_257", "base"],
+      ["coordinacion", "base"],
+      ["room_252c", "final_pasillo_izquierdo"],
+      ["book_lift", "base"],
+      ["sterilization_room", "final_pasillo_izquierdo"],
+      ["exit", "base"],
+      ["elevator", "base"],
+      ["shelf_13", "base"],
+      ["shelf_14", "base"],
+      ["shelf_15", "base"],
+      ["shelf_16", "base"],
+      ["shelf_17", "base"],
+      ["shelf_12", "base"],
+      ["shelf_11", "base"],
+      ["shelf_10", "base"],
+      ["shelf_9", "base"],
+      ["shelf_8", "base"],
+      ["shelf_7", "base"],
+      ["shelf_6", "base"],
+      ["shelf_5", "base"],
+      ["shelf_4", "base"],
+      ["shelf_3", "base"],
+      ["shelf_2", "base"],
+      ["shelf_1", "base"],
+      ["shelf_17", "base"],
+      ["shelf_18", "base"],
+      ["shelf_19", "base"],
+      ["shelf_20", "base"],
+      ["shelf_21", "base"],
+      ["shelf_22", "base"],
+      ["restroom_f", "base"],
+      ["materials_workshop ", "base"],
+      ["restroom_d", "base"]
+    ],
+    "edgeMeta": {
+      "base->inicio_pasillo_izquierdo": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "inicio_pasillo_izquierdo->final_pasillo_izquierdo": {
+        "advanceMeters": 0,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "final_pasillo_izquierdo->room_255d": {
+        "advanceMeters": 0,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "final_pasillo_izquierdo->room_255c": {
+        "advanceMeters": 0,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "final_pasillo_izquierdo->room_255b": {
+        "advanceMeters": 0,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "final_pasillo_izquierdo->room_255a": {
+        "advanceMeters": 0,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->restroom_m": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->room_259g": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->room_259a": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->room_254": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->room_255": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->room_256": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->room_257": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->coordinacion": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "final_pasillo_izquierdo->room_252c": {
+        "advanceMeters": 0,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->book_lift": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "final_pasillo_izquierdo->sterilization_room": {
+        "advanceMeters": 0,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->exit": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->elevator": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_13": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_14": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_15": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_16": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_17": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_12": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_11": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_10": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_9": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_8": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_7": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_6": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_5": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_4": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_3": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_2": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_1": {
+        "advanceMeters": 0.4,
+        "turnDegrees": 90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_18": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_19": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_20": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_21": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->shelf_22": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->restroom_f": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->materials_workshop ": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      },
+      "base->restroom_d": {
+        "advanceMeters": 0.4,
+        "turnDegrees": -90,
+        "actionOrder": "advance-turn",
+        "invertOnReturn": true
+      }
+    }
+  }
+}

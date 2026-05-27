@@ -1223,6 +1223,31 @@
     }, onError);
   };
 
+  Navigation.navigateGraphToDestination = function (destinationId, onSuccess, onError, onStep) {
+    var destination = Navigation.resolveDestination(destinationId);
+    var sendDestination = function () {
+      Navigation.navigateGraphClient(destination.place, true, function (response) {
+        if (onSuccess) {
+          onSuccess(response, destination);
+        }
+      }, onError, onStep);
+    };
+
+    Navigation.connect(getRosbridgeUrl(), function () {
+      if (config.prepareBeforeNavigate) {
+        Navigation.prepareNavigation(function () {
+          sendDestination();
+        }, function (error) {
+          console.log('[ROS Navigation] No fue posible preparar navegacion antes del grafo.', error);
+          sendDestination();
+        });
+        return;
+      }
+
+      sendDestination();
+    }, onError);
+  };
+
   Navigation.clearCostmaps = function (onSuccess, onError) {
     if (!ros || status !== 'connected') {
       return;
