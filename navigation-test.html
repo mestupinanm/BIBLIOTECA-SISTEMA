@@ -126,11 +126,13 @@
             <div class="flow-number">4</div>
             <div class="flow-body">
               <h3>Datos del grafo</h3>
+              <p>Descarga el grafo como archivo para respaldarlo. Cargalo desde un archivo para restaurarlo aunque cambies de IP.</p>
               <div class="graph-actions">
-                <button class="button quiet" id="btn-export-graph">Exportar JSON</button>
-                <button class="button quiet" id="btn-import-graph">Importar JSON</button>
+                <button class="button quiet" id="btn-export-graph">&#11015; Descargar</button>
+                <button class="button quiet" id="btn-import-graph">&#11014; Cargar archivo</button>
                 <button class="button danger" id="btn-clear-graph">Borrar grafo</button>
               </div>
+              <input type="file" id="file-import-graph" accept=".json" style="display:none" />
             </div>
           </section>
         </aside>

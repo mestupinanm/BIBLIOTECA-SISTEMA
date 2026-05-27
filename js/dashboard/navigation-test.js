@@ -631,25 +631,71 @@
     };
 
     els.exportGraph.onclick = function () {
-      writeDiagnosticsJson(window.PepperRosNavigation.exportGraph());
-      log('Grafo exportado al panel JSON.');
+      var payload = window.PepperRosNavigation.exportGraph();
+      var json = JSON.stringify(payload, null, 2);
+      var now = new Date();
+      var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+      var filename = 'grafo-biblioteca-' + now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + '.json';
+      var blob = new Blob([json], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(function () {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 200);
+
+      writeDiagnosticsJson(payload);
+      log('Grafo descargado como ' + filename + '.');
     };
 
     els.importGraph.onclick = function () {
-      var payload = parseJsonField(els.diagnosticsJson, null);
-
-      if (!payload) {
-        return;
+      if (els.fileImport) {
+        els.fileImport.value = '';
+        els.fileImport.click();
       }
-
-      window.PepperRosNavigation.importGraph(payload, function (response) {
-        log('Grafo importado.', response);
-        selectedPlace = '';
-        renderPlaces();
-      }, function (error) {
-        log('No se pudo importar grafo: ' + error);
-      });
     };
+
+    if (els.fileImport) {
+      els.fileImport.onchange = function () {
+        var file = els.fileImport.files && els.fileImport.files[0];
+        var reader;
+
+        if (!file) {
+          return;
+        }
+
+        reader = new FileReader();
+        reader.onload = function (event) {
+          var text = event.target.result;
+          var payload;
+
+          try {
+            payload = JSON.parse(text);
+          } catch (parseError) {
+            log('El archivo no es un JSON valido: ' + parseError.message);
+            return;
+          }
+
+          window.PepperRosNavigation.importGraph(payload, function (response) {
+            log('Grafo cargado desde archivo: ' + file.name, response);
+            selectedPlace = '';
+            renderPlaces();
+            writeDiagnosticsJson(window.PepperRosNavigation.exportGraph());
+          }, function (error) {
+            log('No se pudo cargar el grafo: ' + error);
+          });
+        };
+        reader.onerror = function () {
+          log('No se pudo leer el archivo.');
+        };
+        reader.readAsText(file);
+      };
+    }
 
     els.clearGraph.onclick = function () {
       window.PepperRosNavigation.clearLocalGraph(function () {
@@ -709,6 +755,7 @@
     els.moveRelative = byId('btn-move-relative');
     els.exportGraph = byId('btn-export-graph');
     els.importGraph = byId('btn-import-graph');
+    els.fileImport = byId('file-import-graph');
     els.clearGraph = byId('btn-clear-graph');
     els.deletePlace = byId('btn-delete-place');
     els.showTablet = byId('btn-show-tablet');
