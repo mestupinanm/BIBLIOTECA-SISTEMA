@@ -1279,14 +1279,24 @@
     }
 
     var graph = getGraph();
-    if (graph.places.length === 0 && config.graphFileUrl) {
-      Navigation.loadGraphFromUrl(config.graphFileUrl, function () {
-        proceed();
-      }, function (loadError) {
-        console.log('[ROS Navigation] No se pudo cargar el grafo desde archivo.', loadError);
-        proceed();
-      });
-      return;
+    if (graph.places.length === 0) {
+      if (config.defaultGraphData) {
+        Navigation.importGraph(config.defaultGraphData, function () {
+          proceed();
+        }, function () {
+          proceed();
+        });
+        return;
+      }
+      if (config.graphFileUrl) {
+        Navigation.loadGraphFromUrl(config.graphFileUrl, function () {
+          proceed();
+        }, function (loadError) {
+          console.log('[ROS Navigation] No se pudo cargar el grafo desde archivo.', loadError);
+          proceed();
+        });
+        return;
+      }
     }
 
     proceed();
