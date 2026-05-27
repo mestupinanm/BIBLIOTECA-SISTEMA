@@ -1225,6 +1225,9 @@
 
   Navigation.navigateGraphToDestination = function (destinationId, onSuccess, onError, onStep) {
     var destination = Navigation.resolveDestination(destinationId);
+    if (!currentPlace) {
+      currentPlace = getBasePlaceName() || '';
+    }
     var sendDestination = function () {
       Navigation.navigateGraphClient(destination.place, true, function (response) {
         if (onSuccess) {

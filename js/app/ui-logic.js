@@ -1165,16 +1165,36 @@
               showNavigationNotice(PepperLib.State.language === 'en' ? 'Sending destination to Pepper...' : 'Enviando destino a Pepper...');
               PepperRobot.navigateTo(currentDestination, {
                 onSuccess: function () {
-                  showNavigationNotice(PepperLib.State.language === 'en' ? 'Destination sent to Pepper.' : 'Destino enviado a Pepper.');
+                  showNavigationNotice(
+                    PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
+                    function () {
+                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                    }
+                  );
                 },
                 onFallback: function () {
-                  showNavigationNotice(PepperLib.State.language === 'en' ? 'ROSBridge unavailable. Trying local robot event.' : 'ROSBridge no disponible. Intentando evento local del robot.');
+                  showNavigationNotice(
+                    PepperLib.State.language === 'en' ? 'Navigating...' : 'Navegando...',
+                    function () {
+                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                    }
+                  );
                 },
                 onSimulated: function () {
-                  showNavigationNotice(PepperLib.State.language === 'en' ? 'Development mode: route shown on screen.' : 'Modo desarrollo: ruta mostrada en pantalla.');
+                  showNavigationNotice(
+                    PepperLib.State.language === 'en' ? 'Development mode: route shown on screen.' : 'Modo desarrollo: ruta mostrada en pantalla.',
+                    function () {
+                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                    }
+                  );
                 },
                 onError: function () {
-                  showNavigationNotice(PepperLib.State.language === 'en' ? 'Navigation command could not be sent.' : 'No se pudo enviar la navegacion.');
+                  showNavigationNotice(
+                    PepperLib.State.language === 'en' ? 'Navigation command could not be sent.' : 'No se pudo enviar la navegacion.',
+                    function () {
+                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                    }
+                  );
                 }
               });
             });
