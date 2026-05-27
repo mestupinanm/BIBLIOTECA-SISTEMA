@@ -10,7 +10,6 @@
   var feedbackSubscriptions = {};
   var poseTopic = null;
   var lastAmclPose = null;
-  var lastRotationYaw = null;
   var currentPlace = '';
   var moveBaseClient = null;
   var activeGoal = null;
@@ -723,11 +722,14 @@
       return;
     }
 
-    if (lastRotationYaw !== null) {
-      theta = lastRotationYaw;
-      lastRotationYaw = null;
-    } else if (lastAmclPose) {
-      theta = poseYawRadians(lastAmclPose);
+    if (lastAmclPose) {
+      var dx = Number(place.x) - lastAmclPose.position.x;
+      var dy = Number(place.y) - lastAmclPose.position.y;
+      if (Math.abs(dx) > 0.05 || Math.abs(dy) > 0.05) {
+        theta = Math.atan2(dy, dx);
+      } else {
+        theta = poseYawRadians(lastAmclPose);
+      }
     } else {
       theta = Number(place.theta) || 0;
     }
@@ -778,7 +780,6 @@
     }
 
     yaw = poseYawRadians(pose) - ((Number(degrees) || 0) * Math.PI / 180);
-    lastRotationYaw = yaw;
     goal = new window.ROSLIB.Goal({
       actionClient: ensureMoveBaseClient(),
       goalMessage: {
