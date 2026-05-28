@@ -3156,6 +3156,7 @@
     if (window.PepperRosNavigation) {
       if (window.NavigationUtilitiesData) {
         window.NavigationUtilitiesData.prepareBeforeNavigate = false;
+        window.NavigationUtilitiesData.rosbridgeUrl = 'ws://192.168.0.208:9090';
       }
       window.PepperRosNavigation.configure(window.NavigationUtilitiesData || {});
       window.PepperRosNavigation.connect(null, function () {
