@@ -3370,30 +3370,5 @@ button { cursor: pointer; }
 
 #black-screen-overlay.active {
   display: block;
-}
-
-#nav-debug-toast {
-  display: none;
-  position: fixed;
-  top: 24px;
-  left: 50%;
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
-  background: #c0392b;
-  color: #ffffff;
-  padding: 14px 28px;
-  border-radius: 10px;
-  font-size: 20px;
-  font-family: monospace;
-  z-index: 10000;
-  max-width: 1100px;
-  width: 90%;
-  text-align: left;
-  word-break: break-all;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
-#nav-debug-toast.active {
-  display: block;
+  pointer-events: none;
 }
