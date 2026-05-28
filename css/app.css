@@ -3372,3 +3372,28 @@ button { cursor: pointer; }
   display: block;
   pointer-events: none;
 }
+
+#ros-logger {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.75);
+  color: #ff6b6b;
+  font-family: monospace;
+  font-size: 13px;
+  padding: 6px 10px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+#ros-logger .ros-log-line {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2px 0;
+  word-break: break-all;
+}

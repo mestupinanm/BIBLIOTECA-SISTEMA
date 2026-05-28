@@ -228,57 +228,54 @@
 
 
   function xhrRequest(method, url, headers, body, onSuccess, onError) {
-    var request = new XMLHttpRequest();
-    request.open(method, url, true);
+    var request;
+    try {
+      request = new XMLHttpRequest();
+      request.open(method, url, true);
 
-    if (headers) {
-      var headerName;
-      for (headerName in headers) {
-        if (headers.hasOwnProperty(headerName)) {
-          request.setRequestHeader(headerName, headers[headerName]);
+      if (headers) {
+        var headerName;
+        for (headerName in headers) {
+          if (headers.hasOwnProperty(headerName)) {
+            request.setRequestHeader(headerName, headers[headerName]);
+          }
         }
       }
+
+      request.onreadystatechange = function () {
+        if (request.readyState !== 4) { return; }
+        if (request.status === 0) { return; }
+        if (request.status >= 200 && request.status < 300) {
+          if (onSuccess) { onSuccess(request.responseText, request); }
+          return;
+        }
+        if (onError) { onError(request); }
+      };
+
+      request.onerror = function () {
+        if (onError) { onError(request); }
+      };
+
+      request.send(body || null);
+    } catch (e) {
+      if (onError) { try { onError(null); } catch (ignored) {} }
     }
-
-    request.onreadystatechange = function () {
-      if (request.readyState !== 4) {
-        return;
-      }
-
-      if (request.status >= 200 && request.status < 300) {
-        if (onSuccess) {
-          onSuccess(request.responseText, request);
-        }
-        return;
-      }
-
-      if (onError) {
-        onError(request);
-      }
-    };
-
-    request.onerror = function () {
-      if (onError) {
-        onError(request);
-      }
-    };
-
-    request.send(body || null);
   }
 
   function xhrJson(method, url, headers, bodyObject, onSuccess, onError) {
     var requestHeaders = headers || {};
+    var serialised = null;
     requestHeaders['Content-Type'] = requestHeaders['Content-Type'] || 'application/json';
-    xhrRequest(method, url, requestHeaders, bodyObject ? JSON.stringify(bodyObject) : null, function (text, request) {
+    try {
+      serialised = bodyObject ? JSON.stringify(bodyObject) : null;
+    } catch (e) {
+      if (onError) { try { onError(null); } catch (ignored) {} }
+      return;
+    }
+    xhrRequest(method, url, requestHeaders, serialised, function (text, request) {
       var payload = null;
-      try {
-        payload = text ? JSON.parse(text) : null;
-      } catch (error) {
-        payload = null;
-      }
-      if (onSuccess) {
-        onSuccess(payload, request);
-      }
+      try { payload = text ? JSON.parse(text) : null; } catch (e) { payload = null; }
+      if (onSuccess) { onSuccess(payload, request); }
     }, onError);
   }
 
@@ -3119,6 +3116,26 @@
     }, 6000);
   }
 
+  (function interceptNavErrors() {
+    var origError = console.error;
+    console.error = function () {
+      origError.apply(console, arguments);
+      var msg = Array.prototype.slice.call(arguments).join(' ');
+      if (msg.indexOf('[NAV ERROR]') === -1) { return; }
+      var logger = document.getElementById('ros-logger');
+      if (!logger) { return; }
+      var line = document.createElement('div');
+      var now = new Date();
+      line.className = 'ros-log-line';
+      line.textContent = '[' + now.toLocaleTimeString() + '] ' + msg;
+      logger.appendChild(line);
+      while (logger.childNodes.length > 12) {
+        logger.removeChild(logger.firstChild);
+      }
+      logger.style.display = 'block';
+    };
+  })();
+
   function boot() {
     var name;
     var screens = PepperLib.State.screens;
@@ -3137,6 +3154,9 @@
     PepperRobot.init();
 
     if (window.PepperRosNavigation) {
+      if (window.NavigationUtilitiesData) {
+        window.NavigationUtilitiesData.prepareBeforeNavigate = false;
+      }
       window.PepperRosNavigation.configure(window.NavigationUtilitiesData || {});
       window.PepperRosNavigation.connect(null, function () {
         window.PepperRosNavigation.disableSecurity(null, null);
