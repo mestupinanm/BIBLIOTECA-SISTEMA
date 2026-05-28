@@ -1168,24 +1168,35 @@
               removeClass(overlay, 'hidden');
             }
 
-            window.PepperRosNavigation.navigateToDestination(currentDestination,
-              function onSuccess(response, destination) {
-                if (overlay) {
-                  addClass(overlay, 'hidden');
-                }
-                showNavigationNotice(
-                  PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
-                  function () {
-                    PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+            if (!window.PepperRosNavigation) {
+              if (overlay) addClass(overlay, 'hidden');
+              showNavError('PepperRosNavigation no disponible al navegar.');
+              return;
+            }
+            try {
+              window.PepperRosNavigation.navigateToDestination(currentDestination,
+                function onSuccess(response, destination) {
+                  if (overlay) {
+                    addClass(overlay, 'hidden');
                   }
-                );
-              },
-              function onError(errorString) {
-                if (overlay) {
-                  addClass(overlay, 'hidden');
+                  showNavigationNotice(
+                    PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
+                    function () {
+                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                    }
+                  );
+                },
+                function onError(errorString) {
+                  if (overlay) {
+                    addClass(overlay, 'hidden');
+                  }
+                  showNavError('navigateToDestination [' + currentDestination + ']: ' + errorString);
                 }
-              }
-            );
+              );
+            } catch (e) {
+              if (overlay) addClass(overlay, 'hidden');
+              showNavError('navigateToDestination exception: ' + (e && e.message ? e.message : e));
+            }
           });
         };
 
@@ -2924,9 +2935,22 @@
         PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
       }
 
+      function onReturnError(errorString) {
+        clearAutoReturn();
+        if (blackOverlay) removeClass(blackOverlay, 'active');
+        showNavError('navigateToBase: ' + errorString);
+        PepperLib.State.endSession();
+        PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+      }
+
       if (window.PepperRosNavigation) {
-        window.PepperRosNavigation.navigateToBase(endAndReturn, endAndReturn, null);
-        autoReturnTimer = setTimeout(endAndReturn, 120000);
+        try {
+          window.PepperRosNavigation.navigateToBase(endAndReturn, onReturnError, null);
+          autoReturnTimer = setTimeout(endAndReturn, 120000);
+        } catch (e) {
+          showNavError('navigateToBase exception: ' + (e && e.message ? e.message : e));
+          autoReturnTimer = setTimeout(endAndReturn, 5000);
+        }
       } else {
         autoReturnTimer = setTimeout(endAndReturn, 5000);
       }
@@ -3071,6 +3095,20 @@
     });
   }
 
+  var navToastTimer = null;
+
+  function showNavError(msg) {
+    var toast = byId('nav-debug-toast');
+    console.error('[NAV ERROR]', msg);
+    if (!toast) return;
+    toast.textContent = '[NAV ERROR] ' + msg;
+    addClass(toast, 'active');
+    clearTimeout(navToastTimer);
+    navToastTimer = setTimeout(function () {
+      removeClass(toast, 'active');
+    }, 15000);
+  }
+
   function boot() {
     var name;
     var screens = PepperLib.State.screens;
@@ -3090,8 +3128,14 @@
 
     if (window.PepperRosNavigation) {
       window.PepperRosNavigation.connect(null, function () {
-        window.PepperRosNavigation.setBasePlaceLocal('base', null, null);
-      }, null);
+        window.PepperRosNavigation.setBasePlaceLocal('base', null, function (err) {
+          showNavError('setBasePlaceLocal: ' + err);
+        });
+      }, function (err) {
+        showNavError('ROS connect: ' + err);
+      });
+    } else {
+      showNavError('PepperRosNavigation no esta cargado.');
     }
 
     PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
