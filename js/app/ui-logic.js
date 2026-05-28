@@ -1159,56 +1159,34 @@
           PepperRobot.setVolume(25);
           removeClass(byId('pre-nav-overlay'), 'hidden');
 
-          function runScriptThenNavigate() {
-            executeScript(PRE_NAV_SCRIPT, function () {
-              addClass(byId('pre-nav-overlay'), 'hidden');
-              showNavigationNotice(PepperLib.State.language === 'en' ? 'Sending destination to Pepper...' : 'Enviando destino a Pepper...');
-              PepperRobot.navigateTo(currentDestination, {
-                onSuccess: function () {
-                  showNavigationNotice(
-                    PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
-                    function () {
-                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                    }
-                  );
-                },
-                onFallback: function () {
-                  showNavigationNotice(
-                    PepperLib.State.language === 'en' ? 'Navigating...' : 'Navegando...',
-                    function () {
-                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                    }
-                  );
-                },
-                onSimulated: function () {
-                  showNavigationNotice(
-                    PepperLib.State.language === 'en' ? 'Development mode: route shown on screen.' : 'Modo desarrollo: ruta mostrada en pantalla.',
-                    function () {
-                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                    }
-                  );
-                },
-                onError: function () {
-                  showNavigationNotice(
-                    PepperLib.State.language === 'en' ? 'Navigation command could not be sent.' : 'No se pudo enviar la navegacion.',
-                    function () {
-                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                    }
-                  );
-                }
-              });
-            });
-          }
+          executeScript(PRE_NAV_SCRIPT, function () {
+            addClass(byId('pre-nav-overlay'), 'hidden');
+            var overlay = byId('guide-sim-overlay');
+            var message = byId('guide-sim-msg');
+            if (overlay && message) {
+              message.textContent = PepperLib.State.language === 'en' ? 'Navigating...' : 'Navegando...';
+              removeClass(overlay, 'hidden');
+            }
 
-          if (window.PepperRosNavigation && window.PepperRosNavigation.getRosbridgeUrl()) {
-            window.PepperRosNavigation.connect(
-              window.PepperRosNavigation.getRosbridgeUrl(),
-              runScriptThenNavigate,
-              runScriptThenNavigate
+            window.PepperRosNavigation.navigateToDestination(currentDestination,
+              function onSuccess(response, destination) {
+                if (overlay) {
+                  addClass(overlay, 'hidden');
+                }
+                showNavigationNotice(
+                  PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
+                  function () {
+                    PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                  }
+                );
+              },
+              function onError(errorString) {
+                if (overlay) {
+                  addClass(overlay, 'hidden');
+                }
+              }
             );
-          } else {
-            runScriptThenNavigate();
-          }
+          });
         };
 
         byId('btn-guide-done').onclick = function () {
@@ -2933,15 +2911,25 @@
       autoReturnTimer = null;
     }
 
-    function initiateReturn(delay) {
-      if (window.PepperRosNavigation) {
-        window.PepperRosNavigation.navigateToBase(null, null, null);
-      }
+    function initiateReturn() {
+      var blackOverlay = byId('black-screen-overlay');
+      if (blackOverlay) addClass(blackOverlay, 'active');
+
       clearAutoReturn();
-      autoReturnTimer = setTimeout(function () {
+
+      function endAndReturn() {
+        clearAutoReturn();
+        if (blackOverlay) removeClass(blackOverlay, 'active');
         PepperLib.State.endSession();
         PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
-      }, delay || 8000);
+      }
+
+      if (window.PepperRosNavigation) {
+        window.PepperRosNavigation.navigateToBase(endAndReturn, endAndReturn, null);
+        autoReturnTimer = setTimeout(endAndReturn, 120000);
+      } else {
+        autoReturnTimer = setTimeout(endAndReturn, 5000);
+      }
     }
 
     function prepareFeedbackImages() {
@@ -2989,7 +2977,7 @@
             autoReturnTimer = setTimeout(function () {
               addClass(byId('feedback-comment-section'), 'hidden');
               removeClass(byId('feedback-thanks'), 'hidden');
-              initiateReturn(8000);
+              initiateReturn();
             }, 3000);
           };
         }
@@ -3006,7 +2994,7 @@
           addClass(byId('feedback-comment-section'), 'hidden');
           removeClass(byId('feedback-thanks'), 'hidden');
 
-          initiateReturn(3000);
+          initiateReturn();
         };
       },
 
@@ -3020,8 +3008,8 @@
         byId('screen-feedback').removeAttribute('data-selected-rating');
         byId('feedback-comment-input').value = '';
         autoReturnTimer = setTimeout(function () {
-          initiateReturn(8000);
-        }, 25000);
+          initiateReturn();
+        }, 30000);
       },
 
       onExit: function () {
@@ -3099,6 +3087,13 @@
 
     PepperLib.i18n.applyToDOM();
     PepperRobot.init();
+
+    if (window.PepperRosNavigation) {
+      window.PepperRosNavigation.connect(null, function () {
+        window.PepperRosNavigation.setBasePlaceLocal('base', null, null);
+      }, null);
+    }
+
     PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
   }
 
