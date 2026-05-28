@@ -1174,7 +1174,7 @@
               return;
             }
             try {
-              window.PepperRosNavigation.navigateToDestination(currentDestination,
+              window.PepperRosNavigation.navigateGraphToDestination(currentDestination,
                 function onSuccess(response, destination) {
                   if (overlay) {
                     addClass(overlay, 'hidden');
@@ -1190,12 +1190,12 @@
                   if (overlay) {
                     addClass(overlay, 'hidden');
                   }
-                  console.error('[NAV ERROR] navigateToDestination [' + currentDestination + ']:', errorString);
+                  console.error('[NAV ERROR] navigateGraphToDestination [' + currentDestination + ']:', errorString);
                 }
               );
             } catch (e) {
               if (overlay) addClass(overlay, 'hidden');
-              console.error('[NAV ERROR] navigateToDestination exception:', e);
+              console.error('[NAV ERROR] navigateGraphToDestination exception:', e);
             }
           });
         };
@@ -1567,7 +1567,19 @@
             return;
           }
           PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Llevame');
-          PepperRobot.navigateTo('shelf_' + activeShelf);
+          if (!window.PepperRosNavigation) {
+            console.error('[NAV ERROR] PepperRosNavigation no disponible (shelves).');
+            return;
+          }
+          window.PepperRosNavigation.navigateGraphToDestination(
+            'shelf_' + activeShelf,
+            function onSuccess() {
+              PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+            },
+            function onError(err) {
+              console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
+            }
+          );
         };
 
         byId('btn-shelves-done').onclick = function () {
@@ -3129,6 +3141,10 @@
       window.PepperRosNavigation.connect(null, function () {
         window.PepperRosNavigation.disableSecurity(null, null);
         startNavClearLoop();
+        window.PepperRosNavigation.startPoseTracking(
+          function (pose) {},
+          function (err) { console.error('[NAV ERROR] AMCL:', err); }
+        );
         window.PepperRosNavigation.setBasePlaceLocal('base', null, function (err) {
           console.error('[NAV ERROR] setBasePlaceLocal:', err);
         });
