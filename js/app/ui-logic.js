@@ -1170,12 +1170,12 @@
               console.error('[NAV ERROR] PepperRosNavigation no disponible al navegar.');
               return;
             }
+            navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
             stopNavClearLoop();
             try {
               window.PepperRosNavigation.navigateGraphToDestination(resolveGraphDest(currentDestination),
                 function onSuccess(response, destination) {
-                  startNavClearLoop();
                   verifyArrival(resolveGraphDest(currentDestination),
                     function () {
                       if (overlay) { addClass(overlay, 'hidden'); }
@@ -1578,12 +1578,12 @@
             console.error('[NAV ERROR] PepperRosNavigation no disponible (shelves).');
             return;
           }
+          navStartTime = Date.now();
           window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
           stopNavClearLoop();
           window.PepperRosNavigation.navigateGraphToDestination(
             'shelf_' + activeShelf,
             function onSuccess() {
-              startNavClearLoop();
               verifyArrival('shelf_' + activeShelf,
                 function () {
                   PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
@@ -2955,9 +2955,11 @@
       if (blackOverlay) addClass(blackOverlay, 'active');
 
       clearAutoReturn();
+      stopNavClearLoop();
 
       function endAndReturn() {
         clearAutoReturn();
+        startNavClearLoop();
         if (blackOverlay) removeClass(blackOverlay, 'active');
         PepperLib.State.endSession();
         PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
@@ -2965,6 +2967,7 @@
 
       function onReturnError(errorString) {
         clearAutoReturn();
+        startNavClearLoop();
         if (blackOverlay) removeClass(blackOverlay, 'active');
         console.error('[NAV ERROR] navigateToBase:', errorString);
         PepperLib.State.endSession();
@@ -2973,9 +2976,10 @@
 
       if (window.PepperRosNavigation) {
         try {
-          window.PepperRosNavigation.navigateToBase(endAndReturn, onReturnError, null);
+          window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
           autoReturnTimer = setTimeout(endAndReturn, 120000);
         } catch (e) {
+          startNavClearLoop();
           console.error('[NAV ERROR] navigateToBase exception:', e);
           autoReturnTimer = setTimeout(endAndReturn, 5000);
         }
@@ -3124,6 +3128,7 @@
   }
 
   var rosNavClearInterval = null;
+  var navStartTime = null;
 
   function startNavClearLoop() {
     if (rosNavClearInterval) { return; }
@@ -3159,9 +3164,15 @@
       ? window.PepperRosNavigation.getClientGraph() : null;
     var destPlace = null;
     var i;
+    var elapsed = navStartTime ? (Date.now() - navStartTime) : null;
 
     if (!lastPose || !graph) {
-      onValid();
+      if (elapsed !== null && elapsed < 15000) {
+        console.error('[NAV ERROR] Llegada demasiado rapida (' + elapsed + 'ms) y sin AMCL');
+        if (onFail) { onFail('Llegada prematura'); }
+      } else {
+        onValid();
+      }
       return;
     }
 
@@ -3181,11 +3192,11 @@
     var dy = Math.abs(lastPose.position.y - Number(destPlace.y));
 
     if (dx > 2.0 || dy > 2.0) {
-      console.error('[NAV ERROR] Llegada prematura detectada: pos=(' +
+      console.error('[NAV ERROR] Llegada prematura: pos=(' +
         Math.round(lastPose.position.x * 100) / 100 + ',' +
         Math.round(lastPose.position.y * 100) / 100 + ') destino=' + graphDestName +
-        ' (' + destPlace.x + ',' + destPlace.y + ') dx=' + dx.toFixed(2) + ' dy=' + dy.toFixed(2));
-      if (onFail) { onFail('Posicion inesperada al llegar'); }
+        ' dx=' + dx.toFixed(2) + ' dy=' + dy.toFixed(2));
+      if (onFail) { onFail('Posicion incorrecta al llegar'); }
       return;
     }
 
@@ -3241,6 +3252,9 @@
       );
       window.PepperRosNavigation.connect(null, function () {
         window.PepperRosNavigation.disableSecurity(null, null);
+        window.PepperRosNavigation.enableMotionTools(null, function (err) {
+          console.error('[NAV ERROR] enableMotionTools:', err);
+        });
         startNavClearLoop();
         if (window.PepperRobot && typeof window.PepperRobot.showTabletWebview === 'function') {
           window.PepperRobot.showTabletWebview('http://192.168.0.230:8000/index.html');
