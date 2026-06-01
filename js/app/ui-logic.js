@@ -3037,19 +3037,12 @@
       if (window.PepperRosNavigation) {
         try {
           autoReturnTimer = setTimeout(endAndReturn, 120000);
-          function doReturnRotate() {
-            window.PepperRosNavigation.rotateInPlace(180, function () {
-              window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
-            }, function (err) {
-              console.error('[NAV ERROR] Return rotate 180 failed, navigating anyway:', err);
-              window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
-            });
-          }
-          if (window.PepperRosNavigation.standPosture) {
-            window.PepperRosNavigation.standPosture(doReturnRotate, doReturnRotate);
-          } else {
-            doReturnRotate();
-          }
+          window.PepperRosNavigation.rotateInPlace(180, function () {
+            window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
+          }, function (err) {
+            console.error('[NAV ERROR] Return rotate 180 failed, navigating anyway:', err);
+            window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
+          });
         } catch (e) {
           navActive = false;
           startNavClearLoop();
@@ -3420,7 +3413,9 @@
                       x_coordinate: Number(x) || 0,
                       y_coordinate: Number(y) || 0
                     }),
-                    function (response) { if (onSuccess) { onSuccess(response || {}); } },
+                    function (response) {
+                      setTimeout(function () { if (onSuccess) { onSuccess(response || {}); } }, 1500);
+                    },
                     function (err) {
                       console.error('[NAV ERROR] move_relative_srv:', err);
                       if (onError) { onError(err); }
