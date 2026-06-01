@@ -1171,7 +1171,7 @@
               return;
             }
             try {
-              window.PepperRosNavigation.navigateGraphToDestination(currentDestination,
+              window.PepperRosNavigation.navigateGraphToDestination(resolveGraphDest(currentDestination),
                 function onSuccess(response, destination) {
                   if (overlay) {
                     addClass(overlay, 'hidden');
@@ -3114,6 +3114,16 @@
         window.PepperRosNavigation.standPosture(null, null);
       }
     }, 6000);
+  }
+
+  var DEST_GRAPH_MAP = {
+    'coordination':                  'coordinacion',
+    'sterilization_space':           'sterilization_room',
+    'material_maintenance_workshop': 'materials_workshop '
+  };
+
+  function resolveGraphDest(destId) {
+    return DEST_GRAPH_MAP[destId] || destId;
   }
 
   (function interceptNavErrors() {
