@@ -1183,12 +1183,19 @@
                     function onArrived() {
                       if (overlay) { addClass(overlay, 'hidden'); }
                       PepperLib.Inactivity.reset();
-                      showNavigationNotice(
-                        PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
-                        function () {
-                          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                        }
-                      );
+                      function showNotice() {
+                        showNavigationNotice(
+                          PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
+                          function () {
+                            PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                          }
+                        );
+                      }
+                      if (window.PepperRosNavigation && window.PepperRosNavigation.rotateInPlace) {
+                        window.PepperRosNavigation.rotateInPlace(180, showNotice, showNotice);
+                      } else {
+                        showNotice();
+                      }
                     },
                     function onGiveUp() {
                       navActive = false;
@@ -1603,7 +1610,14 @@
               navArrivalPoll = pollUntilArrived('shelf_' + activeShelf,
                 function onArrived() {
                   PepperLib.Inactivity.reset();
-                  PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                  function goFeedback() {
+                    PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                  }
+                  if (window.PepperRosNavigation && window.PepperRosNavigation.rotateInPlace) {
+                    window.PepperRosNavigation.rotateInPlace(180, goFeedback, goFeedback);
+                  } else {
+                    goFeedback();
+                  }
                 },
                 function onGiveUp() {
                   navActive = false;
@@ -3011,7 +3025,10 @@
           autoReturnTimer = setTimeout(endAndReturn, 120000);
           window.PepperRosNavigation.rotateInPlace(180, function () {
             window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
-          }, onReturnError);
+          }, function (err) {
+            console.error('[NAV ERROR] Return rotate 180 failed, navigating anyway:', err);
+            window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
+          });
         } catch (e) {
           navActive = false;
           startNavClearLoop();
@@ -3368,37 +3385,6 @@
               null,
               function (err) { console.error('[NAV ERROR] misc_tools_srv:', err); }
             );
-
-            window.PepperRosNavigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
-              function sendMove() {
-                try {
-                  var svc = new window.ROSLIB.Service({
-                    ros: rosInstance,
-                    name: '/pytoolkit/ALMotion/move_relative_srv',
-                    serviceType: 'robot_toolkit_msgs/navigate_to_srv'
-                  });
-                  svc.callService(
-                    new window.ROSLIB.ServiceRequest({
-                      x_coordinate: Number(x) || 0,
-                      y_coordinate: Number(y) || 0
-                    }),
-                    function (response) { if (onSuccess) { onSuccess(response || {}); } },
-                    function (err) {
-                      console.error('[NAV ERROR] move_relative_srv:', err);
-                      if (onError) { onError(err); }
-                    }
-                  );
-                } catch (e) {
-                  console.error('[NAV ERROR] move_relative_srv exception:', e);
-                  if (onError) { onError(e); }
-                }
-              }
-              if (window.PepperRosNavigation.standPosture) {
-                window.PepperRosNavigation.standPosture(sendMove, sendMove);
-              } else {
-                sendMove();
-              }
-            };
 
           } catch (e) {
             console.error('[NAV ERROR] robot_toolkit services exception:', e);
