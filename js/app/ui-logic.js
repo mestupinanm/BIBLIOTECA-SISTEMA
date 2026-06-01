@@ -1086,7 +1086,7 @@
         if (onDone) {
           onDone();
         }
-      }, 2200);
+      }, 7000);
       simulationTimers.push(timer);
     }
 
@@ -3008,8 +3008,10 @@
 
       if (window.PepperRosNavigation) {
         try {
-          window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
           autoReturnTimer = setTimeout(endAndReturn, 120000);
+          window.PepperRosNavigation.rotateInPlace(180, function () {
+            window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
+          }, onReturnError);
         } catch (e) {
           navActive = false;
           startNavClearLoop();
@@ -3162,6 +3164,7 @@
   }
 
   var rosNavClearInterval = null;
+  var rosStandInterval = null;
   var navStartTime = null;
   var navArrivalPoll = null;
   var navActive = false;
@@ -3174,21 +3177,30 @@
   }
 
   function startNavClearLoop() {
-    if (rosNavClearInterval) { return; }
-    rosNavClearInterval = setInterval(function () {
-      if (window.PepperRosNavigation) {
-        window.PepperRosNavigation.clearCostmaps(null, null);
-        if (!navActive) {
+    if (!rosNavClearInterval) {
+      rosNavClearInterval = setInterval(function () {
+        if (window.PepperRosNavigation) {
+          window.PepperRosNavigation.clearCostmaps(null, null);
+        }
+      }, 5000);
+    }
+    if (!rosStandInterval) {
+      rosStandInterval = setInterval(function () {
+        if (window.PepperRosNavigation && !navActive) {
           window.PepperRosNavigation.standPosture(null, null);
         }
-      }
-    }, 6000);
+      }, 3000);
+    }
   }
 
   function stopNavClearLoop() {
     if (rosNavClearInterval) {
       clearInterval(rosNavClearInterval);
       rosNavClearInterval = null;
+    }
+    if (rosStandInterval) {
+      clearInterval(rosStandInterval);
+      rosStandInterval = null;
     }
   }
 
