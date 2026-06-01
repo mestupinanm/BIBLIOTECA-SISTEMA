@@ -5,6 +5,7 @@
       "type": "trivia",
       "enabled": true,
       "title": {
+        
         "es": "Trivia de la biblioteca",
         "en": "Library trivia"
       },
