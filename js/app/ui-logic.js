@@ -1183,26 +1183,12 @@
                     function onArrived() {
                       if (overlay) { addClass(overlay, 'hidden'); }
                       PepperLib.Inactivity.reset();
-                      function showNotice() {
-                        showNavigationNotice(
-                          PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
-                          function () {
-                            PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                          }
-                        );
-                      }
-                      function doArrivalRotate() {
-                        if (window.PepperRosNavigation && window.PepperRosNavigation.rotateInPlace) {
-                          window.PepperRosNavigation.rotateInPlace(180, showNotice, showNotice);
-                        } else {
-                          showNotice();
+                      showNavigationNotice(
+                        PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
+                        function () {
+                          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                         }
-                      }
-                      if (window.PepperRosNavigation && window.PepperRosNavigation.standPosture) {
-                        window.PepperRosNavigation.standPosture(doArrivalRotate, doArrivalRotate);
-                      } else {
-                        doArrivalRotate();
-                      }
+                      );
                     },
                     function onGiveUp() {
                       navActive = false;
@@ -1617,21 +1603,7 @@
               navArrivalPoll = pollUntilArrived('shelf_' + activeShelf,
                 function onArrived() {
                   PepperLib.Inactivity.reset();
-                  function goFeedback() {
-                    PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                  }
-                  function doArrivalRotate() {
-                    if (window.PepperRosNavigation && window.PepperRosNavigation.rotateInPlace) {
-                      window.PepperRosNavigation.rotateInPlace(180, goFeedback, goFeedback);
-                    } else {
-                      goFeedback();
-                    }
-                  }
-                  if (window.PepperRosNavigation && window.PepperRosNavigation.standPosture) {
-                    window.PepperRosNavigation.standPosture(doArrivalRotate, doArrivalRotate);
-                  } else {
-                    doArrivalRotate();
-                  }
+                  PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                 },
                 function onGiveUp() {
                   navActive = false;
@@ -3015,12 +2987,19 @@
 
       function endAndReturn() {
         clearAutoReturn();
-        navActive = false;
-        startNavClearLoop();
         PepperLib.Inactivity.reset();
         if (blackOverlay) removeClass(blackOverlay, 'active');
-        PepperLib.State.endSession();
-        PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+        var goIdle = function () {
+          navActive = false;
+          startNavClearLoop();
+          PepperLib.State.endSession();
+          PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+        };
+        if (window.PepperRosNavigation && window.PepperRosNavigation.rotateInPlace) {
+          window.PepperRosNavigation.rotateInPlace(180, goIdle, goIdle);
+        } else {
+          goIdle();
+        }
       }
 
       function onReturnError(errorString) {
