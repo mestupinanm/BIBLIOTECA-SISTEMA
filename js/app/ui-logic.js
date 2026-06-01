@@ -1170,9 +1170,11 @@
               console.error('[NAV ERROR] PepperRosNavigation no disponible al navegar.');
               return;
             }
+            stopNavClearLoop();
             try {
               window.PepperRosNavigation.navigateGraphToDestination(resolveGraphDest(currentDestination),
                 function onSuccess(response, destination) {
+                  startNavClearLoop();
                   if (overlay) {
                     addClass(overlay, 'hidden');
                   }
@@ -1184,6 +1186,7 @@
                   );
                 },
                 function onError(errorString) {
+                  startNavClearLoop();
                   if (overlay) {
                     addClass(overlay, 'hidden');
                   }
@@ -1191,6 +1194,7 @@
                 }
               );
             } catch (e) {
+              startNavClearLoop();
               if (overlay) addClass(overlay, 'hidden');
               console.error('[NAV ERROR] navigateGraphToDestination exception:', e);
             }
@@ -1568,12 +1572,15 @@
             console.error('[NAV ERROR] PepperRosNavigation no disponible (shelves).');
             return;
           }
+          stopNavClearLoop();
           window.PepperRosNavigation.navigateGraphToDestination(
             'shelf_' + activeShelf,
             function onSuccess() {
+              startNavClearLoop();
               PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
             },
             function onError(err) {
+              startNavClearLoop();
               console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
             }
           );
@@ -3116,6 +3123,13 @@
     }, 6000);
   }
 
+  function stopNavClearLoop() {
+    if (rosNavClearInterval) {
+      clearInterval(rosNavClearInterval);
+      rosNavClearInterval = null;
+    }
+  }
+
   var DEST_GRAPH_MAP = {
     'coordination':                  'coordinacion',
     'sterilization_space':           'sterilization_room',
@@ -3166,6 +3180,7 @@
     if (window.PepperRosNavigation) {
       if (window.NavigationUtilitiesData) {
         window.NavigationUtilitiesData.prepareBeforeNavigate = false;
+        window.NavigationUtilitiesData.reconnectBeforeCommand = false;
         window.NavigationUtilitiesData.rosbridgeUrl = 'ws://192.168.0.208:9090';
       }
       window.PepperRosNavigation.configure(window.NavigationUtilitiesData || {});
