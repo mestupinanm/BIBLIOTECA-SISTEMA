@@ -1170,14 +1170,15 @@
               console.error('[NAV ERROR] PepperRosNavigation no disponible al navegar.');
               return;
             }
+            cancelArrivalPoll();
             navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
             stopNavClearLoop();
             try {
               window.PepperRosNavigation.navigateGraphToDestination(resolveGraphDest(currentDestination),
                 function onSuccess(response, destination) {
-                  verifyArrival(resolveGraphDest(currentDestination),
-                    function () {
+                  navArrivalPoll = pollUntilArrived(resolveGraphDest(currentDestination),
+                    function onArrived() {
                       if (overlay) { addClass(overlay, 'hidden'); }
                       showNavigationNotice(
                         PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
@@ -1186,12 +1187,14 @@
                         }
                       );
                     },
-                    function () {
+                    function onGiveUp() {
+                      startNavClearLoop();
                       if (overlay) { addClass(overlay, 'hidden'); }
                     }
                   );
                 },
                 function onError(errorString) {
+                  cancelArrivalPoll();
                   startNavClearLoop();
                   if (overlay) {
                     addClass(overlay, 'hidden');
@@ -1200,6 +1203,7 @@
                 }
               );
             } catch (e) {
+              cancelArrivalPoll();
               startNavClearLoop();
               if (overlay) addClass(overlay, 'hidden');
               console.error('[NAV ERROR] navigateGraphToDestination exception:', e);
@@ -1578,20 +1582,25 @@
             console.error('[NAV ERROR] PepperRosNavigation no disponible (shelves).');
             return;
           }
+          cancelArrivalPoll();
           navStartTime = Date.now();
           window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
           stopNavClearLoop();
           window.PepperRosNavigation.navigateGraphToDestination(
             'shelf_' + activeShelf,
             function onSuccess() {
-              verifyArrival('shelf_' + activeShelf,
-                function () {
+              navArrivalPoll = pollUntilArrived('shelf_' + activeShelf,
+                function onArrived() {
                   PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                 },
-                function () {}
+                function onGiveUp() {
+                  startNavClearLoop();
+                  console.error('[NAV ERROR] Robot no llego a shelf_' + activeShelf);
+                }
               );
             },
             function onError(err) {
+              cancelArrivalPoll();
               startNavClearLoop();
               console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
             }
@@ -2951,6 +2960,7 @@
     }
 
     function initiateReturn() {
+      cancelArrivalPoll();
       var blackOverlay = byId('black-screen-overlay');
       if (blackOverlay) addClass(blackOverlay, 'active');
 
@@ -3129,6 +3139,14 @@
 
   var rosNavClearInterval = null;
   var navStartTime = null;
+  var navArrivalPoll = null;
+
+  function cancelArrivalPoll() {
+    if (navArrivalPoll) {
+      clearInterval(navArrivalPoll);
+      navArrivalPoll = null;
+    }
+  }
 
   function startNavClearLoop() {
     if (rosNavClearInterval) { return; }
@@ -3157,50 +3175,58 @@
     return DEST_GRAPH_MAP[destId] || destId;
   }
 
-  function verifyArrival(graphDestName, onValid, onFail) {
-    var lastPose = window.PepperRosNavigation && window.PepperRosNavigation.getLastAmclPose
-      ? window.PepperRosNavigation.getLastAmclPose() : null;
-    var graph = window.PepperRosNavigation && window.PepperRosNavigation.getClientGraph
-      ? window.PepperRosNavigation.getClientGraph() : null;
-    var destPlace = null;
-    var i;
-    var elapsed = navStartTime ? (Date.now() - navStartTime) : null;
+  function pollUntilArrived(graphDestName, onArrived, onGiveUp) {
+    var deadline = Date.now() + 60000;
+    var interval = setInterval(function () {
+      var pose = window.PepperRosNavigation && window.PepperRosNavigation.getLastAmclPose
+        ? window.PepperRosNavigation.getLastAmclPose() : null;
+      var graph = window.PepperRosNavigation && window.PepperRosNavigation.getClientGraph
+        ? window.PepperRosNavigation.getClientGraph() : null;
+      var destPlace = null;
+      var i;
 
-    if (!lastPose || !graph) {
-      if (elapsed !== null && elapsed < 15000) {
-        console.error('[NAV ERROR] Llegada demasiado rapida (' + elapsed + 'ms) y sin AMCL');
-        if (onFail) { onFail('Llegada prematura'); }
-      } else {
-        onValid();
+      if (!pose || !graph) {
+        if (Date.now() >= deadline) {
+          clearInterval(interval);
+          navArrivalPoll = null;
+          if (onGiveUp) { onGiveUp(); }
+        }
+        return;
       }
-      return;
-    }
 
-    for (i = 0; i < graph.places.length; i += 1) {
-      if (graph.places[i].name === graphDestName) {
-        destPlace = graph.places[i];
-        break;
+      for (i = 0; i < graph.places.length; i += 1) {
+        if (graph.places[i].name === graphDestName) {
+          destPlace = graph.places[i];
+          break;
+        }
       }
-    }
 
-    if (!destPlace) {
-      onValid();
-      return;
-    }
+      if (!destPlace) {
+        clearInterval(interval);
+        navArrivalPoll = null;
+        if (onArrived) { onArrived(); }
+        return;
+      }
 
-    var dx = Math.abs(lastPose.position.x - Number(destPlace.x));
-    var dy = Math.abs(lastPose.position.y - Number(destPlace.y));
+      var dx = Math.abs(pose.position.x - Number(destPlace.x));
+      var dy = Math.abs(pose.position.y - Number(destPlace.y));
 
-    if (dx > 2.0 || dy > 2.0) {
-      console.error('[NAV ERROR] Llegada prematura: pos=(' +
-        Math.round(lastPose.position.x * 100) / 100 + ',' +
-        Math.round(lastPose.position.y * 100) / 100 + ') destino=' + graphDestName +
-        ' dx=' + dx.toFixed(2) + ' dy=' + dy.toFixed(2));
-      if (onFail) { onFail('Posicion incorrecta al llegar'); }
-      return;
-    }
+      if (dx <= 1.5 && dy <= 1.5) {
+        clearInterval(interval);
+        navArrivalPoll = null;
+        if (onArrived) { onArrived(); }
+        return;
+      }
 
-    onValid();
+      if (Date.now() >= deadline) {
+        clearInterval(interval);
+        navArrivalPoll = null;
+        console.error('[NAV ERROR] Timeout esperando llegada a ' + graphDestName +
+          ' pos=(' + pose.position.x.toFixed(2) + ',' + pose.position.y.toFixed(2) + ')');
+        if (onGiveUp) { onGiveUp(); }
+      }
+    }, 500);
+    return interval;
   }
 
   (function interceptNavErrors() {
@@ -3244,6 +3270,7 @@
       if (window.NavigationUtilitiesData) {
         window.NavigationUtilitiesData.reconnectBeforeCommand = false;
         window.NavigationUtilitiesData.rosbridgeUrl = 'ws://192.168.0.208:9090';
+        window.NavigationUtilitiesData.prepareBeforeNavigate = false;
       }
       window.PepperRosNavigation.configure(window.NavigationUtilitiesData || {});
       window.PepperRosNavigation.loadGraphFromUrl('./assets/data/navigation-graph.json',
@@ -3264,8 +3291,46 @@
               null,
               function (err) { console.error('[NAV ERROR] motion_tools_srv:', err); }
             );
+            var navToolsSvc = new window.ROSLIB.Service({
+              ros: rosInstance,
+              name: '/robot_toolkit/navigation_tools_srv',
+              serviceType: 'robot_toolkit_msgs/navigation_tools_srv'
+            });
+            navToolsSvc.callService(
+              new window.ROSLIB.ServiceRequest({
+                data: {
+                  command: 'custom',
+                  tf_enable: true, tf_frequency: 50.0,
+                  odom_enable: true, odom_frequency: 50.0,
+                  laser_enable: true, laser_frequency: 10.0,
+                  cmd_vel_enable: true, security_timer: 5.0,
+                  move_base_enable: true,
+                  goal_enable: false, robot_pose_suscriber_enable: false,
+                  path_enable: false, path_frequency: 0.0,
+                  robot_pose_publisher_enable: false, robot_pose_publisher_frequency: 0.0,
+                  result_enable: false, depth_to_laser_enable: false,
+                  depth_to_laser_parameters: {
+                    resolution: 1, scan_time: 1.0,
+                    range_min: 0.45, range_max: 10.0, scan_height: 120
+                  },
+                  free_zone_enable: false
+                }
+              }),
+              null,
+              function (err) { console.error('[NAV ERROR] navigation_tools_srv:', err); }
+            );
+            var miscSvc = new window.ROSLIB.Service({
+              ros: rosInstance,
+              name: '/robot_toolkit/misc_tools_srv',
+              serviceType: 'robot_toolkit_msgs/misc_tools_srv'
+            });
+            miscSvc.callService(
+              new window.ROSLIB.ServiceRequest({ data: { command: 'enable_all' } }),
+              null,
+              function (err) { console.error('[NAV ERROR] misc_tools_srv:', err); }
+            );
           } catch (e) {
-            console.error('[NAV ERROR] motion_tools_srv exception:', e);
+            console.error('[NAV ERROR] robot_toolkit services exception:', e);
           }
         }
         startNavClearLoop();
