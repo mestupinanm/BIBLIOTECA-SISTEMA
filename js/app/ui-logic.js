@@ -1171,9 +1171,10 @@
               return;
             }
             cancelArrivalPoll();
+            navActive = true;
             navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
-            stopNavClearLoop();
+            startNavClearLoop();
             try {
               window.PepperRosNavigation.navigateGraphToDestination(resolveGraphDest(currentDestination),
                 function onSuccess(response, destination) {
@@ -1188,6 +1189,7 @@
                       );
                     },
                     function onGiveUp() {
+                      navActive = false;
                       startNavClearLoop();
                       if (overlay) { addClass(overlay, 'hidden'); }
                     }
@@ -1195,6 +1197,7 @@
                 },
                 function onError(errorString) {
                   cancelArrivalPoll();
+                  navActive = false;
                   startNavClearLoop();
                   if (overlay) {
                     addClass(overlay, 'hidden');
@@ -1204,6 +1207,7 @@
               );
             } catch (e) {
               cancelArrivalPoll();
+              navActive = false;
               startNavClearLoop();
               if (overlay) addClass(overlay, 'hidden');
               console.error('[NAV ERROR] navigateGraphToDestination exception:', e);
@@ -1583,9 +1587,10 @@
             return;
           }
           cancelArrivalPoll();
+          navActive = true;
           navStartTime = Date.now();
           window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
-          stopNavClearLoop();
+          startNavClearLoop();
           window.PepperRosNavigation.navigateGraphToDestination(
             'shelf_' + activeShelf,
             function onSuccess() {
@@ -1594,6 +1599,7 @@
                   PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                 },
                 function onGiveUp() {
+                  navActive = false;
                   startNavClearLoop();
                   console.error('[NAV ERROR] Robot no llego a shelf_' + activeShelf);
                 }
@@ -1601,6 +1607,7 @@
             },
             function onError(err) {
               cancelArrivalPoll();
+              navActive = false;
               startNavClearLoop();
               console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
             }
@@ -2961,14 +2968,16 @@
 
     function initiateReturn() {
       cancelArrivalPoll();
+      navActive = true;
       var blackOverlay = byId('black-screen-overlay');
       if (blackOverlay) addClass(blackOverlay, 'active');
 
       clearAutoReturn();
-      stopNavClearLoop();
+      startNavClearLoop();
 
       function endAndReturn() {
         clearAutoReturn();
+        navActive = false;
         startNavClearLoop();
         if (blackOverlay) removeClass(blackOverlay, 'active');
         PepperLib.State.endSession();
@@ -2977,6 +2986,7 @@
 
       function onReturnError(errorString) {
         clearAutoReturn();
+        navActive = false;
         startNavClearLoop();
         if (blackOverlay) removeClass(blackOverlay, 'active');
         console.error('[NAV ERROR] navigateToBase:', errorString);
@@ -2989,6 +2999,7 @@
           window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
           autoReturnTimer = setTimeout(endAndReturn, 120000);
         } catch (e) {
+          navActive = false;
           startNavClearLoop();
           console.error('[NAV ERROR] navigateToBase exception:', e);
           autoReturnTimer = setTimeout(endAndReturn, 5000);
@@ -3140,6 +3151,7 @@
   var rosNavClearInterval = null;
   var navStartTime = null;
   var navArrivalPoll = null;
+  var navActive = false;
 
   function cancelArrivalPoll() {
     if (navArrivalPoll) {
@@ -3153,7 +3165,9 @@
     rosNavClearInterval = setInterval(function () {
       if (window.PepperRosNavigation) {
         window.PepperRosNavigation.clearCostmaps(null, null);
-        window.PepperRosNavigation.standPosture(null, null);
+        if (!navActive) {
+          window.PepperRosNavigation.standPosture(null, null);
+        }
       }
     }, 6000);
   }
