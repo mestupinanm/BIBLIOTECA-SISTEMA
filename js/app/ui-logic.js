@@ -3250,11 +3250,24 @@
         null,
         function (err) { console.error('[NAV ERROR] Graph file load:', err); }
       );
-      window.PepperRosNavigation.connect(null, function () {
+      window.PepperRosNavigation.connect(null, function (rosInstance) {
         window.PepperRosNavigation.disableSecurity(null, null);
-        window.PepperRosNavigation.enableMotionTools(null, function (err) {
-          console.error('[NAV ERROR] enableMotionTools:', err);
-        });
+        if (rosInstance && window.ROSLIB) {
+          try {
+            var motionSvc = new window.ROSLIB.Service({
+              ros: rosInstance,
+              name: '/robot_toolkit/motion_tools_srv',
+              serviceType: 'robot_toolkit_msgs/motion_tools_srv'
+            });
+            motionSvc.callService(
+              new window.ROSLIB.ServiceRequest({ data: { command: 'enable_all' } }),
+              null,
+              function (err) { console.error('[NAV ERROR] motion_tools_srv:', err); }
+            );
+          } catch (e) {
+            console.error('[NAV ERROR] motion_tools_srv exception:', e);
+          }
+        }
         startNavClearLoop();
         if (window.PepperRobot && typeof window.PepperRobot.showTabletWebview === 'function') {
           window.PepperRobot.showTabletWebview('http://192.168.0.230:8000/index.html');
