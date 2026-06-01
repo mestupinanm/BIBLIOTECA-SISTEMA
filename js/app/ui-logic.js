@@ -3360,28 +3360,33 @@
             );
 
             window.PepperRosNavigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
-              try {
-                var svc = new window.ROSLIB.Service({
-                  ros: rosInstance,
-                  name: '/pytoolkit/ALMotion/move_relative_srv',
-                  serviceType: 'robot_toolkit_msgs/navigate_to_srv'
-                });
-                svc.callService(
-                  new window.ROSLIB.ServiceRequest({
-                    data: {
+              function sendMove() {
+                try {
+                  var svc = new window.ROSLIB.Service({
+                    ros: rosInstance,
+                    name: '/pytoolkit/ALMotion/move_relative_srv',
+                    serviceType: 'robot_toolkit_msgs/navigate_to_srv'
+                  });
+                  svc.callService(
+                    new window.ROSLIB.ServiceRequest({
                       x_coordinate: Number(x) || 0,
                       y_coordinate: Number(y) || 0
+                    }),
+                    function (response) { if (onSuccess) { onSuccess(response || {}); } },
+                    function (err) {
+                      console.error('[NAV ERROR] move_relative_srv:', err);
+                      if (onError) { onError(err); }
                     }
-                  }),
-                  function (response) { if (onSuccess) { onSuccess(response || {}); } },
-                  function (err) {
-                    console.error('[NAV ERROR] move_relative_srv:', err);
-                    if (onError) { onError(err); }
-                  }
-                );
-              } catch (e) {
-                console.error('[NAV ERROR] move_relative_srv exception:', e);
-                if (onError) { onError(e); }
+                  );
+                } catch (e) {
+                  console.error('[NAV ERROR] move_relative_srv exception:', e);
+                  if (onError) { onError(e); }
+                }
+              }
+              if (window.PepperRosNavigation.standPosture) {
+                window.PepperRosNavigation.standPosture(sendMove, sendMove);
+              } else {
+                sendMove();
               }
             };
           } catch (e) {
