@@ -1172,6 +1172,7 @@
             }
             cancelArrivalPoll();
             navActive = true;
+            PepperLib.Inactivity.stop();
             navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
             startNavClearLoop();
@@ -1181,6 +1182,7 @@
                   navArrivalPoll = pollUntilArrived(resolveGraphDest(currentDestination),
                     function onArrived() {
                       if (overlay) { addClass(overlay, 'hidden'); }
+                      PepperLib.Inactivity.reset();
                       showNavigationNotice(
                         PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
                         function () {
@@ -1191,6 +1193,7 @@
                     function onGiveUp() {
                       navActive = false;
                       startNavClearLoop();
+                      PepperLib.Inactivity.reset();
                       if (overlay) { addClass(overlay, 'hidden'); }
                     }
                   );
@@ -1199,6 +1202,7 @@
                   cancelArrivalPoll();
                   navActive = false;
                   startNavClearLoop();
+                  PepperLib.Inactivity.reset();
                   if (overlay) {
                     addClass(overlay, 'hidden');
                   }
@@ -1209,6 +1213,7 @@
               cancelArrivalPoll();
               navActive = false;
               startNavClearLoop();
+              PepperLib.Inactivity.reset();
               if (overlay) addClass(overlay, 'hidden');
               console.error('[NAV ERROR] navigateGraphToDestination exception:', e);
             }
@@ -1588,6 +1593,7 @@
           }
           cancelArrivalPoll();
           navActive = true;
+          PepperLib.Inactivity.stop();
           navStartTime = Date.now();
           window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
           startNavClearLoop();
@@ -1596,11 +1602,13 @@
             function onSuccess() {
               navArrivalPoll = pollUntilArrived('shelf_' + activeShelf,
                 function onArrived() {
+                  PepperLib.Inactivity.reset();
                   PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                 },
                 function onGiveUp() {
                   navActive = false;
                   startNavClearLoop();
+                  PepperLib.Inactivity.reset();
                   console.error('[NAV ERROR] Robot no llego a shelf_' + activeShelf);
                 }
               );
@@ -1609,6 +1617,7 @@
               cancelArrivalPoll();
               navActive = false;
               startNavClearLoop();
+              PepperLib.Inactivity.reset();
               console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
             }
           );
@@ -2969,6 +2978,7 @@
     function initiateReturn() {
       cancelArrivalPoll();
       navActive = true;
+      PepperLib.Inactivity.stop();
       var blackOverlay = byId('black-screen-overlay');
       if (blackOverlay) addClass(blackOverlay, 'active');
 
@@ -2979,6 +2989,7 @@
         clearAutoReturn();
         navActive = false;
         startNavClearLoop();
+        PepperLib.Inactivity.reset();
         if (blackOverlay) removeClass(blackOverlay, 'active');
         PepperLib.State.endSession();
         PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
@@ -2988,6 +2999,7 @@
         clearAutoReturn();
         navActive = false;
         startNavClearLoop();
+        PepperLib.Inactivity.reset();
         if (blackOverlay) removeClass(blackOverlay, 'active');
         console.error('[NAV ERROR] navigateToBase:', errorString);
         PepperLib.State.endSession();
@@ -2996,11 +3008,14 @@
 
       if (window.PepperRosNavigation) {
         try {
-          window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
           autoReturnTimer = setTimeout(endAndReturn, 120000);
+          window.PepperRosNavigation.rotateInPlace(180, function () {
+            window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
+          }, onReturnError);
         } catch (e) {
           navActive = false;
           startNavClearLoop();
+          PepperLib.Inactivity.reset();
           console.error('[NAV ERROR] navigateToBase exception:', e);
           autoReturnTimer = setTimeout(endAndReturn, 5000);
         }
@@ -3343,6 +3358,32 @@
               null,
               function (err) { console.error('[NAV ERROR] misc_tools_srv:', err); }
             );
+
+            window.PepperRosNavigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
+              try {
+                var svc = new window.ROSLIB.Service({
+                  ros: rosInstance,
+                  name: '/pytoolkit/ALMotion/move_relative_srv',
+                  serviceType: 'robot_toolkit_msgs/navigate_to_srv'
+                });
+                svc.callService(
+                  new window.ROSLIB.ServiceRequest({
+                    data: {
+                      x_coordinate: Number(x) || 0,
+                      y_coordinate: Number(y) || 0
+                    }
+                  }),
+                  function (response) { if (onSuccess) { onSuccess(response || {}); } },
+                  function (err) {
+                    console.error('[NAV ERROR] move_relative_srv:', err);
+                    if (onError) { onError(err); }
+                  }
+                );
+              } catch (e) {
+                console.error('[NAV ERROR] move_relative_srv exception:', e);
+                if (onError) { onError(e); }
+              }
+            };
           } catch (e) {
             console.error('[NAV ERROR] robot_toolkit services exception:', e);
           }
