@@ -1170,18 +1170,24 @@
               console.error('[NAV ERROR] PepperRosNavigation no disponible al navegar.');
               return;
             }
+            window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
             stopNavClearLoop();
             try {
               window.PepperRosNavigation.navigateGraphToDestination(resolveGraphDest(currentDestination),
                 function onSuccess(response, destination) {
                   startNavClearLoop();
-                  if (overlay) {
-                    addClass(overlay, 'hidden');
-                  }
-                  showNavigationNotice(
-                    PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
+                  verifyArrival(resolveGraphDest(currentDestination),
                     function () {
-                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                      if (overlay) { addClass(overlay, 'hidden'); }
+                      showNavigationNotice(
+                        PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
+                        function () {
+                          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                        }
+                      );
+                    },
+                    function () {
+                      if (overlay) { addClass(overlay, 'hidden'); }
                     }
                   );
                 },
@@ -1572,12 +1578,18 @@
             console.error('[NAV ERROR] PepperRosNavigation no disponible (shelves).');
             return;
           }
+          window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
           stopNavClearLoop();
           window.PepperRosNavigation.navigateGraphToDestination(
             'shelf_' + activeShelf,
             function onSuccess() {
               startNavClearLoop();
-              PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+              verifyArrival('shelf_' + activeShelf,
+                function () {
+                  PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                },
+                function () {}
+              );
             },
             function onError(err) {
               startNavClearLoop();
@@ -3140,6 +3152,46 @@
     return DEST_GRAPH_MAP[destId] || destId;
   }
 
+  function verifyArrival(graphDestName, onValid, onFail) {
+    var lastPose = window.PepperRosNavigation && window.PepperRosNavigation.getLastAmclPose
+      ? window.PepperRosNavigation.getLastAmclPose() : null;
+    var graph = window.PepperRosNavigation && window.PepperRosNavigation.getClientGraph
+      ? window.PepperRosNavigation.getClientGraph() : null;
+    var destPlace = null;
+    var i;
+
+    if (!lastPose || !graph) {
+      onValid();
+      return;
+    }
+
+    for (i = 0; i < graph.places.length; i += 1) {
+      if (graph.places[i].name === graphDestName) {
+        destPlace = graph.places[i];
+        break;
+      }
+    }
+
+    if (!destPlace) {
+      onValid();
+      return;
+    }
+
+    var dx = Math.abs(lastPose.position.x - Number(destPlace.x));
+    var dy = Math.abs(lastPose.position.y - Number(destPlace.y));
+
+    if (dx > 2.0 || dy > 2.0) {
+      console.error('[NAV ERROR] Llegada prematura detectada: pos=(' +
+        Math.round(lastPose.position.x * 100) / 100 + ',' +
+        Math.round(lastPose.position.y * 100) / 100 + ') destino=' + graphDestName +
+        ' (' + destPlace.x + ',' + destPlace.y + ') dx=' + dx.toFixed(2) + ' dy=' + dy.toFixed(2));
+      if (onFail) { onFail('Posicion inesperada al llegar'); }
+      return;
+    }
+
+    onValid();
+  }
+
   (function interceptNavErrors() {
     var origError = console.error;
     console.error = function () {
@@ -3179,14 +3231,20 @@
 
     if (window.PepperRosNavigation) {
       if (window.NavigationUtilitiesData) {
-        window.NavigationUtilitiesData.prepareBeforeNavigate = false;
         window.NavigationUtilitiesData.reconnectBeforeCommand = false;
         window.NavigationUtilitiesData.rosbridgeUrl = 'ws://192.168.0.208:9090';
       }
       window.PepperRosNavigation.configure(window.NavigationUtilitiesData || {});
+      window.PepperRosNavigation.loadGraphFromUrl('./assets/data/navigation-graph.json',
+        null,
+        function (err) { console.error('[NAV ERROR] Graph file load:', err); }
+      );
       window.PepperRosNavigation.connect(null, function () {
         window.PepperRosNavigation.disableSecurity(null, null);
         startNavClearLoop();
+        if (window.PepperRobot && typeof window.PepperRobot.showTabletWebview === 'function') {
+          window.PepperRobot.showTabletWebview('http://192.168.0.230:8000/index.html');
+        }
         window.PepperRosNavigation.startPoseTracking(
           function (pose) {},
           function (err) { console.error('[NAV ERROR] AMCL:', err); }
