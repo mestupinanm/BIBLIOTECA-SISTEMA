@@ -1051,6 +1051,7 @@
       return;
     }
 
+    
     yaw = poseYawRadians(pose);
     goal = new window.ROSLIB.Goal({
       actionClient: ensureMoveBaseClient(),
