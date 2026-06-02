@@ -1066,7 +1066,12 @@
               y: pose.position.y + Number(x) * Math.sin(yaw) + Number(y) * Math.cos(yaw),
               z: 0
             },
-            orientation: thetaToQuaternion(yaw)
+            orientation: {
+              x: pose.orientation.x,
+              y: pose.orientation.y,
+              z: pose.orientation.z,
+              w: pose.orientation.w
+            }
           }
         }
       }
