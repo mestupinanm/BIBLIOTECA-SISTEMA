@@ -3362,39 +3362,6 @@
               function (err) { console.error('[NAV ERROR] misc_tools_srv:', err); }
             );
 
-            window.PepperRosNavigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
-              function sendMove() {
-                try {
-                  var moveSvc = new window.ROSLIB.Service({
-                    ros: rosInstance,
-                    name: '/pytoolkit/ALMotion/move_relative_srv',
-                    serviceType: 'robot_toolkit_msgs/navigate_to_srv'
-                  });
-                  moveSvc.callService(
-                    new window.ROSLIB.ServiceRequest({
-                      x_coordinate: Number(x) || 0,
-                      y_coordinate: Number(y) || 0
-                    }),
-                    function (response) {
-                      setTimeout(function () { if (onSuccess) { onSuccess(response || {}); } }, 1500);
-                    },
-                    function (err) {
-                      console.error('[NAV ERROR] move_relative_srv:', err);
-                      if (onError) { onError(err); }
-                    }
-                  );
-                } catch (e) {
-                  console.error('[NAV ERROR] move_relative_srv exception:', e);
-                  if (onError) { onError(e); }
-                }
-              }
-              if (window.PepperRosNavigation.standPosture) {
-                window.PepperRosNavigation.standPosture(sendMove, sendMove);
-              } else {
-                sendMove();
-              }
-            };
-
           } catch (e) {
             console.error('[NAV ERROR] robot_toolkit services exception:', e);
           }
