@@ -1040,52 +1040,87 @@
   };
 
   Navigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
-    try {
-      var distance = Math.abs(Number(x) || 0);
-      if (distance < 0.001) {
-        if (onSuccess) { setTimeout(function () { onSuccess({}); }, 100); }
-        return;
-      }
-      if (!ros || status !== 'connected') {
-        if (onError) { onError('ROS no conectado'); }
-        return;
-      }
-
-      var speed = 0.15;
-      var direction = (Number(x) || 0) >= 0 ? 1 : -1;
-      var durationMs = (distance / speed) * 1000;
-
-      var cmdVelTopic = new window.ROSLIB.Topic({
-        ros: ros,
-        name: '/cmd_vel',
-        messageType: 'geometry_msgs/Twist'
-      });
-
-      var moveMsg = new window.ROSLIB.Message({
-        linear: { x: speed * direction, y: 0, z: 0 },
-        angular: { x: 0, y: 0, z: 0 }
-      });
-      var stopMsg = new window.ROSLIB.Message({
-        linear: { x: 0, y: 0, z: 0 },
-        angular: { x: 0, y: 0, z: 0 }
-      });
-
-      cmdVelTopic.publish(moveMsg);
-      var publishHandle = setInterval(function () {
-        cmdVelTopic.publish(moveMsg);
-      }, 100);
-
-      setTimeout(function () {
-        clearInterval(publishHandle);
-        cmdVelTopic.publish(stopMsg);
-        cmdVelTopic.publish(stopMsg);
-        setTimeout(function () {
-          if (onSuccess) { onSuccess({}); }
-        }, 300);
-      }, durationMs);
-    } catch (e) {
-      if (onError) { onError(e); }
+    var requestedDistance = Math.abs(Number(x) || 0);
+    if (requestedDistance < 0.001) {
+      if (onSuccess) { setTimeout(function () { onSuccess({}); }, 100); }
+      return;
     }
+    if (!ros || status !== 'connected') {
+      if (onError) { onError('ROS no conectado'); }
+      return;
+    }
+    var startPose = lastAmclPose;
+    if (!startPose) {
+      if (onError) { onError('Sin AMCL pose'); }
+      return;
+    }
+
+    var direction = (Number(x) || 0) >= 0 ? 1 : -1;
+    var tolerance = 0.05;
+    var maxAttempts = 5;
+    var iterationTimeoutMs = 4000;
+    var attempts = 0;
+    var done = false;
+
+    function distanceFromStart(pose) {
+      var dx = pose.position.x - startPose.position.x;
+      var dy = pose.position.y - startPose.position.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function finish() {
+      if (done) { return; }
+      done = true;
+      if (onSuccess) { onSuccess({}); }
+    }
+
+    function attempt() {
+      if (done) { return; }
+      var currentPose = lastAmclPose;
+      if (!currentPose) {
+        finish();
+        return;
+      }
+      var moved = distanceFromStart(currentPose);
+      var remaining = requestedDistance - moved;
+      if (remaining < tolerance || attempts >= maxAttempts) {
+        finish();
+        return;
+      }
+
+      attempts += 1;
+      var step = remaining * direction;
+      var yaw = poseYawRadians(currentPose);
+      var goal = new window.ROSLIB.Goal({
+        actionClient: ensureMoveBaseClient(),
+        goalMessage: {
+          target_pose: {
+            header: { frame_id: 'map' },
+            pose: {
+              position: {
+                x: currentPose.position.x + step * Math.cos(yaw),
+                y: currentPose.position.y + step * Math.sin(yaw),
+                z: 0
+              },
+              orientation: thetaToQuaternion(yaw)
+            }
+          }
+        }
+      });
+
+      activeGoal = goal;
+      var iterationTimer = setTimeout(function () {
+        try { if (goal && goal.cancel) { goal.cancel(); } } catch (e) {}
+        setTimeout(attempt, 200);
+      }, iterationTimeoutMs);
+      goal.on('result', function () {
+        clearTimeout(iterationTimer);
+        setTimeout(attempt, 200);
+      });
+      goal.send();
+    }
+
+    attempt();
   };
 
   Navigation.callPyToolkitMoveRelativeRaw = function (request, onSuccess, onError) {
