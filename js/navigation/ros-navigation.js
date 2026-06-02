@@ -1027,10 +1027,38 @@
   };
 
   Navigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
-    callNamedService(getServices().pyToolkitMoveRelative, {
-      x_coordinate: Number(x) || 0,
-      y_coordinate: Number(y) || 0
-    }, onSuccess, onError);
+    var pose = lastAmclPose;
+    var yaw;
+    var goal;
+
+    if (!pose) {
+      if (onSuccess) { onSuccess({}); }
+      return;
+    }
+
+    yaw = poseYawRadians(pose);
+    goal = new window.ROSLIB.Goal({
+      actionClient: ensureMoveBaseClient(),
+      goalMessage: {
+        target_pose: {
+          header: { frame_id: 'map' },
+          pose: {
+            position: {
+              x: pose.position.x + Number(x) * Math.cos(yaw) - Number(y) * Math.sin(yaw),
+              y: pose.position.y + Number(x) * Math.sin(yaw) + Number(y) * Math.cos(yaw),
+              z: 0
+            },
+            orientation: thetaToQuaternion(yaw)
+          }
+        }
+      }
+    });
+
+    activeGoal = goal;
+    goal.on('result', function (result) {
+      if (onSuccess) { onSuccess(result || {}); }
+    });
+    goal.send();
   };
 
   Navigation.callPyToolkitMoveRelativeRaw = function (request, onSuccess, onError) {

@@ -1179,22 +1179,13 @@
             try {
               window.PepperRosNavigation.navigateGraphToDestination(resolveGraphDest(currentDestination),
                 function onSuccess(response, destination) {
-                  navArrivalPoll = pollUntilArrived(resolveGraphDest(currentDestination),
-                    function onArrived() {
-                      if (overlay) { addClass(overlay, 'hidden'); }
-                      PepperLib.Inactivity.reset();
-                      showNavigationNotice(
-                        PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
-                        function () {
-                          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                        }
-                      );
-                    },
-                    function onGiveUp() {
-                      navActive = false;
-                      startNavClearLoop();
-                      PepperLib.Inactivity.reset();
-                      if (overlay) { addClass(overlay, 'hidden'); }
+                  cancelArrivalPoll();
+                  if (overlay) { addClass(overlay, 'hidden'); }
+                  PepperLib.Inactivity.reset();
+                  showNavigationNotice(
+                    PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
+                    function () {
+                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                     }
                   );
                 },
@@ -1600,18 +1591,9 @@
           window.PepperRosNavigation.navigateGraphToDestination(
             'shelf_' + activeShelf,
             function onSuccess() {
-              navArrivalPoll = pollUntilArrived('shelf_' + activeShelf,
-                function onArrived() {
-                  PepperLib.Inactivity.reset();
-                  PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                },
-                function onGiveUp() {
-                  navActive = false;
-                  startNavClearLoop();
-                  PepperLib.Inactivity.reset();
-                  console.error('[NAV ERROR] Robot no llego a shelf_' + activeShelf);
-                }
-              );
+              cancelArrivalPoll();
+              PepperLib.Inactivity.reset();
+              PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
             },
             function onError(err) {
               cancelArrivalPoll();
@@ -2988,8 +2970,8 @@
       function endAndReturn() {
         clearAutoReturn();
         PepperLib.Inactivity.reset();
-        if (blackOverlay) removeClass(blackOverlay, 'active');
         var goIdle = function () {
+          if (blackOverlay) removeClass(blackOverlay, 'active');
           navActive = false;
           startNavClearLoop();
           PepperLib.State.endSession();
@@ -3080,7 +3062,7 @@
               addClass(byId('feedback-comment-section'), 'hidden');
               removeClass(byId('feedback-thanks'), 'hidden');
               initiateReturn();
-            }, 3000);
+            }, 60000);
           };
         }
 
@@ -3096,7 +3078,8 @@
           addClass(byId('feedback-comment-section'), 'hidden');
           removeClass(byId('feedback-thanks'), 'hidden');
 
-          initiateReturn();
+          clearAutoReturn();
+          autoReturnTimer = setTimeout(initiateReturn, 3000);
         };
       },
 
@@ -3111,7 +3094,7 @@
         byId('feedback-comment-input').value = '';
         autoReturnTimer = setTimeout(function () {
           initiateReturn();
-        }, 30000);
+        }, 60000);
       },
 
       onExit: function () {
