@@ -1040,87 +1040,40 @@
   };
 
   Navigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
-    var requestedDistance = Math.abs(Number(x) || 0);
-    if (requestedDistance < 0.001) {
-      if (onSuccess) { setTimeout(function () { onSuccess({}); }, 100); }
-      return;
-    }
-    if (!ros || status !== 'connected') {
-      if (onError) { onError('ROS no conectado'); }
-      return;
-    }
-    var startPose = lastAmclPose;
-    if (!startPose) {
-      if (onError) { onError('Sin AMCL pose'); }
-      return;
-    }
+    var pose = lastAmclPose;
+    var yaw;
+    var goal;
 
-    var direction = (Number(x) || 0) >= 0 ? 1 : -1;
-    var tolerance = 0.05;
-    var maxAttempts = 5;
-    var iterationTimeoutMs = 4000;
-    var attempts = 0;
-    var done = false;
-
-    function distanceFromStart(pose) {
-      var dx = pose.position.x - startPose.position.x;
-      var dy = pose.position.y - startPose.position.y;
-      return Math.sqrt(dx * dx + dy * dy);
-    }
-
-    function finish() {
-      if (done) { return; }
-      done = true;
-      if (onSuccess) { onSuccess({}); }
-    }
-
-    function attempt() {
-      if (done) { return; }
-      var currentPose = lastAmclPose;
-      if (!currentPose) {
-        finish();
-        return;
+    if (!pose) {
+      if (onError) {
+        onError('No hay /amcl_pose para calcular el avance.');
       }
-      var moved = distanceFromStart(currentPose);
-      var remaining = requestedDistance - moved;
-      if (remaining < tolerance || attempts >= maxAttempts) {
-        finish();
-        return;
-      }
+      return;
+    }
 
-      attempts += 1;
-      var step = remaining * direction;
-      var yaw = poseYawRadians(currentPose);
-      var goal = new window.ROSLIB.Goal({
-        actionClient: ensureMoveBaseClient(),
-        goalMessage: {
-          target_pose: {
-            header: { frame_id: 'map' },
-            pose: {
-              position: {
-                x: currentPose.position.x + step * Math.cos(yaw),
-                y: currentPose.position.y + step * Math.sin(yaw),
-                z: 0
-              },
-              orientation: thetaToQuaternion(yaw)
-            }
+    yaw = poseYawRadians(pose);
+    goal = new window.ROSLIB.Goal({
+      actionClient: ensureMoveBaseClient(),
+      goalMessage: {
+        target_pose: {
+          header: {
+            frame_id: 'map'
+          },
+          pose: {
+            position: {
+              x: pose.position.x + Number(x) * Math.cos(yaw) - Number(y) * Math.sin(yaw),
+              y: pose.position.y + Number(x) * Math.sin(yaw) + Number(y) * Math.cos(yaw),
+              z: 0
+            },
+            orientation: thetaToQuaternion(yaw)
           }
         }
-      });
+      }
+    });
 
-      activeGoal = goal;
-      var iterationTimer = setTimeout(function () {
-        try { if (goal && goal.cancel) { goal.cancel(); } } catch (e) {}
-        setTimeout(attempt, 200);
-      }, iterationTimeoutMs);
-      goal.on('result', function () {
-        clearTimeout(iterationTimer);
-        setTimeout(attempt, 200);
-      });
-      goal.send();
-    }
-
-    attempt();
+    activeGoal = goal;
+    goal.on('result', function (result) { if (onSuccess) { onSuccess(result || {}); } });
+    goal.send();
   };
 
   Navigation.callPyToolkitMoveRelativeRaw = function (request, onSuccess, onError) {
