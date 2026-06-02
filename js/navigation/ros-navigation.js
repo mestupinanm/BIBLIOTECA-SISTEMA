@@ -220,14 +220,14 @@
     var localEdgeMeta = localGraph.edgeMeta || {};
     var k;
     graph.edgeMeta = {};
-    for (k in staticEdgeMeta) {
-      if (staticEdgeMeta.hasOwnProperty(k)) {
-        graph.edgeMeta[k] = staticEdgeMeta[k];
-      }
-    }
     for (k in localEdgeMeta) {
       if (localEdgeMeta.hasOwnProperty(k)) {
         graph.edgeMeta[k] = localEdgeMeta[k];
+      }
+    }
+    for (k in staticEdgeMeta) {
+      if (staticEdgeMeta.hasOwnProperty(k)) {
+        graph.edgeMeta[k] = staticEdgeMeta[k];
       }
     }
 
