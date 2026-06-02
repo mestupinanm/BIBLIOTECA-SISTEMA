@@ -3388,10 +3388,24 @@
                   if (onError) { onError(e); }
                 }
               }
-              if (window.PepperRosNavigation.standPosture) {
-                window.PepperRosNavigation.standPosture(sendMove, sendMove);
+              var sendCalled = false;
+              function safeSend() {
+                if (sendCalled) { return; }
+                sendCalled = true;
+                setTimeout(sendMove, 300);
+              }
+              function afterEnable() {
+                if (window.PepperRosNavigation.standPosture) {
+                  window.PepperRosNavigation.standPosture(safeSend, safeSend);
+                  setTimeout(safeSend, 1500);
+                } else {
+                  safeSend();
+                }
+              }
+              if (window.PepperRosNavigation.enableMotionTools) {
+                window.PepperRosNavigation.enableMotionTools(afterEnable, afterEnable);
               } else {
-                sendMove();
+                afterEnable();
               }
             };
 
