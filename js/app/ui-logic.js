@@ -3363,47 +3363,35 @@
             );
 
             window.PepperRosNavigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
-              try {
-                var distance = Math.abs(Number(x) || 0);
-                if (distance < 0.001) {
-                  if (onSuccess) { setTimeout(function () { onSuccess({}); }, 100); }
-                  return;
+              function sendMove() {
+                try {
+                  var moveSvc = new window.ROSLIB.Service({
+                    ros: rosInstance,
+                    name: '/pytoolkit/ALMotion/move_relative_srv',
+                    serviceType: 'robot_toolkit_msgs/navigate_to_srv'
+                  });
+                  moveSvc.callService(
+                    new window.ROSLIB.ServiceRequest({
+                      x_coordinate: Number(x) || 0,
+                      y_coordinate: Number(y) || 0
+                    }),
+                    function (response) {
+                      setTimeout(function () { if (onSuccess) { onSuccess(response || {}); } }, 1500);
+                    },
+                    function (err) {
+                      console.error('[NAV ERROR] move_relative_srv:', err);
+                      if (onError) { onError(err); }
+                    }
+                  );
+                } catch (e) {
+                  console.error('[NAV ERROR] move_relative_srv exception:', e);
+                  if (onError) { onError(e); }
                 }
-                var speed = 0.15;
-                var direction = (Number(x) || 0) >= 0 ? 1 : -1;
-                var durationMs = (distance / speed) * 1000;
-
-                var cmdVelTopic = new window.ROSLIB.Topic({
-                  ros: rosInstance,
-                  name: '/cmd_vel',
-                  messageType: 'geometry_msgs/Twist'
-                });
-
-                var moveMsg = new window.ROSLIB.Message({
-                  linear: { x: speed * direction, y: 0, z: 0 },
-                  angular: { x: 0, y: 0, z: 0 }
-                });
-                var stopMsg = new window.ROSLIB.Message({
-                  linear: { x: 0, y: 0, z: 0 },
-                  angular: { x: 0, y: 0, z: 0 }
-                });
-
-                cmdVelTopic.publish(moveMsg);
-                var publishHandle = setInterval(function () {
-                  cmdVelTopic.publish(moveMsg);
-                }, 100);
-
-                setTimeout(function () {
-                  clearInterval(publishHandle);
-                  cmdVelTopic.publish(stopMsg);
-                  cmdVelTopic.publish(stopMsg);
-                  setTimeout(function () {
-                    if (onSuccess) { onSuccess({}); }
-                  }, 300);
-                }, durationMs);
-              } catch (e) {
-                console.error('[NAV ERROR] moveRelativeWithPyToolkit cmd_vel:', e);
-                if (onError) { onError(e); }
+              }
+              if (window.PepperRosNavigation.standPosture) {
+                window.PepperRosNavigation.standPosture(sendMove, sendMove);
+              } else {
+                sendMove();
               }
             };
 
