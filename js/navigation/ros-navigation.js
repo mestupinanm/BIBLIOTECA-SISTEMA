@@ -1040,46 +1040,40 @@
   };
 
   Navigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
-    function attempt(retries) {
-      var pose = lastAmclPose;
-      var yaw;
-      var goal;
+    var pose = lastAmclPose;
+    var yaw;
+    var goal;
 
-      if (!pose) {
-        if (retries >= 10) {
-          if (onError) { onError('No AMCL pose available'); }
-          return;
-        }
-        setTimeout(function () { attempt(retries + 1); }, 200);
-        return;
+    if (!pose) {
+      if (onError) {
+        onError('No hay /amcl_pose para calcular el avance.');
       }
-
-      yaw = poseYawRadians(pose);
-      goal = new window.ROSLIB.Goal({
-        actionClient: ensureMoveBaseClient(),
-        goalMessage: {
-          target_pose: {
-            header: { frame_id: 'map' },
-            pose: {
-              position: {
-                x: pose.position.x + Number(x) * Math.cos(yaw) - Number(y) * Math.sin(yaw),
-                y: pose.position.y + Number(x) * Math.sin(yaw) + Number(y) * Math.cos(yaw),
-                z: 0
-              },
-              orientation: thetaToQuaternion(yaw)
-            }
-          }
-        }
-      });
-
-      activeGoal = goal;
-      goal.on('result', function (result) {
-        if (onSuccess) { onSuccess(result || {}); }
-      });
-      goal.send();
+      return;
     }
 
-    attempt(0);
+    yaw = poseYawRadians(pose);
+    goal = new window.ROSLIB.Goal({
+      actionClient: ensureMoveBaseClient(),
+      goalMessage: {
+        target_pose: {
+          header: {
+            frame_id: 'map'
+          },
+          pose: {
+            position: {
+              x: pose.position.x + Number(x) * Math.cos(yaw) - Number(y) * Math.sin(yaw),
+              y: pose.position.y + Number(x) * Math.sin(yaw) + Number(y) * Math.cos(yaw),
+              z: 0
+            },
+            orientation: thetaToQuaternion(yaw)
+          }
+        }
+      }
+    });
+
+    activeGoal = goal;
+    goal.on('result', function (result) { if (onSuccess) { onSuccess(result || {}); } });
+    goal.send();
   };
 
   Navigation.callPyToolkitMoveRelativeRaw = function (request, onSuccess, onError) {
