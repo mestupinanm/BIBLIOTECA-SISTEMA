@@ -869,14 +869,23 @@
         afterRotate();
       };
       var advanceThen = function (afterAdvance) {
+        console.log('[ADVANCE-DEBUG] advanceThen ENTRY — from=', fromPlace, 'to=', toPlace, 'meta.advanceMeters=', meta.advanceMeters, 'meta.actionOrder=', meta.actionOrder);
         if (meta.advanceMeters) {
+          console.log('[ADVANCE-DEBUG] advanceThen branch TAKEN — calling moveRelativeWithPyToolkit(', meta.advanceMeters, ', 0)');
           if (onStep) {
             onStep({ advanceMeters: meta.advanceMeters }, { name: toPlace }, route, index);
           }
-          Navigation.moveRelativeWithPyToolkit(meta.advanceMeters, 0, afterAdvance, onError);
+          Navigation.moveRelativeWithPyToolkit(meta.advanceMeters, 0, function (response) {
+            console.log('[ADVANCE-DEBUG] moveRelativeWithPyToolkit onSuccess fired — response=', response, '— calling afterAdvance');
+            afterAdvance(response);
+          }, function (err) {
+            console.log('[ADVANCE-DEBUG] moveRelativeWithPyToolkit onError fired — err=', err);
+            if (onError) { onError(err); }
+          });
           return;
         }
 
+        console.log('[ADVANCE-DEBUG] advanceThen SKIPPED — advanceMeters falsy (', meta.advanceMeters, ') — calling afterAdvance directly');
         afterAdvance();
       };
 

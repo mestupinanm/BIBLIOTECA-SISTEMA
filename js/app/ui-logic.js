@@ -3363,21 +3363,63 @@
             );
 
             window.PepperRosNavigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
+              console.log('[ADVANCE-DEBUG] >>> moveRelativeWithPyToolkit ENTRY — x=', x, 'y=', y, 'rosInstance.isConnected=', rosInstance && rosInstance.isConnected, 'rosInstance.socket?', !!(rosInstance && rosInstance.socket));
               try {
                 var distance = Math.abs(Number(x) || 0);
+                console.log('[ADVANCE-DEBUG] distance =', distance);
                 if (distance < 0.001) {
+                  console.log('[ADVANCE-DEBUG] distance < 0.001 — calling onSuccess immediately');
                   if (onSuccess) { setTimeout(function () { onSuccess({}); }, 100); }
                   return;
                 }
                 var speed = 0.15;
                 var direction = (Number(x) || 0) >= 0 ? 1 : -1;
                 var durationMs = (distance / speed) * 1000;
+                console.log('[ADVANCE-DEBUG] computed: speed=', speed, 'direction=', direction, 'durationMs=', durationMs);
 
                 var cmdVelTopic = new window.ROSLIB.Topic({
                   ros: rosInstance,
                   name: '/cmd_vel',
                   messageType: 'geometry_msgs/Twist'
                 });
+                console.log('[ADVANCE-DEBUG] /cmd_vel Topic created');
+
+                try {
+                  var rosapi = new window.ROSLIB.Service({
+                    ros: rosInstance,
+                    name: '/rosapi/topic_type',
+                    serviceType: 'rosapi/TopicType'
+                  });
+                  rosapi.callService(new window.ROSLIB.ServiceRequest({ topic: '/cmd_vel' }), function (resp) {
+                    console.log('[ADVANCE-DEBUG] /cmd_vel topic_type response:', resp);
+                  }, function (err) {
+                    console.log('[ADVANCE-DEBUG] /cmd_vel topic_type ERROR:', err);
+                  });
+
+                  var publishersSvc = new window.ROSLIB.Service({
+                    ros: rosInstance,
+                    name: '/rosapi/publishers',
+                    serviceType: 'rosapi/Publishers'
+                  });
+                  publishersSvc.callService(new window.ROSLIB.ServiceRequest({ topic: '/cmd_vel' }), function (resp) {
+                    console.log('[ADVANCE-DEBUG] /cmd_vel publishers:', resp);
+                  }, function (err) {
+                    console.log('[ADVANCE-DEBUG] /cmd_vel publishers ERROR:', err);
+                  });
+
+                  var subsSvc = new window.ROSLIB.Service({
+                    ros: rosInstance,
+                    name: '/rosapi/subscribers',
+                    serviceType: 'rosapi/Subscribers'
+                  });
+                  subsSvc.callService(new window.ROSLIB.ServiceRequest({ topic: '/cmd_vel' }), function (resp) {
+                    console.log('[ADVANCE-DEBUG] /cmd_vel subscribers:', resp);
+                  }, function (err) {
+                    console.log('[ADVANCE-DEBUG] /cmd_vel subscribers ERROR:', err);
+                  });
+                } catch (introspectErr) {
+                  console.log('[ADVANCE-DEBUG] rosapi introspect threw:', introspectErr);
+                }
 
                 var moveMsg = new window.ROSLIB.Message({
                   linear: { x: speed * direction, y: 0, z: 0 },
@@ -3389,15 +3431,21 @@
                 });
 
                 cmdVelTopic.publish(moveMsg);
+                console.log('[ADVANCE-DEBUG] FIRST cmd_vel publish CALLED (move) — linear.x=', moveMsg.linear.x);
+                var publishCount = 1;
                 var publishHandle = setInterval(function () {
                   cmdVelTopic.publish(moveMsg);
+                  publishCount += 1;
                 }, 100);
 
                 setTimeout(function () {
                   clearInterval(publishHandle);
+                  console.log('[ADVANCE-DEBUG] Duration done — total publishes=', publishCount);
                   cmdVelTopic.publish(stopMsg);
                   cmdVelTopic.publish(stopMsg);
+                  console.log('[ADVANCE-DEBUG] cmd_vel STOP published x2');
                   setTimeout(function () {
+                    console.log('[ADVANCE-DEBUG] <<< onSuccess about to fire');
                     if (onSuccess) { onSuccess({}); }
                   }, 300);
                 }, durationMs);
