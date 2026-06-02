@@ -1040,40 +1040,52 @@
   };
 
   Navigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
-    var pose = lastAmclPose;
-    var yaw;
-    var goal;
-
-    if (!pose) {
-      if (onError) {
-        onError('No hay /amcl_pose para calcular el avance.');
+    try {
+      var distance = Math.abs(Number(x) || 0);
+      if (distance < 0.001) {
+        if (onSuccess) { setTimeout(function () { onSuccess({}); }, 100); }
+        return;
       }
-      return;
+      if (!ros || status !== 'connected') {
+        if (onError) { onError('ROS no conectado'); }
+        return;
+      }
+
+      var speed = 0.15;
+      var direction = (Number(x) || 0) >= 0 ? 1 : -1;
+      var durationMs = (distance / speed) * 1000;
+
+      var cmdVelTopic = new window.ROSLIB.Topic({
+        ros: ros,
+        name: '/cmd_vel',
+        messageType: 'geometry_msgs/Twist'
+      });
+
+      var moveMsg = new window.ROSLIB.Message({
+        linear: { x: speed * direction, y: 0, z: 0 },
+        angular: { x: 0, y: 0, z: 0 }
+      });
+      var stopMsg = new window.ROSLIB.Message({
+        linear: { x: 0, y: 0, z: 0 },
+        angular: { x: 0, y: 0, z: 0 }
+      });
+
+      cmdVelTopic.publish(moveMsg);
+      var publishHandle = setInterval(function () {
+        cmdVelTopic.publish(moveMsg);
+      }, 100);
+
+      setTimeout(function () {
+        clearInterval(publishHandle);
+        cmdVelTopic.publish(stopMsg);
+        cmdVelTopic.publish(stopMsg);
+        setTimeout(function () {
+          if (onSuccess) { onSuccess({}); }
+        }, 300);
+      }, durationMs);
+    } catch (e) {
+      if (onError) { onError(e); }
     }
-
-    yaw = poseYawRadians(pose);
-    goal = new window.ROSLIB.Goal({
-      actionClient: ensureMoveBaseClient(),
-      goalMessage: {
-        target_pose: {
-          header: {
-            frame_id: 'map'
-          },
-          pose: {
-            position: {
-              x: pose.position.x + Number(x) * Math.cos(yaw) - Number(y) * Math.sin(yaw),
-              y: pose.position.y + Number(x) * Math.sin(yaw) + Number(y) * Math.cos(yaw),
-              z: 0
-            },
-            orientation: thetaToQuaternion(yaw)
-          }
-        }
-      }
-    });
-
-    activeGoal = goal;
-    goal.on('result', function (result) { if (onSuccess) { onSuccess(result || {}); } });
-    goal.send();
   };
 
   Navigation.callPyToolkitMoveRelativeRaw = function (request, onSuccess, onError) {
