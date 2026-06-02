@@ -3388,24 +3388,10 @@
                   if (onError) { onError(e); }
                 }
               }
-              var sendCalled = false;
-              function safeSend() {
-                if (sendCalled) { return; }
-                sendCalled = true;
-                setTimeout(sendMove, 300);
-              }
-              function afterEnable() {
-                if (window.PepperRosNavigation.standPosture) {
-                  window.PepperRosNavigation.standPosture(safeSend, safeSend);
-                  setTimeout(safeSend, 1500);
-                } else {
-                  safeSend();
-                }
-              }
-              if (window.PepperRosNavigation.enableMotionTools) {
-                window.PepperRosNavigation.enableMotionTools(afterEnable, afterEnable);
+              if (window.PepperRosNavigation.standPosture) {
+                window.PepperRosNavigation.standPosture(sendMove, sendMove);
               } else {
-                afterEnable();
+                sendMove();
               }
             };
 
