@@ -216,7 +216,20 @@
     for (i = 0; i < localGraph.edges.length; i += 1) {
       graph.edges.push(localGraph.edges[i]);
     }
-    graph.edgeMeta = localGraph.edgeMeta || {};
+    var staticEdgeMeta = config.defaultGraphData && config.defaultGraphData.graph ? (config.defaultGraphData.graph.edgeMeta || {}) : {};
+    var localEdgeMeta = localGraph.edgeMeta || {};
+    var k;
+    graph.edgeMeta = {};
+    for (k in staticEdgeMeta) {
+      if (staticEdgeMeta.hasOwnProperty(k)) {
+        graph.edgeMeta[k] = staticEdgeMeta[k];
+      }
+    }
+    for (k in localEdgeMeta) {
+      if (localEdgeMeta.hasOwnProperty(k)) {
+        graph.edgeMeta[k] = localEdgeMeta[k];
+      }
+    }
 
     return graph;
   }
