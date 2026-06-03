@@ -3213,7 +3213,7 @@
     }
     if (!rosStandInterval) {
       rosStandInterval = setInterval(function () {
-        if (window.PepperRosNavigation && !navActive) {
+        if (window.PepperRosNavigation) {
           window.PepperRosNavigation.standPosture(null, null);
         }
       }, 2000);
