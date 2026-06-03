@@ -3034,6 +3034,7 @@
           startNavClearLoop();
           if (window.PepperRosNavigation) {
             window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+            window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
           }
           PepperLib.State.endSession();
           PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
@@ -3051,6 +3052,7 @@
         startNavClearLoop();
         if (window.PepperRosNavigation) {
           window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+          window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
         }
         PepperLib.Inactivity.reset();
         if (blackOverlay) removeClass(blackOverlay, 'active');
