@@ -1172,6 +1172,9 @@
             }
             cancelArrivalPoll();
             navActive = true;
+            if (window.PepperRosNavigation) {
+              window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
+            }
             PepperLib.Inactivity.stop();
             navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
@@ -1592,6 +1595,9 @@
           }
           cancelArrivalPoll();
           navActive = true;
+          if (window.PepperRosNavigation) {
+            window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
+          }
           PepperLib.Inactivity.stop();
           navStartTime = Date.now();
           window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
@@ -2976,6 +2982,9 @@
     function initiateReturn() {
       cancelArrivalPoll();
       navActive = true;
+      if (window.PepperRosNavigation) {
+        window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
+      }
       PepperLib.Inactivity.stop();
       var blackOverlay = byId('black-screen-overlay');
       if (blackOverlay) addClass(blackOverlay, 'active');
@@ -3180,7 +3189,6 @@
 
   var rosNavClearInterval = null;
   var rosStandInterval = null;
-  var rosArmsInterval = null;
   var navStartTime = null;
   var navArrivalPoll = null;
   var navActive = false;
@@ -3202,24 +3210,16 @@
     }
     if (!rosStandInterval) {
       rosStandInterval = setInterval(function () {
-        if (window.PepperRosNavigation && !navActive) {
+        if (window.PepperRosNavigation) {
           window.PepperRosNavigation.standPosture(null, null);
         }
       }, 6000);
-    }
-    if (!rosArmsInterval) {
-      rosArmsInterval = setInterval(function () {
-        if (window.PepperRosNavigation && navActive) {
-          window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
-        }
-      }, 1000);
     }
   }
 
   function stopNavClearLoop() {
     if (rosNavClearInterval) { clearInterval(rosNavClearInterval); rosNavClearInterval = null; }
     if (rosStandInterval)    { clearInterval(rosStandInterval);    rosStandInterval = null;    }
-    if (rosArmsInterval)     { clearInterval(rosArmsInterval);     rosArmsInterval = null;     }
   }
 
   var DEST_GRAPH_MAP = {
