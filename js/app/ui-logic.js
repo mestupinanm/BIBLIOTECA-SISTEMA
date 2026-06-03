@@ -1102,7 +1102,7 @@
           speech: 'es que estoy chiquita y aprendiendo a caminar sola',
           animation: 'Gestures/Me_1',
           screen: { type: 'subtitle', content: '' },
-          delay: 2000
+          delay: 3000
         },
         {
           speech: '¡Por favor, permiso para comenzar a guiarte!',
@@ -1180,7 +1180,7 @@
           PepperLib.Analytics.count('navigation', currentDestination);
           PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Llevame');
 
-          PepperRobot.setVolume(30);
+          PepperRobot.setVolume(35);
           removeClass(byId('pre-nav-overlay'), 'hidden');
 
           executeScript(PRE_NAV_SCRIPT, function () {
