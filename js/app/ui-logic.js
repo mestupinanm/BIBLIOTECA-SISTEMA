@@ -1192,6 +1192,7 @@
               removeClass(overlay, 'hidden');
             }
 
+            
             if (!window.PepperRosNavigation) {
               if (overlay) addClass(overlay, 'hidden');
               console.error('[NAV ERROR] PepperRosNavigation no disponible al navegar.');
