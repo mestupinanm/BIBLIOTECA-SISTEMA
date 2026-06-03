@@ -873,7 +873,10 @@
           if (onStep) {
             onStep({ advanceMeters: meta.advanceMeters }, { name: toPlace }, route, index);
           }
-          Navigation.moveRelativeWithPyToolkit(meta.advanceMeters, 0, afterAdvance, onError);
+          Navigation.moveRelativeWithPyToolkit(meta.advanceMeters, 0, afterAdvance, function (err) {
+            console.warn('[NAV] advance fallido, continuando sin advance:', err);
+            afterAdvance();
+          });
           return;
         }
 
@@ -1040,41 +1043,10 @@
   };
 
   Navigation.moveRelativeWithPyToolkit = function (x, y, onSuccess, onError) {
-    var pose = lastAmclPose;
-    var yaw;
-    var goal;
-
-    if (!pose) {
-      if (onError) {
-        onError('No hay /amcl_pose para calcular el avance.');
-      }
-      return;
-    }
-
-    
-    yaw = poseYawRadians(pose);
-    goal = new window.ROSLIB.Goal({
-      actionClient: ensureMoveBaseClient(),
-      goalMessage: {
-        target_pose: {
-          header: {
-            frame_id: 'map'
-          },
-          pose: {
-            position: {
-              x: pose.position.x + Number(x) * Math.cos(yaw) - Number(y) * Math.sin(yaw),
-              y: pose.position.y + Number(x) * Math.sin(yaw) + Number(y) * Math.cos(yaw),
-              z: 0
-            },
-            orientation: thetaToQuaternion(yaw)
-          }
-        }
-      }
-    });
-
-    activeGoal = goal;
-    goal.on('result', function (result) { if (onSuccess) { onSuccess(result || {}); } });
-    goal.send();
+    callNamedService(getServices().pyToolkitMoveRelative, {
+      x_coordinate: Number(x) || 0,
+      y_coordinate: Number(y) || 0
+    }, onSuccess, onError);
   };
 
   Navigation.callPyToolkitMoveRelativeRaw = function (request, onSuccess, onError) {
