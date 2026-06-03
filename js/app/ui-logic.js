@@ -1180,6 +1180,11 @@
               window.PepperRosNavigation.navigateGraphToDestination(resolveGraphDest(currentDestination),
                 function onSuccess(response, destination) {
                   cancelArrivalPoll();
+                  navActive = false;
+                  startNavClearLoop();
+                  if (window.PepperRosNavigation) {
+                    window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+                  }
                   if (overlay) { addClass(overlay, 'hidden'); }
                   PepperLib.Inactivity.reset();
                   showNavigationNotice(
@@ -1193,6 +1198,9 @@
                   cancelArrivalPoll();
                   navActive = false;
                   startNavClearLoop();
+                  if (window.PepperRosNavigation) {
+                    window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+                  }
                   PepperLib.Inactivity.reset();
                   if (overlay) {
                     addClass(overlay, 'hidden');
@@ -1592,6 +1600,11 @@
             'shelf_' + activeShelf,
             function onSuccess() {
               cancelArrivalPoll();
+              navActive = false;
+              startNavClearLoop();
+              if (window.PepperRosNavigation) {
+                window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+              }
               PepperLib.Inactivity.reset();
               PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
             },
@@ -1599,6 +1612,9 @@
               cancelArrivalPoll();
               navActive = false;
               startNavClearLoop();
+              if (window.PepperRosNavigation) {
+                window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+              }
               PepperLib.Inactivity.reset();
               console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
             }
@@ -2974,6 +2990,9 @@
           if (blackOverlay) removeClass(blackOverlay, 'active');
           navActive = false;
           startNavClearLoop();
+          if (window.PepperRosNavigation) {
+            window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+          }
           PepperLib.State.endSession();
           PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
         };
@@ -2988,6 +3007,9 @@
         clearAutoReturn();
         navActive = false;
         startNavClearLoop();
+        if (window.PepperRosNavigation) {
+          window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+        }
         PepperLib.Inactivity.reset();
         if (blackOverlay) removeClass(blackOverlay, 'active');
         console.error('[NAV ERROR] navigateToBase:', errorString);
@@ -3158,6 +3180,7 @@
 
   var rosNavClearInterval = null;
   var rosStandInterval = null;
+  var rosArmsInterval = null;
   var navStartTime = null;
   var navArrivalPoll = null;
   var navActive = false;
@@ -3179,22 +3202,24 @@
     }
     if (!rosStandInterval) {
       rosStandInterval = setInterval(function () {
-        if (window.PepperRosNavigation) {
+        if (window.PepperRosNavigation && !navActive) {
           window.PepperRosNavigation.standPosture(null, null);
         }
-      }, 3000);
+      }, 6000);
+    }
+    if (!rosArmsInterval) {
+      rosArmsInterval = setInterval(function () {
+        if (window.PepperRosNavigation && navActive) {
+          window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
+        }
+      }, 1000);
     }
   }
 
   function stopNavClearLoop() {
-    if (rosNavClearInterval) {
-      clearInterval(rosNavClearInterval);
-      rosNavClearInterval = null;
-    }
-    if (rosStandInterval) {
-      clearInterval(rosStandInterval);
-      rosStandInterval = null;
-    }
+    if (rosNavClearInterval) { clearInterval(rosNavClearInterval); rosNavClearInterval = null; }
+    if (rosStandInterval)    { clearInterval(rosStandInterval);    rosStandInterval = null;    }
+    if (rosArmsInterval)     { clearInterval(rosArmsInterval);     rosArmsInterval = null;     }
   }
 
   var DEST_GRAPH_MAP = {

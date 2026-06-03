@@ -1378,6 +1378,22 @@
     });
   };
 
+  Navigation.setMoveArmsEnabled = function (lArm, rArm, onSuccess, onError) {
+    if (!ros || status !== 'connected') {
+      return;
+    }
+    var svc = new window.ROSLIB.Service({
+      ros: ros,
+      name: '/pytoolkit/ALMotion/set_move_arms_enabled_srv',
+      serviceType: 'robot_toolkit_msgs/set_move_arms_enabled_srv'
+    });
+    svc.callService(new window.ROSLIB.ServiceRequest({ LArm: !!lArm, RArm: !!rArm }), function () {
+      if (onSuccess) { onSuccess(); }
+    }, function (err) {
+      if (onError) { onError(err); }
+    });
+  };
+
   Navigation.disableSecurity = function (onSuccess, onError) {
     if (!ros || status !== 'connected') {
       return;
