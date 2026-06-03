@@ -1225,7 +1225,15 @@
                       PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                     }
                   );
-                  executeScript(ARRIVAL_SCRIPT, null);
+                  if (window.PepperRosNavigation) {
+                    window.PepperRosNavigation.standPosture(function () {
+                      executeScript(ARRIVAL_SCRIPT, null);
+                    }, function () {
+                      executeScript(ARRIVAL_SCRIPT, null);
+                    });
+                  } else {
+                    executeScript(ARRIVAL_SCRIPT, null);
+                  }
                 },
                 function onError(errorString) {
                   cancelArrivalPoll();
