@@ -1387,14 +1387,18 @@
       { data: url }, onSuccess, onError);
   };
 
-  Navigation.publishSpeech = function (text) {
+  Navigation.publishSpeech = function (text, animated) {
     if (!ros || status !== 'connected') { return; }
     var topic = new window.ROSLIB.Topic({
       ros: ros,
       name: '/speech',
-      messageType: 'std_msgs/String'
+      messageType: 'robot_toolkit_msgs/speech_msg'
     });
-    topic.publish(new window.ROSLIB.Message({ data: text }));
+    topic.publish(new window.ROSLIB.Message({
+      language: 'Spanish',
+      text: text,
+      animated: animated !== false
+    }));
   };
 
   Navigation.publishAnimation = function (name) {
@@ -1402,9 +1406,12 @@
     var topic = new window.ROSLIB.Topic({
       ros: ros,
       name: '/animations',
-      messageType: 'std_msgs/String'
+      messageType: 'robot_toolkit_msgs/animation_msg'
     });
-    topic.publish(new window.ROSLIB.Message({ data: name }));
+    topic.publish(new window.ROSLIB.Message({
+      family: 'animations',
+      animation_name: name
+    }));
   };
 
   window.PepperRosNavigation = Navigation;

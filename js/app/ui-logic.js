@@ -1095,13 +1095,33 @@
       steps: [
         {
           speech: 'Lo siento si me demoro un poco,',
-          animation: 'BodyTalk/Speaking/BodyTalk_2',
+          animation: 'BodyTalk/Speaking/BodyTalk_1',
           screen: { type: 'subtitle', content: '' }
         },
         {
-          speech: 'es que estoy chiquita y aun aprendiendo a caminar sola',
-          animation: 'Emotions/Neutral/AskForAttention_3',
+          speech: 'es que estoy chiquita y aprendiendo a caminar sola',
+          animation: 'Gestures/Me_1',
+          screen: { type: 'subtitle', content: '' },
+          delay: 2000
+        },
+        {
+          speech: '¡Por favor, permiso para comenzar a guiarte!',
+          animation: 'Gestures/Everything_1',
           screen: { type: 'subtitle', content: '' }
+        }
+      ]
+    };
+
+    var ARRIVAL_SCRIPT = {
+      config: { stepDelay: 1000 },
+      steps: [
+        {
+          speech: '¡Llegamos!',
+          animation: 'Gestures/You_2'
+        },
+        {
+          speech: 'Por favor completa cómo te sentiste',
+          animation: 'Gestures/Please_1'
         }
       ]
     };
@@ -1124,15 +1144,22 @@
         }
 
         var step = steps[idx++];
-        updatePreNavSubtitle(step.speech);
+        if (step.speech) { updatePreNavSubtitle(step.speech); }
 
         if (step.animation) {
           PepperRobot.animate(step.animation);
         }
 
-        PepperRobot.speakAndWait(step.speech, function () {
-          setTimeout(next, (script.config && script.config.stepDelay) || 100);
-        });
+        if (step.speech) {
+          PepperRobot.speakAndWait(step.speech, function () {
+            var delay = step.delay !== undefined
+              ? step.delay
+              : ((script.config && script.config.stepDelay) || 100);
+            setTimeout(next, delay);
+          }, !!step.animation);
+        } else {
+          next();
+        }
       }
 
       next();
@@ -1196,6 +1223,7 @@
                       PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                     }
                   );
+                  executeScript(ARRIVAL_SCRIPT, null);
                 },
                 function onError(errorString) {
                   cancelArrivalPoll();
@@ -3109,6 +3137,8 @@
           addClass(byId('feedback-comment-section'), 'hidden');
           removeClass(byId('feedback-thanks'), 'hidden');
 
+          PepperRobot.animate('Gestures/Hey_1');
+          PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', null, false);
           clearAutoReturn();
           autoReturnTimer = setTimeout(initiateReturn, 3000);
         };

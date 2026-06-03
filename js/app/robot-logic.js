@@ -170,12 +170,12 @@
       });
     },
 
-    speakAndWait: function (text, onDone) {
+    speakAndWait: function (text, onDone, hasAnimation) {
       var words = text.split(/\s+/).length;
       var duration = Math.max(2000, words * 300);
 
       if (window.PepperRosNavigation && window.PepperRosNavigation.publishSpeech) {
-        window.PepperRosNavigation.publishSpeech(text);
+        window.PepperRosNavigation.publishSpeech(text, !hasAnimation);
         setTimeout(onDone || function () {}, duration);
         return;
       }
