@@ -1366,6 +1366,20 @@
     });
   };
 
+  Navigation.setVolume = function (level, onSuccess, onError) {
+    if (!ros || status !== 'connected') { return; }
+    var svc = new window.ROSLIB.Service({
+      ros: ros,
+      name: '/pytoolkit/ALAudioDevice/set_output_volume_srv',
+      serviceType: 'robot_toolkit_msgs/set_output_volume_srv'
+    });
+    svc.callService(new window.ROSLIB.ServiceRequest({ volume: level }), function () {
+      if (onSuccess) { onSuccess(); }
+    }, function (err) {
+      if (onError) { onError(err); }
+    });
+  };
+
   Navigation.disableSecurity = function (onSuccess, onError) {
     if (!ros || status !== 'connected') {
       return;

@@ -199,6 +199,10 @@
     },
 
     setVolume: function (level) {
+      if (window.PepperRosNavigation && window.PepperRosNavigation.setVolume) {
+        window.PepperRosNavigation.setVolume(level, null, null);
+        return;
+      }
       this.getService('ALAudioDevice', function (audio) {
         try {
           audio.setOutputVolume(level);

@@ -1180,7 +1180,7 @@
           PepperLib.Analytics.count('navigation', currentDestination);
           PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Llevame');
 
-          PepperRobot.setVolume(25);
+          PepperRobot.setVolume(30);
           removeClass(byId('pre-nav-overlay'), 'hidden');
 
           executeScript(PRE_NAV_SCRIPT, function () {
