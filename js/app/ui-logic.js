@@ -1215,6 +1215,7 @@
                   startNavClearLoop();
                   if (window.PepperRosNavigation) {
                     window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+                    window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
                   }
                   if (overlay) { addClass(overlay, 'hidden'); }
                   PepperLib.Inactivity.reset();
@@ -1232,6 +1233,7 @@
                   startNavClearLoop();
                   if (window.PepperRosNavigation) {
                     window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+                    window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
                   }
                   PepperLib.Inactivity.reset();
                   if (overlay) {
@@ -1639,6 +1641,7 @@
               startNavClearLoop();
               if (window.PepperRosNavigation) {
                 window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+                window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
               }
               PepperLib.Inactivity.reset();
               PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
@@ -1649,6 +1652,7 @@
               startNavClearLoop();
               if (window.PepperRosNavigation) {
                 window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+                window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
               }
               PepperLib.Inactivity.reset();
               console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);

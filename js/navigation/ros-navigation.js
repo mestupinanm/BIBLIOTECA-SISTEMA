@@ -1366,6 +1366,23 @@
     });
   };
 
+  Navigation.setBreathEnabled = function (part, enabled, onSuccess, onError) {
+    if (!ros || status !== 'connected') { return; }
+    var svc = new window.ROSLIB.Service({
+      ros: ros,
+      name: '/pytoolkit/ALMotion/toggle_breathing_srv',
+      serviceType: 'robot_toolkit_msgs/set_open_close_hand_srv'
+    });
+    svc.callService(new window.ROSLIB.ServiceRequest({
+      hand: part,
+      state: enabled ? 'True' : 'False'
+    }), function () {
+      if (onSuccess) { onSuccess(); }
+    }, function (err) {
+      if (onError) { onError(err); }
+    });
+  };
+
   Navigation.setVolume = function (level, onSuccess, onError) {
     if (!ros || status !== 'connected') { return; }
     var svc = new window.ROSLIB.Service({
