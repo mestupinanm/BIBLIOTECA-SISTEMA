@@ -1173,6 +1173,7 @@
             cancelArrivalPoll();
             navActive = true;
             if (window.PepperRosNavigation) {
+              window.PepperRosNavigation.standPosture(null, null);
               window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
             }
             PepperLib.Inactivity.stop();
@@ -1596,6 +1597,7 @@
           cancelArrivalPoll();
           navActive = true;
           if (window.PepperRosNavigation) {
+            window.PepperRosNavigation.standPosture(null, null);
             window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
           }
           PepperLib.Inactivity.stop();
@@ -2983,6 +2985,7 @@
       cancelArrivalPoll();
       navActive = true;
       if (window.PepperRosNavigation) {
+        window.PepperRosNavigation.standPosture(null, null);
         window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
       }
       PepperLib.Inactivity.stop();
@@ -3210,10 +3213,10 @@
     }
     if (!rosStandInterval) {
       rosStandInterval = setInterval(function () {
-        if (window.PepperRosNavigation) {
+        if (window.PepperRosNavigation && !navActive) {
           window.PepperRosNavigation.standPosture(null, null);
         }
-      }, 6000);
+      }, 2000);
     }
   }
 
