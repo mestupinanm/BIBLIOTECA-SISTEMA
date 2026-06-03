@@ -3175,11 +3175,11 @@
         if (window.PepperRosNavigation) {
           window.PepperRosNavigation.clearCostmaps(null, null);
         }
-      }, 5000);
+      }, 2000);
     }
     if (!rosStandInterval) {
       rosStandInterval = setInterval(function () {
-        if (window.PepperRosNavigation && !navActive) {
+        if (window.PepperRosNavigation) {
           window.PepperRosNavigation.standPosture(null, null);
         }
       }, 3000);
