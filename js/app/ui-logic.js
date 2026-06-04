@@ -1099,13 +1099,13 @@
           screen: { type: 'subtitle', content: '' }
         },
         {
-          speech: 'es que estoy chiquita y aprendiendo a caminar sola',
+          speech: 'estoy chiquita y aprendiendo a caminar sola',
           animation: 'Gestures/Me_1',
           screen: { type: 'subtitle', content: '' },
           delay: 3000
         },
         {
-          speech: '¡Por favor, permiso para comenzar a guiarte!',
+          speech: 'Por favor permiso para comenzar a guiarte :)',
           animation: 'Gestures/Everything_1',
           screen: { type: 'subtitle', content: '' }
         }
@@ -1128,6 +1128,10 @@
 
     function updatePreNavSubtitle(text) {
       var el = byId('pre-nav-text');
+      var legacySpeaker = document.querySelector ? document.querySelector('.pre-nav-speaker') : null;
+      if (legacySpeaker && legacySpeaker.parentNode) {
+        legacySpeaker.parentNode.removeChild(legacySpeaker);
+      }
       if (el) {
         el.textContent = text;
       }

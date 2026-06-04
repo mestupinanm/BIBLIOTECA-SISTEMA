@@ -1165,6 +1165,9 @@ button { cursor: pointer; }
   line-height: 1.42;
   color: #0F1B2D;
 }
+.pre-nav-speaker {
+  display: none !important;
+}
 .pre-nav-text {
   margin: 0;
   font-size: 26px;
