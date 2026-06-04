@@ -1106,8 +1106,8 @@ button { cursor: pointer; }
   left: 50%;
   width: 520px;
   margin-left: -260px;
-  margin-top: -106px;
-  padding: 38px 46px 36px;
+  margin-top: -82px;
+  padding: 46px 46px 40px;
   text-align: center;
   background: #FFFDF8;
   border-radius: 26px;
@@ -1164,20 +1164,6 @@ button { cursor: pointer; }
   font-weight: 800;
   line-height: 1.42;
   color: #0F1B2D;
-}
-.pre-nav-speaker {
-  display: inline-block;
-  margin: 0 auto 16px;
-  padding: 8px 18px;
-  border-radius: 999px;
-  background: #F6E2BE;
-  border: 1px solid #E8D7B8;
-  color: #8C5D22;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1;
 }
 .pre-nav-text {
   margin: 0;
