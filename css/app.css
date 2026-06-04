@@ -1040,15 +1040,19 @@ button { cursor: pointer; }
 }
 
 /* Guide overlays */
-.guide-sim-overlay,
-.pre-nav-overlay {
+.guide-sim-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(14,42,77,0.78);
   z-index: 10;
 }
-.guide-sim-content,
-.pre-nav-content {
+.pre-nav-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(14,42,77,0.50);
+  z-index: 10;
+}
+.guide-sim-content {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1063,6 +1067,20 @@ button { cursor: pointer; }
   border: 1px solid #D4CBB1;
   box-shadow: 0 18px 40px rgba(14,42,77,0.30);
 }
+.pre-nav-content {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 500px;
+  max-width: 78%;
+  padding: 20px 44px 26px;
+  text-align: center;
+  background: rgba(8,22,46,0.92);
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+}
 .guide-sim-spinner {
   width: 36px;
   height: 36px;
@@ -1076,13 +1094,28 @@ button { cursor: pointer; }
 @-webkit-keyframes spin { to { -webkit-transform: rotate(360deg); } }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.guide-sim-msg,
-.pre-nav-text {
+.guide-sim-msg {
   margin: 0;
   font-size: 18px;
   font-weight: 500;
   line-height: 1.5;
   color: #0F1B2D;
+}
+.pre-nav-speaker {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 8px;
+}
+.pre-nav-text {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #FFFFFF;
 }
 
 .guide-actions-wrap {
