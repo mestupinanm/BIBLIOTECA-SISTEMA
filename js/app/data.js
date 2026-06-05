@@ -117,6 +117,10 @@ window.LibraryData.STRINGS = {
     'info.news_copy': 'Consulta las noticias mas recientes directamente desde el portal oficial de la Universidad.',
     'info.news_cta': 'Abrir noticias',
     'info.news_hint': 'Si el panel no carga, usa este acceso directo.',
+    'info.news_loading': 'Cargando las noticias, por favor espera...',
+    'info.news_retry': 'Intentar de nuevo',
+    'info.news_load_more': 'Cargar más noticias',
+    'info.news_empty': 'No se encontraron noticias.',
     'info.hours_value': '8:00 AM - 5:00 PM',
     'info.day_mon': 'Lunes',
     'info.day_tue': 'Martes',
@@ -301,6 +305,10 @@ window.LibraryData.STRINGS = {
     'info.news_copy': 'Check the latest stories directly from the official Universidad de los Andes news portal.',
     'info.news_cta': 'Open news',
     'info.news_hint': 'If the panel does not load, use this direct access.',
+    'info.news_loading': 'Loading news, please wait...',
+    'info.news_retry': 'Try again',
+    'info.news_load_more': 'Load more news',
+    'info.news_empty': 'No news found.',
     'info.hours_value': '8:00 AM - 5:00 PM',
     'info.day_mon': 'Monday',
     'info.day_tue': 'Tuesday',
@@ -570,76 +578,76 @@ window.LibraryData.HOURS = {
 };
 
 window.LibraryData.INSPIRATIONAL_QUOTES = [
-  'Si puedes imaginarlo puedes lograrlo, si puedes soñarlo, puedes hacerlo realidad.',
-  'Suerte es lo que sucede cuando la preparación y la oportunidad se encuentran y fusionan.',
-  'No juzgues cada día por lo que cosechas, sino por las semillas que plantas.',
-  'La vida es 10 por ciento lo que me pasa y 90 por ciento cómo reacciono a ello.',
-  'No hay clavo tan fuerte que pueda detener la rueda de la fortuna.',
-  'No he fracasado, he encontrado diez mil formas que no funcionan.',
-  'Si te enfocas en la herida continuarás sufriendo, si te enfocas en la lección, continuarás creciendo.',
-  'En la vida algunas veces se gana, otras veces se aprende.',
-  'Cada mañana nacemos de nuevo. Lo que hacemos hoy es lo que más importa.',
-  'Ten el coraje de seguir a tu corazón e intuición.',
-  'Haz de cada día tu obra maestra.',
-  'Nuevo día, nuevos pensamientos, nuevas esperanzas y nuevas oportunidades.',
-  'Da siempre lo mejor de ti cada día.',
-  'El placer en el trabajo lleva a la perfección de la obra.',
-  'A veces gano y otras veces aprendo. Yo nunca pierdo.',
-  'Lo que decidas hacer, hazlo por ti y por nadie más.',
-  'Si quieres algo que nunca tuviste, debes hacer algo que nunca hiciste.',
-  'La sonrisa cuesta menos que la electricidad y da más luz.',
-  'Hoy es el primer día del resto de tu vida.',
-  'Ama la vida que tienes para poder vivir la vida que amas.',
-  'Todas las mañanas tienes dos opciones: seguir durmiendo con tus sueños, o levantarte y perseguirlos.',
-  'Cada día nos trae nuevas posibilidades.',
-  'El mayor riesgo es no correr ningún riesgo.',
-  'El poder de la imaginación nos hace infinitos.',
-  'Muchas personas se pierden las pequeñas alegrías mientras aguardan la gran felicidad.',
-  'La ocasión hay que crearla, no esperar a que llegue.',
-  'La acción es la llave fundamental de todo éxito.',
-  'La vida empieza cada cinco minutos.',
+  { es: 'Si puedes imaginarlo puedes lograrlo, si puedes soñarlo, puedes hacerlo realidad.', en: 'If you can imagine it, you can achieve it. If you can dream it, you can make it real.' },
+  { es: 'Suerte es lo que sucede cuando la preparación y la oportunidad se encuentran y fusionan.', en: 'Luck is what happens when preparation and opportunity meet.' },
+  { es: 'No juzgues cada día por lo que cosechas, sino por las semillas que plantas.', en: 'Do not judge each day by the harvest you reap, but by the seeds you plant.' },
+  { es: 'La vida es 10 por ciento lo que me pasa y 90 por ciento cómo reacciono a ello.', en: 'Life is 10% what happens to me and 90% how I react to it.' },
+  { es: 'No hay clavo tan fuerte que pueda detener la rueda de la fortuna.', en: 'There is no nail strong enough to stop the wheel of fortune.' },
+  { es: 'No he fracasado, he encontrado diez mil formas que no funcionan.', en: 'I have not failed. I have just found ten thousand ways that do not work.' },
+  { es: 'Si te enfocas en la herida continuarás sufriendo, si te enfocas en la lección, continuarás creciendo.', en: 'If you focus on the hurt you will keep suffering. If you focus on the lesson, you will keep growing.' },
+  { es: 'En la vida algunas veces se gana, otras veces se aprende.', en: 'In life, sometimes you win and sometimes you learn.' },
+  { es: 'Cada mañana nacemos de nuevo. Lo que hacemos hoy es lo que más importa.', en: 'Every morning we are born again. What we do today matters most.' },
+  { es: 'Ten el coraje de seguir a tu corazón e intuición.', en: 'Have the courage to follow your heart and intuition.' },
+  { es: 'Haz de cada día tu obra maestra.', en: 'Make each day your masterpiece.' },
+  { es: 'Nuevo día, nuevos pensamientos, nuevas esperanzas y nuevas oportunidades.', en: 'New day, new thoughts, new hopes, and new opportunities.' },
+  { es: 'Da siempre lo mejor de ti cada día.', en: 'Always give the best of yourself every day.' },
+  { es: 'El placer en el trabajo lleva a la perfección de la obra.', en: 'The pleasure in work puts perfection in the work.' },
+  { es: 'A veces gano y otras veces aprendo. Yo nunca pierdo.', en: 'Sometimes I win and sometimes I learn. I never lose.' },
+  { es: 'Lo que decidas hacer, hazlo por ti y por nadie más.', en: 'Whatever you decide to do, do it for yourself and no one else.' },
+  { es: 'Si quieres algo que nunca tuviste, debes hacer algo que nunca hiciste.', en: 'If you want something you have never had, you must do something you have never done.' },
+  { es: 'La sonrisa cuesta menos que la electricidad y da más luz.', en: 'A smile costs less than electricity and gives more light.' },
+  { es: 'Hoy es el primer día del resto de tu vida.', en: 'Today is the first day of the rest of your life.' },
+  { es: 'Ama la vida que tienes para poder vivir la vida que amas.', en: 'Love the life you have so you can live the life you love.' },
+  { es: 'Todas las mañanas tienes dos opciones: seguir durmiendo con tus sueños, o levantarte y perseguirlos.', en: 'Every morning you have two choices: keep sleeping with your dreams, or wake up and chase them.' },
+  { es: 'Cada día nos trae nuevas posibilidades.', en: 'Each day brings us new possibilities.' },
+  { es: 'El mayor riesgo es no correr ningún riesgo.', en: 'The biggest risk is taking no risk at all.' },
+  { es: 'El poder de la imaginación nos hace infinitos.', en: 'The power of imagination makes us infinite.' },
+  { es: 'Muchas personas se pierden las pequeñas alegrías mientras aguardan la gran felicidad.', en: 'Many people miss the small joys while waiting for great happiness.' },
+  { es: 'La ocasión hay que crearla, no esperar a que llegue.', en: 'Opportunity must be created, not waited for.' },
+  { es: 'La acción es la llave fundamental de todo éxito.', en: 'Action is the foundational key to all success.' },
+  { es: 'La vida empieza cada cinco minutos.', en: 'Life begins every five minutes.' }
 ];
 
 window.LibraryData.FAQS = [
   {
-    q: { es: '¿Cómo reservo una sala de estudio?', en: '¿Cómo reservo una sala de estudio?' },
-    a: { es: 'Por medio del portal web o puedes escanear un código QR que tenemos disponible en todos los puntos de atención.', en: 'Por medio del portal web o puedes escanear un código QR que tenemos disponible en todos los puntos de atención.' }
+    q: { es: '¿Cómo reservo una sala de estudio?', en: 'How do I reserve a study room?' },
+    a: { es: 'Por medio del portal web o pueden escanear un código QR que tenemos disponible en todos los puntos de atención.', en: 'Through the web portal or by scanning a QR code available at all service points.' }
   },
   {
-    q: { es: '¿Cómo renovar material en préstamo?', en: '¿Cómo renovar material en préstamo?' },
-    a: { es: 'Iniciando sesión en i-RUS en el perfil de cada usuario encuentran la opción de renovación y estado de cuenta.', en: 'Iniciando sesión en i-RUS en el perfil de cada usuario encuentran la opción de renovación y estado de cuenta.' }
+    q: { es: '¿Cómo renovar material en préstamo?', en: 'How do I renew borrowed material?' },
+    a: { es: 'Iniciando sesión en i-RUS en el perfil de cada usuario encuentran la opción de renovación y estado de cuenta.', en: 'Log into i-RUS — in your user profile you will find the renewal and account status options.' }
   },
   {
-    q: { es: '¿Cómo buscar libros en la Biblioteca?', en: '¿Cómo buscar libros en la Biblioteca?' },
-    a: { es: 'En cada piso tenemos disponibles equipos de consulta para realizar las búsquedas en i-RUS y con la opción de GPS Bibliográfico pueden identificar la ubicación del material en estantería.', en: 'En cada piso tenemos disponibles equipos de consulta para realizar las búsquedas en i-RUS y con la opción de GPS Bibliográfico pueden identificar la ubicación del material en estantería.' }
+    q: { es: '¿Cómo buscar libros en la Biblioteca?', en: 'How do I search for books at the Library?' },
+    a: { es: 'En cada piso tenemos disponibles equipos de consulta para realizar las búsquedas en i-RUS y con la opción de GPS Bibliográfico pueden identificar la ubicación del material en estantería.', en: 'Each floor has consultation terminals to search in i-RUS. With the GPS Bibliográfico option you can identify the exact shelf location of any item.' }
   },
   {
-    q: { es: '¿La biblioteca tiene espacios para trabajo en grupo?', en: '¿La biblioteca tiene espacios para trabajo en grupo?' },
-    a: { es: 'Aparte de las salas de estudio, contamos con la sala Rubik, ubicada en el piso 3 de la Biblioteca general.', en: 'Aparte de las salas de estudio, contamos con la sala Rubik, ubicada en el piso 3 de la Biblioteca general.' }
+    q: { es: '¿La biblioteca tiene espacios para trabajo en grupo?', en: 'Does the Library have spaces for group work?' },
+    a: { es: 'Aparte de las salas de estudio, contamos con la sala Rubik, ubicada en el piso 3 de la Biblioteca general.', en: 'In addition to study rooms, we have the Rubik room on the 3rd floor of the General Library.' }
   },
   {
-    q: { es: '¿Tienen servicio de impresión y escáner?', en: '¿Tienen servicio de impresión y escáner?' },
-    a: { es: 'Sí. En el piso 3 de la biblioteca general hay un punto de papelería que ofrece este tipo de servicio.', en: 'Sí. En el piso 3 de la biblioteca general hay un punto de papelería que ofrece este tipo de servicio.' }
+    q: { es: '¿Tienen servicio de impresión y escáner?', en: 'Do you have printing and scanning services?' },
+    a: { es: 'Sí. En el piso 3 de la biblioteca general hay un punto de papelería que ofrece este tipo de servicio.', en: 'Yes. On the 3rd floor of the General Library there is a stationery point that offers these services.' }
   },
   {
-    q: { es: '¿En la Biblioteca hay préstamo de computadores?', en: '¿En la Biblioteca hay préstamo de computadores?' },
-    a: { es: 'Sí. En la sala SAI, ubicada en el piso 4 de la Biblioteca contamos con préstamo de equipos portátiles para uso exclusivo en esta sala y préstamo de computadores de escritorio.', en: 'Sí. En la sala SAI, ubicada en el piso 4 de la Biblioteca contamos con préstamo de equipos portátiles para uso exclusivo en esta sala y préstamo de computadores de escritorio.' }
+    q: { es: '¿En la Biblioteca hay préstamo de computadores?', en: 'Does the Library offer computer loans?' },
+    a: { es: 'Sí. En la sala SAI, ubicada en el piso 4 de la Biblioteca contamos con préstamo de equipos portátiles para uso exclusivo en esta sala y préstamo de computadores de escritorio.', en: 'Yes. In the SAI room on the 4th floor we offer laptop loans for use within the room and desktop computer loans.' }
   },
   {
-    q: { es: '¿Hay préstamo de cargadores?', en: '¿Hay préstamo de cargadores?' },
-    a: { es: 'Sí. Tenemos este servicio en los puntos de atención del piso 3 y 4 de la Biblioteca general.', en: 'Sí. Tenemos este servicio en los puntos de atención del piso 3 y 4 de la Biblioteca general.' }
+    q: { es: '¿Hay préstamo de cargadores?', en: 'Is there a charger lending service?' },
+    a: { es: 'Sí. Tenemos este servicio en los puntos de atención del piso 3 y 4 de la Biblioteca general.', en: 'Yes. This service is available at service points on floors 3 and 4 of the General Library.' }
   },
   {
-    q: { es: '¿Puedo ver películas en la Biblioteca?', en: '¿Puedo ver películas en la Biblioteca?' },
-    a: { es: 'Sí. Tenemos una amplia colección de películas que se pueden solicitar y disfrutar en las salas de audiovisuales, disponibles en el piso 4 de la Biblioteca general. Así mismo, en este lugar está la Cineteca, en la cual pueden disfrutar de una programación diaria de las mejores películas de nuestra colección.', en: 'Sí. Tenemos una amplia colección de películas que se pueden solicitar y disfrutar en las salas de audiovisuales, disponibles en el piso 4 de la Biblioteca general. Así mismo, en este lugar está la Cineteca, en la cual pueden disfrutar de una programación diaria de las mejores películas de nuestra colección.' }
+    q: { es: '¿Puedo ver películas en la Biblioteca?', en: 'Can I watch movies at the Library?' },
+    a: { es: 'Sí. Tenemos una amplia colección de películas que se pueden solicitar y disfrutar en las salas de audiovisuales, disponibles en el piso 4 de la Biblioteca general. Así mismo, en este lugar está la Cineteca, en la cual pueden disfrutar de una programación diaria de las mejores películas de nuestra colección.', en: 'Yes. We have a large film collection available in the audiovisual rooms on the 4th floor. The Cineteca also offers a daily screening program of our best titles.' }
   },
   {
-    q: { es: '¿Si la Biblioteca está cerrada, cómo puedo devolver el material en préstamo?', en: '¿Si la Biblioteca está cerrada, cómo puedo devolver el material en préstamo?' },
-    a: { es: 'Contamos con 5 buzones disponibles para devolución del material, ubicados en la entrada de la Biblioteca General "Ramón de Zubiría", entrada Edificio RGD, entrada Edificio SD, entrada Edificio W y Torre Séneca en CityU.', en: 'Contamos con 5 buzones disponibles para devolución del material, ubicados en la entrada de la Biblioteca General "Ramón de Zubiría", entrada Edificio RGD, entrada Edificio SD, entrada Edificio W y Torre Séneca en CityU.' }
+    q: { es: '¿Si la Biblioteca está cerrada, cómo puedo devolver el material en préstamo?', en: 'If the Library is closed, how can I return borrowed materials?' },
+    a: { es: 'Contamos con 5 buzones disponibles para devolución del material, ubicados en la entrada de la Biblioteca General "Ramón de Zubiría", entrada Edificio RGD, entrada Edificio SD, entrada Edificio W y Torre Séneca en CityU.', en: 'We have 5 drop boxes: at the General Library "Ramón de Zubiría" entrance, RGD Building, SD Building, W Building, and Torre Séneca at CityU.' }
   },
   {
-    q: { es: '¿Se pueden solicitar libros de otras universidades?', en: '¿Se pueden solicitar libros de otras universidades?' },
-    a: { es: 'Sí. Se pueden solicitar libros que estén en las colecciones de las bibliotecas o instituciones con las cuales se tiene una alianza vigente. Toda la información la encuentran en el portal web de la biblioteca en la sección de servicios.', en: 'Sí. Se pueden solicitar libros que estén en las colecciones de las bibliotecas o instituciones con las cuales se tiene una alianza vigente. Toda la información la encuentran en el portal web de la biblioteca en la sección de servicios.' }
+    q: { es: '¿Se pueden solicitar libros de otras universidades?', en: 'Can I request books from other universities?' },
+    a: { es: 'Sí. Se pueden solicitar libros que estén en las colecciones de las bibliotecas o instituciones con las cuales se tiene una alianza vigente. Toda la información la encuentran en el portal web de la biblioteca en la sección de servicios.', en: 'Yes. Books can be requested from libraries with an active alliance. Full details are on the library web portal under the services section.' }
   }
 ];
 

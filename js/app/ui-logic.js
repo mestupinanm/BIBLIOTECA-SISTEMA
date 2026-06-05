@@ -1964,7 +1964,8 @@
       var isClosed = !!(todaySchedule && todaySchedule.closedKey);
       var quotes = DATA.INSPIRATIONAL_QUOTES || [];
       var quoteIndex = quotes.length ? Math.floor(Math.random() * quotes.length) : 0;
-      var quote = quotes.length ? quotes[quoteIndex] : '';
+      var quoteObj = quotes.length ? quotes[quoteIndex] : null;
+      var quote = quoteObj ? (quoteObj[PepperLib.State.language] || quoteObj.es || quoteObj) : '';
       var monthsEs = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
       var monthsEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
       var dateText = PepperLib.State.language === 'en'
@@ -2015,11 +2016,11 @@
       html += '</header>';
 
       if (newsState.loading && !newsState.items.length) {
-        html += '<div class="news-loading-state">Cargando las noticias, por favor espera...</div>';
+        html += '<div class="news-loading-state">' + PepperLib.i18n.t('info.news_loading') + '</div>';
       }
 
       if (newsState.error) {
-        html += '<div class="news-error-state"><p>' + escapeHtml(newsState.error) + '</p><button class="btn btn--secondary news-inline-btn" id="btn-news-retry">Intentar de nuevo</button></div>';
+        html += '<div class="news-error-state"><p>' + escapeHtml(newsState.error) + '</p><button class="btn btn--secondary news-inline-btn" id="btn-news-retry">' + PepperLib.i18n.t('info.news_retry') + '</button></div>';
       }
 
       if (items.length) {
@@ -2048,12 +2049,12 @@
         }
         html += '</div>';
         if (hasMoreToShow && !newsState.loading) {
-          html += '<div class="news-load-more-wrap"><button class="btn btn--secondary news-load-more" id="btn-news-load-more">Cargar más noticias</button></div>';
+          html += '<div class="news-load-more-wrap"><button class="btn btn--secondary news-load-more" id="btn-news-load-more">' + PepperLib.i18n.t('info.news_load_more') + '</button></div>';
         }
       }
 
       if (!newsState.loading && !newsState.error && !items.length) {
-        html += '<div class="news-empty-state">No se encontraron noticias.</div>';
+        html += '<div class="news-empty-state">' + PepperLib.i18n.t('info.news_empty') + '</div>';
       }
 
       html += '</div></section>';
