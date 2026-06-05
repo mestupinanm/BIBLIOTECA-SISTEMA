@@ -1660,6 +1660,14 @@ button { cursor: pointer; }
 .books-options {
   width: 100%;
 }
+.books-options--modal-open {
+  -webkit-filter: blur(12px);
+  filter: blur(12px);
+  -webkit-transform: scale(1.012);
+  transform: scale(1.012);
+  -webkit-transform-origin: center center;
+  transform-origin: center center;
+}
 
 .books-shell {
   width: 100%;
@@ -1906,135 +1914,130 @@ button { cursor: pointer; }
   top: 0; left: 0;
   width: 1280px;
   height: 800px;
-  background: rgba(14,42,77,0.62);
+  background: rgba(88,108,128,0.56);
+  -webkit-backdrop-filter: blur(14px) saturate(80%);
+  backdrop-filter: blur(14px) saturate(80%);
   z-index: 80;
 }
 .books-detail-panel {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 790px;
-  min-height: 444px;
-  margin-left: -395px;
-  margin-top: -222px;
-  padding: 36px 40px 32px;
+  width: 850px;
+  min-height: 382px;
+  margin: 0;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  padding: 32px 40px 30px;
   border: 1px solid #D4CBB1;
-  border-radius: 28px;
+  border-radius: 26px;
   background: #FFFFFF;
   color: #0F1B2D;
-  box-shadow: 0 30px 60px rgba(14,42,77,0.40);
+  box-shadow: 0 30px 68px rgba(12,27,45,0.30);
   box-sizing: border-box;
+  overflow: hidden;
 }
 .books-detail-close {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 22px;
+  right: 22px;
+  z-index: 2;
   width: 34px;
   height: 34px;
   border: 0;
   border-radius: 50%;
-  background: #EFE9D8;
+  background: #EFE8D8;
   color: #0F1B2D;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 800;
   line-height: 31px;
   text-align: center;
   cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(122,84,25,0.05);
 }
 .books-detail-icon {
   display: inline-block;
-  width: 54px;
-  height: 54px;
+  width: 60px;
+  height: 60px;
   margin: 0 0 20px;
-  line-height: 54px;
-  border-radius: 14px;
+  line-height: 60px;
+  border-radius: 17px;
   background: #DCE4F0;
   text-align: center;
   vertical-align: top;
 }
 .books-detail-icon svg {
-  margin-top: 12px;
-  width: 30px;
-  height: 30px;
+  margin-top: 14px;
+  width: 32px;
+  height: 32px;
   stroke: #143562;
 }
-.books-detail-icon--return { background: #F6E2BE; }
-.books-detail-icon--return svg { stroke: #7A5419; }
-
+.books-detail-icon--return {
+  background: #DCE4F0;
+}
+.books-detail-icon--return svg {
+  stroke: #143562;
+}
 .books-detail-copy { display: block; }
 .books-detail-eyebrow {
   display: block;
-  margin: 0 0 10px;
+  margin: 0 0 20px;
   color: #7A5419;
   font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 3px;
+  font-weight: 700;
+  letter-spacing: 1px;
   line-height: 1;
   text-transform: uppercase;
 }
 .books-detail-title {
-  margin: 0 0 14px;
+  margin: 30px 0 16px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 37px;
+  font-size: 40px;
   font-weight: 800;
-  letter-spacing: -1px;
+  letter-spacing: -0.9px;
   color: #0F1B2D;
   line-height: 1.05;
 }
 .books-detail-message {
-  margin: 0;
-  font-size: 16px;
+  margin: -7px 0px 0px;
+  font-size: 18px;
   line-height: 1.45;
   color: #5A6678;
-  max-width: 710px;
+  max-width: 770px;
 }
-.books-detail-steps {
-  display: block;
-  width: 100%;
-  margin: 26px 0 26px;
-  font-size: 0;
-}
-.books-detail-step {
-  display: inline-block;
-  width: 31.5%;
-  min-height: 91px;
-  margin: 0 1.55% 0 0;
-  padding: 18px 16px 14px;
-  border: 1px solid #D4CBB1;
-  border-radius: 12px;
-  background: #EDE7D7;
+.books-detail-message strong {
   color: #0F1B2D;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  vertical-align: top;
+  font-weight: 770;
+}
+.books-detail-note {
+  position: relative;
+  margin: 20px 0 28px;
+  padding: 18px 22px 18px 40px;
+  border: 1px solid #D4CBB1;
+  border-radius: 18px;
+  background: #EDE7D7;
   box-sizing: border-box;
 }
-.books-detail-step:last-child {
-  margin-right: 0;
-}
-.books-detail-step-num {
+.books-detail-note:before {
+  content: "";
   display: block;
-  margin: 0 0 8px;
-  color: #7A5419;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 2px;
-  line-height: 1;
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 22px;
+  width: 4px;
+  border-radius: 999px;
+  background: #D49545;
 }
-.books-detail-step strong {
-  display: block;
-  margin: 0 0 6px;
+.books-detail-note p {
+  margin: 0;
   color: #0F1B2D;
-  font-size: 15px;
-  font-weight: 800;
-  line-height: 1.1;
+  font-size: 16px;
+  line-height: 1.42;
 }
-.books-detail-step span {
-  display: block;
-  color: #5A6678;
-  font-size: 13px;
-  line-height: 1.2;
+.books-detail-note strong {
+  font-weight: 800;
 }
 .books-detail-actions {
   margin-top: 0;
@@ -2043,23 +2046,28 @@ button { cursor: pointer; }
 .books-detail-actions .btn {
   margin: 0 0 0 12px;
   min-width: 150px;
-  height: 46px;
+  height: 44px;
+  padding-top: 0;
+  padding-bottom: 0;
   border-radius: 999px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
+  line-height: 44px;
 }
 .books-detail-actions .btn--primary {
-  min-width: 236px;
+  min-width: 230px;
+  box-shadow: none;
 }
 .books-detail-actions .btn--secondary {
   min-width: 152px;
+  background: #FFFFFF;
 }
 .books-detail-actions .btn--primary:before {
   content: "";
   display: inline-block;
   width: 19px;
   height: 19px;
-  margin: 0 10px -4px 0;
+  margin: 0 10px -5px 0;
   background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 2 11 13'%3E%3C/path%3E%3Cpath d='m22 2-7 20-4-9-9-4 20-7Z'%3E%3C/path%3E%3C/svg%3E") center/19px 19px no-repeat;
 }
 
@@ -2149,22 +2157,41 @@ button { cursor: pointer; }
   vertical-align: middle;
 }
 .hours-today-label {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 2.5px;
   text-transform: uppercase;
   color: #F4CE8D;
 }
+.hours-today-date {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 48px;
+  color: rgba(255,255,255,0.68);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.35;
+}
 .hours-today-value {
   margin-top: 0;
   text-align: left;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 54px;
+  font-size: 64px;
   font-weight: 800;
   letter-spacing: -1.2px;
   color: #FFFFFF;
   line-height: 1;
+}
+.hours-today-quote {
+  position: relative;
+  z-index: 1;
+  max-width: 330px;
+  margin: 34px 0 0;
+  color: rgba(255,255,255,0.72);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 .hours-week {

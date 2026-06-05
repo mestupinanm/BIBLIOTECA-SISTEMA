@@ -1748,11 +1748,11 @@
       var detail = byId('books-detail');
       var isBorrow = action === 'borrow';
       var titleKey = isBorrow ? 'books.borrow_title' : 'books.return_title';
-      var msgKey = isBorrow ? 'books.borrow_message' : 'books.return_message';
+      var msgKey = isBorrow ? 'books.borrow_message_html' : 'books.return_message_html';
+      var noteKey = isBorrow ? 'books.borrow_note_html' : 'books.return_note_html';
       var actionLabel = PepperLib.i18n.t(isBorrow ? 'books.borrow' : 'books.return');
-      var stepPrefix = isBorrow ? 'books.borrow_step_' : 'books.return_step_';
 
-      addClass(byId('books-options'), 'hidden');
+      addClass(byId('books-options'), 'books-options--modal-open');
       removeClass(detail, 'hidden');
 
       PepperLib.Utils.setLastAction(PepperLib.i18n.t('books.screen_title') + ' — ' + actionLabel, action, 'books');
@@ -1760,13 +1760,9 @@
       detail.innerHTML =
         '<article class="books-detail-panel books-detail-panel--' + action + '">' +
         '<button class="books-detail-close" id="btn-books-close" aria-label="Cerrar">×</button>' +
-        '<div class="books-detail-icon books-detail-icon--' + action + '"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>' + (isBorrow ? '<polyline points="8 12 12 8 16 12"></polyline><line x1="12" y1="16" x2="12" y2="8"></line>' : '<polyline points="16 12 12 16 8 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line>') + '</svg></div>' +
+        '<div class="books-detail-icon books-detail-icon--' + action + '"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>' + (isBorrow ? '<line x1="9" y1="8" x2="15" y2="8"></line><line x1="9" y1="12" x2="14" y2="12"></line>' : '<polyline points="16 12 12 16 8 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line>') + '</svg></div>' +
         '<div class="books-detail-copy"><span class="books-detail-eyebrow">' + PepperLib.i18n.t('books.detail_eyebrow') + '</span><h2 class="books-detail-title">' + PepperLib.i18n.t(titleKey) + '</h2><p class="books-detail-message">' + PepperLib.i18n.t(msgKey) + '</p></div>' +
-        '<div class="books-detail-steps">' +
-        '<div class="books-detail-step"><span class="books-detail-step-num">01</span><strong>' + PepperLib.i18n.t(stepPrefix + '1_title') + '</strong><span>' + PepperLib.i18n.t(stepPrefix + '1_desc') + '</span></div>' +
-        '<div class="books-detail-step"><span class="books-detail-step-num">02</span><strong>' + PepperLib.i18n.t(stepPrefix + '2_title') + '</strong><span>' + PepperLib.i18n.t(stepPrefix + '2_desc') + '</span></div>' +
-        '<div class="books-detail-step"><span class="books-detail-step-num">03</span><strong>' + PepperLib.i18n.t(stepPrefix + '3_title') + '</strong><span>' + PepperLib.i18n.t(stepPrefix + '3_desc') + '</span></div>' +
-        '</div>' +
+        '<div class="books-detail-note"><p>' + PepperLib.i18n.t(noteKey) + '</p></div>' +
         '<div class="books-detail-actions">' +
         '<button class="btn btn--secondary" id="btn-books-listo">' + PepperLib.i18n.t('nav.done') + '</button>' +
         '<button class="btn btn--primary" id="btn-books-llevame">' + PepperLib.i18n.t('books.go_reception') + '</button>' +
@@ -1795,6 +1791,7 @@
     function resetBooks() {
       currentAction = null;
       removeClass(byId('books-options'), 'hidden');
+      removeClass(byId('books-options'), 'books-options--modal-open');
       addClass(byId('books-detail'), 'hidden');
       byId('books-detail').innerHTML = '';
     }
@@ -1905,11 +1902,21 @@
     }
 
     function renderHours() {
-      var today = PepperLib.Utils.getBogotaNow().getDay();
+      var now = PepperLib.Utils.getBogotaNow();
+      var today = now.getDay();
       var todayIndex = today === 0 ? 6 : today - 1;
       var schedule = DATA.HOURS ? DATA.HOURS.schedule : [];
       var todaySchedule = schedule[todayIndex];
-      var todayTime = todaySchedule.closedKey ? PepperLib.i18n.t(todaySchedule.closedKey) : todaySchedule.time;
+      var todayName = todaySchedule ? PepperLib.i18n.t(todaySchedule.dayKey) : '';
+      var isClosed = !!(todaySchedule && todaySchedule.closedKey);
+      var quotes = DATA.INSPIRATIONAL_QUOTES || [];
+      var quoteIndex = quotes.length ? ((Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000)) % quotes.length) : 0;
+      var quote = quotes.length ? quotes[quoteIndex] : '';
+      var monthsEs = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+      var monthsEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      var dateText = PepperLib.State.language === 'en'
+        ? monthsEn[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear()
+        : now.getDate() + ' de ' + monthsEs[now.getMonth()] + ', ' + now.getFullYear();
       var html = '';
       var i;
       var day;
@@ -1917,8 +1924,10 @@
 
       html += '<section class="hours-panel">';
       html += '<div class="hours-today">';
-      html += '<div class="hours-today-label" data-i18n="info.today">' + PepperLib.i18n.t('info.today') + '</div>';
-      html += '<div class="hours-today-value">' + todayTime + '</div>';
+      html += '<div class="hours-today-label">' + PepperLib.i18n.t('info.today') + ' · ' + todayName + '</div>';
+      html += '<div class="hours-today-date">' + dateText + '</div>';
+      html += '<div class="hours-today-value">' + (isClosed ? PepperLib.i18n.t('info.closed') : PepperLib.i18n.t('info.open')) + '</div>';
+      html += '<p class="hours-today-quote">' + quote + '</p>';
       html += '</div>';
       html += '<div class="hours-week">';
 
