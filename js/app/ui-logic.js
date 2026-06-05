@@ -2230,6 +2230,10 @@
       },
 
       onExit: function () {
+      },
+
+      onLanguageChange: function () {
+        renderTab(activeTab);
       }
     });
   })();
