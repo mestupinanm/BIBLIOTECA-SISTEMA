@@ -270,10 +270,21 @@
   function findPlace(name) {
     var graph = getGraph();
     var i;
+    var stripped;
 
     for (i = 0; i < graph.places.length; i += 1) {
       if (graph.places[i].name === name) {
         return graph.places[i];
+      }
+    }
+
+    // shelf_01 → shelf_1: strip leading zeros from numeric suffix
+    stripped = name.replace(/^([a-z_]+?)0*(\d+)$/, '$1$2');
+    if (stripped !== name) {
+      for (i = 0; i < graph.places.length; i += 1) {
+        if (graph.places[i].name === stripped) {
+          return graph.places[i];
+        }
       }
     }
 
