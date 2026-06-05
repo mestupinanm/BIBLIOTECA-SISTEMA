@@ -495,13 +495,15 @@
     },
 
     onTimeout: function () {
-      if (PepperLib.State.current !== PepperLib.SCREENS.IDLE &&
-          PepperLib.State.current !== PepperLib.SCREENS.GREETING &&
-          PepperLib.State.current !== PepperLib.SCREENS.FEEDBACK) {
-        PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
-      } else {
+      var noFeedback = PepperLib.State.current === PepperLib.SCREENS.IDLE ||
+                       PepperLib.State.current === PepperLib.SCREENS.GREETING ||
+                       PepperLib.State.current === PepperLib.SCREENS.FEEDBACK ||
+                       PepperLib.State.current === 'info';
+      if (noFeedback) {
         PepperLib.State.endSession();
         PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+      } else {
+        PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
       }
     }
   };
@@ -1643,7 +1645,11 @@
                 window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
               }
               PepperLib.Inactivity.reset();
-              PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+              PepperRobot.animate('Gestures/You_2');
+              PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!', null, false);
+              setTimeout(function () {
+                PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+              }, 4000);
             },
             function onError(err) {
               cancelArrivalPoll();
@@ -1665,7 +1671,13 @@
             return;
           }
           PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Listo');
-          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
+          PepperLib.Inactivity.stop();
+          PepperRobot.animate('Gestures/Hey_1');
+          PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', null, false);
+          setTimeout(function () {
+            PepperLib.State.endSession();
+            PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+          }, 3500);
         };
       },
 
@@ -1773,7 +1785,13 @@
       byId('btn-books-listo').onclick = function () {
         var typeLabel = currentAction === 'borrow' ? 'Prestamo' : 'Devolucion';
         PepperLib.Analytics.insertServiciosLibros(typeLabel, 'Listo');
-        PepperLib.State.go(PepperLib.SCREENS.MENU, {}, { pushHistory: false });
+        PepperLib.Inactivity.stop();
+        PepperRobot.animate('Gestures/Hey_1');
+        PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', null, false);
+        setTimeout(function () {
+          PepperLib.State.endSession();
+          PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+        }, 3500);
       };
     }
 
@@ -2953,13 +2971,7 @@
       };
 
       byId('btn-trivia-menu').onclick = function () {
-        activeActivity = null;
-        currentQuestion = 0;
-        score = 0;
-        answered = false;
-        selectedAnswer = null;
-        triviaStartedAt = 0;
-        renderLibrary();
+        PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
       };
     }
 
