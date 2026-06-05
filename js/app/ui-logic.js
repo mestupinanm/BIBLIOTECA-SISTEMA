@@ -1910,7 +1910,7 @@
       var todayName = todaySchedule ? PepperLib.i18n.t(todaySchedule.dayKey) : '';
       var isClosed = !!(todaySchedule && todaySchedule.closedKey);
       var quotes = DATA.INSPIRATIONAL_QUOTES || [];
-      var quoteIndex = quotes.length ? ((Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000)) % quotes.length) : 0;
+      var quoteIndex = quotes.length ? Math.floor(Math.random() * quotes.length) : 0;
       var quote = quotes.length ? quotes[quoteIndex] : '';
       var monthsEs = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
       var monthsEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

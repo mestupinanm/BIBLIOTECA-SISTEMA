@@ -596,8 +596,8 @@ window.LibraryData.INSPIRATIONAL_QUOTES = [
   'El poder de la imaginación nos hace infinitos.',
   'Muchas personas se pierden las pequeñas alegrías mientras aguardan la gran felicidad.',
   'La ocasión hay que crearla, no esperar a que llegue.',
-  'La acción es la llave fundamental de todo éxito.'
-  'La vida empieza cada cinco minutos.'
+  'La acción es la llave fundamental de todo éxito.',
+  'La vida empieza cada cinco minutos.',
 ];
 
 window.LibraryData.FAQS = [

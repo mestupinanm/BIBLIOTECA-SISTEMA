@@ -2132,7 +2132,7 @@ button { cursor: pointer; }
   width: 36%;
   height: 600px;
   margin: 0;
-  padding: 32px 32px 28px;
+  padding: 28px 32px 28px;
   border: 1px solid #143562;
   border-radius: 28px;
   background: #143562;
@@ -2187,7 +2187,10 @@ button { cursor: pointer; }
   position: relative;
   z-index: 1;
   max-width: 330px;
-  margin: 34px 0 0;
+  margin: 22px 0 0;
+  padding-left: 12px;
+  border-radius: 2px;
+  border-left: 5px solid #D99A42;
   color: rgba(255,255,255,0.72);
   font-size: 18px;
   font-weight: 500;
