@@ -1084,6 +1084,36 @@
     return map;
   }());
 
+  var BASE_ONLY_MESSAGES = {
+    stairs_emergency: [
+      { speech: 'A mis dos costados podrás ver las dos salidas de emergencia.', animation: 'BodyTalk/Speaking/BodyTalk_1' },
+      { speech: '¡En caso de usarlas no corras!', animation: 'Gestures/Please_1' }
+    ],
+    reception: [
+      { speech: 'Está justo al frente mío.', animation: 'Gestures/You_2' }
+    ],
+    stairs_up: [
+      { speech: 'A mis costados pasando el muro lo verás.', animation: 'BodyTalk/Speaking/BodyTalk_1' }
+    ],
+    stairs_down: [
+      { speech: 'Están exactamente en la parte de atrás mío,', animation: 'BodyTalk/Speaking/BodyTalk_1' },
+      { speech: 'sigue a tu derecha, luego avanza y ahí las verás.', animation: 'Gestures/Everything_1' }
+    ]
+  };
+
+  function runBaseOnlyMessage(destId, onComplete) {
+    var steps = BASE_ONLY_MESSAGES[destId];
+    if (!steps) {
+      if (onComplete) { onComplete(); }
+      return;
+    }
+    removeClass(byId('pre-nav-overlay'), 'hidden');
+    executeNavScript({ config: { stepDelay: 600 }, steps: steps }, function () {
+      addClass(byId('pre-nav-overlay'), 'hidden');
+      if (onComplete) { onComplete(); }
+    });
+  }
+
   function runSpecialArrivalMessage(placeName, onComplete) {
     var steps = SPECIAL_ARRIVAL[placeName];
     if (!steps) {
@@ -1234,6 +1264,14 @@
           categoryLabel = (DATA.DEST_CATEGORY_LABELS && DATA.DEST_CATEGORY_LABELS[category]) || category;
           PepperLib.Analytics.count('navigation', currentDestination);
           PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Llevame');
+
+          if (BASE_ONLY_MESSAGES[currentDestination]) {
+            PepperLib.Inactivity.stop();
+            runBaseOnlyMessage(currentDestination, function () {
+              PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
+            });
+            return;
+          }
 
           runPreNavSequence(function () {
             var overlay = byId('guide-sim-overlay');
