@@ -984,6 +984,71 @@
     });
   })();
 
+  var PRE_NAV_SCRIPT = {
+    config: { name: 'inicio_navegacion', language: 'Spanish', stepDelay: 100 },
+    steps: [
+      {
+        speech: 'Lo siento si me demoro un poco,',
+        animation: 'BodyTalk/Speaking/BodyTalk_1',
+        screen: { type: 'subtitle', content: '' }
+      },
+      {
+        speech: 'estoy chiquita y aprendiendo a caminar sola',
+        animation: 'Gestures/Me_1',
+        screen: { type: 'subtitle', content: '' },
+        delay: 3000
+      },
+      {
+        speech: 'Por favor permiso para comenzar a guiarte :)',
+        animation: 'Gestures/Everything_1',
+        screen: { type: 'subtitle', content: '' }
+      }
+    ]
+  };
+
+  function updatePreNavSubtitle(text) {
+    var el = byId('pre-nav-text');
+    var legacySpeaker = document.querySelector ? document.querySelector('.pre-nav-speaker') : null;
+    if (legacySpeaker && legacySpeaker.parentNode) {
+      legacySpeaker.parentNode.removeChild(legacySpeaker);
+    }
+    if (el) {
+      el.textContent = text;
+    }
+  }
+
+  function executeNavScript(script, onComplete) {
+    var steps = script && script.steps ? script.steps : [];
+    var idx = 0;
+
+    function next() {
+      if (idx >= steps.length) {
+        if (onComplete) { onComplete(); }
+        return;
+      }
+
+      var step = steps[idx++];
+      if (step.speech) { updatePreNavSubtitle(step.speech); }
+
+      if (step.animation) {
+        PepperRobot.animate(step.animation);
+      }
+
+      if (step.speech) {
+        PepperRobot.speakAndWait(step.speech, function () {
+          var delay = step.delay !== undefined
+            ? step.delay
+            : ((script.config && script.config.stepDelay) || 100);
+          setTimeout(next, delay);
+        }, !!step.animation);
+      } else {
+        next();
+      }
+    }
+
+    next();
+  }
+
   (function registerNavigationGuideScreen() {
     var currentDestination = null;
     var simulationTimers = [];
@@ -1075,28 +1140,6 @@
       simulationTimers.push(timer);
     }
 
-    var PRE_NAV_SCRIPT = {
-      config: { name: 'inicio_navegacion', language: 'Spanish', stepDelay: 100 },
-      steps: [
-        {
-          speech: 'Lo siento si me demoro un poco,',
-          animation: 'BodyTalk/Speaking/BodyTalk_1',
-          screen: { type: 'subtitle', content: '' }
-        },
-        {
-          speech: 'estoy chiquita y aprendiendo a caminar sola',
-          animation: 'Gestures/Me_1',
-          screen: { type: 'subtitle', content: '' },
-          delay: 3000
-        },
-        {
-          speech: 'Por favor permiso para comenzar a guiarte :)',
-          animation: 'Gestures/Everything_1',
-          screen: { type: 'subtitle', content: '' }
-        }
-      ]
-    };
-
     var ARRIVAL_SCRIPT = {
       config: { stepDelay: 1000 },
       steps: [
@@ -1110,49 +1153,6 @@
         }
       ]
     };
-
-    function updatePreNavSubtitle(text) {
-      var el = byId('pre-nav-text');
-      var legacySpeaker = document.querySelector ? document.querySelector('.pre-nav-speaker') : null;
-      if (legacySpeaker && legacySpeaker.parentNode) {
-        legacySpeaker.parentNode.removeChild(legacySpeaker);
-      }
-      if (el) {
-        el.textContent = text;
-      }
-    }
-
-    function executeScript(script, onComplete) {
-      var steps = script && script.steps ? script.steps : [];
-      var idx = 0;
-
-      function next() {
-        if (idx >= steps.length) {
-          if (onComplete) { onComplete(); }
-          return;
-        }
-
-        var step = steps[idx++];
-        if (step.speech) { updatePreNavSubtitle(step.speech); }
-
-        if (step.animation) {
-          PepperRobot.animate(step.animation);
-        }
-
-        if (step.speech) {
-          PepperRobot.speakAndWait(step.speech, function () {
-            var delay = step.delay !== undefined
-              ? step.delay
-              : ((script.config && script.config.stepDelay) || 100);
-            setTimeout(next, delay);
-          }, !!step.animation);
-        } else {
-          next();
-        }
-      }
-
-      next();
-    }
 
     PepperLib.State.registerScreen('navigation-guide', {
       init: function () {
@@ -1172,7 +1172,7 @@
           PepperRobot.setVolume(45);
           removeClass(byId('pre-nav-overlay'), 'hidden');
 
-          executeScript(PRE_NAV_SCRIPT, function () {
+          executeNavScript(PRE_NAV_SCRIPT, function () {
             addClass(byId('pre-nav-overlay'), 'hidden');
             var overlay = byId('guide-sim-overlay');
             var message = byId('guide-sim-msg');
@@ -1217,12 +1217,12 @@
                   );
                   if (window.PepperRosNavigation) {
                     window.PepperRosNavigation.standPosture(function () {
-                      executeScript(ARRIVAL_SCRIPT, null);
+                      executeNavScript(ARRIVAL_SCRIPT, null);
                     }, function () {
-                      executeScript(ARRIVAL_SCRIPT, null);
+                      executeNavScript(ARRIVAL_SCRIPT, null);
                     });
                   } else {
-                    executeScript(ARRIVAL_SCRIPT, null);
+                    executeNavScript(ARRIVAL_SCRIPT, null);
                   }
                 },
                 function onError(errorString) {
@@ -1625,69 +1625,51 @@
           }
           cancelArrivalPoll();
           PepperLib.Inactivity.stop();
-
-          var shelvesNavSubtitle = byId('pre-nav-text');
           PepperRobot.setVolume(45);
           removeClass(byId('pre-nav-overlay'), 'hidden');
 
-          if (shelvesNavSubtitle) { shelvesNavSubtitle.textContent = 'Lo siento si me demoro un poco,'; }
-          PepperRobot.animate('BodyTalk/Speaking/BodyTalk_1');
-          PepperRobot.speakAndWait('Lo siento si me demoro un poco,', function () {
-            setTimeout(function () {
-              if (shelvesNavSubtitle) { shelvesNavSubtitle.textContent = 'estoy chiquita y aprendiendo a caminar sola'; }
-              PepperRobot.animate('Gestures/Me_1');
-              PepperRobot.speakAndWait('estoy chiquita y aprendiendo a caminar sola', function () {
+          executeNavScript(PRE_NAV_SCRIPT, function () {
+            addClass(byId('pre-nav-overlay'), 'hidden');
+            navActive = true;
+            PepperLib.isNavigating = true;
+            if (window.PepperRosNavigation) {
+              window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
+            }
+            navStartTime = Date.now();
+            window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
+            startNavClearLoop();
+            window.PepperRosNavigation.navigateGraphToDestination(
+              'shelf_' + activeShelf,
+              function onSuccess() {
+                cancelArrivalPoll();
+                navActive = false;
+                PepperLib.isNavigating = false;
+                startNavClearLoop();
+                if (window.PepperRosNavigation) {
+                  window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+                  window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
+                }
+                PepperLib.Inactivity.reset();
+                PepperRobot.animate('Gestures/You_2');
+                PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!', null, false);
                 setTimeout(function () {
-                  if (shelvesNavSubtitle) { shelvesNavSubtitle.textContent = 'Por favor permiso para comenzar a guiarte :)'; }
-                  PepperRobot.animate('Gestures/Everything_1');
-                  PepperRobot.speakAndWait('Por favor permiso para comenzar a guiarte :)', function () {
-                    setTimeout(function () {
-                      addClass(byId('pre-nav-overlay'), 'hidden');
-                      navActive = true;
-                      PepperLib.isNavigating = true;
-                      if (window.PepperRosNavigation) {
-                        window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
-                      }
-                      navStartTime = Date.now();
-                      window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
-                      startNavClearLoop();
-                      window.PepperRosNavigation.navigateGraphToDestination(
-                        'shelf_' + activeShelf,
-                        function onSuccess() {
-                          cancelArrivalPoll();
-                          navActive = false;
-                          PepperLib.isNavigating = false;
-                          startNavClearLoop();
-                          if (window.PepperRosNavigation) {
-                            window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-                            window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
-                          }
-                          PepperLib.Inactivity.reset();
-                          PepperRobot.animate('Gestures/You_2');
-                          PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!', null, false);
-                          setTimeout(function () {
-                            PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                          }, 4000);
-                        },
-                        function onError(err) {
-                          cancelArrivalPoll();
-                          navActive = false;
-                          PepperLib.isNavigating = false;
-                          startNavClearLoop();
-                          if (window.PepperRosNavigation) {
-                            window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-                            window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
-                          }
-                          PepperLib.Inactivity.reset();
-                          console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
-                        }
-                      );
-                    }, 100);
-                  }, true);
-                }, 3000);
-              }, true);
-            }, 100);
-          }, true);
+                  PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                }, 4000);
+              },
+              function onError(err) {
+                cancelArrivalPoll();
+                navActive = false;
+                PepperLib.isNavigating = false;
+                startNavClearLoop();
+                if (window.PepperRosNavigation) {
+                  window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+                  window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
+                }
+                PepperLib.Inactivity.reset();
+                console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
+              }
+            );
+          });
         };
 
         byId('btn-shelves-done').onclick = function () {
