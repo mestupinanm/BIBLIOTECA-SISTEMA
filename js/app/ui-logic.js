@@ -1666,7 +1666,12 @@
             return;
           }
           PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Listo');
-          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
+          PepperLib.Inactivity.stop();
+          PepperRobot.animate('Gestures/Hey_1');
+          PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', function () {
+            PepperLib.State.endSession();
+            PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+          }, true);
         };
       },
 
@@ -1774,7 +1779,12 @@
       byId('btn-books-listo').onclick = function () {
         var typeLabel = currentAction === 'borrow' ? 'Prestamo' : 'Devolucion';
         PepperLib.Analytics.insertServiciosLibros(typeLabel, 'Listo');
-        PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
+        PepperLib.Inactivity.stop();
+        PepperRobot.animate('Gestures/Hey_1');
+        PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', function () {
+          PepperLib.State.endSession();
+          PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+        }, true);
       };
     }
 
@@ -3190,11 +3200,12 @@
           PepperLib.Analytics.insertCalidadServicio(scoreLabel, comment);
 
           showFeedbackThanks();
+          clearAutoReturn();
 
           PepperRobot.animate('Gestures/Hey_1');
-          PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', null, false);
-          clearAutoReturn();
-          autoReturnTimer = setTimeout(initiateReturn, 3000);
+          PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', function () {
+            initiateReturn();
+          }, true);
         };
       },
 
