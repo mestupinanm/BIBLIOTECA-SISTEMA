@@ -869,18 +869,22 @@
           if (onStep) {
             onStep({ turnDegrees: meta.turnDegrees }, { name: toPlace }, route, index);
           }
-          Navigation.rotateInPlace(meta.turnDegrees, afterRotate, onError);
+          Navigation.rotateInPlace(meta.turnDegrees, afterRotate, function (err) {
+            console.warn('[NAV] rotación fallida, continuando sin girar:', err);
+            afterRotate();
+          });
           return;
         }
 
         afterRotate();
       };
       var advanceThen = function (afterAdvance) {
-        if (meta.advanceMeters) {
+        var meters = (fromPlace === 'base') ? 0.4 : (meta.advanceMeters || 0);
+        if (meters) {
           if (onStep) {
-            onStep({ advanceMeters: meta.advanceMeters }, { name: toPlace }, route, index);
+            onStep({ advanceMeters: meters }, { name: toPlace }, route, index);
           }
-          Navigation.moveRelativeWithPyToolkit(meta.advanceMeters, 0, afterAdvance, function (err) {
+          Navigation.moveRelativeWithPyToolkit(meters, 0, afterAdvance, function (err) {
             console.warn('[NAV] advance fallido, continuando sin advance:', err);
             afterAdvance();
           });

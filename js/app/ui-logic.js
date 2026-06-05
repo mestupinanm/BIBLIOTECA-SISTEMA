@@ -1049,6 +1049,24 @@
     next();
   }
 
+  function runPreNavSequence(onComplete) {
+    PepperRobot.setVolume(45);
+    removeClass(byId('pre-nav-overlay'), 'hidden');
+
+    function doScript() {
+      executeNavScript(PRE_NAV_SCRIPT, function () {
+        addClass(byId('pre-nav-overlay'), 'hidden');
+        if (onComplete) { onComplete(); }
+      });
+    }
+
+    if (window.PepperRosNavigation && window.PepperRosNavigation.connect) {
+      window.PepperRosNavigation.connect(null, doScript, doScript);
+    } else {
+      doScript();
+    }
+  }
+
   (function registerNavigationGuideScreen() {
     var currentDestination = null;
     var simulationTimers = [];
@@ -1169,11 +1187,7 @@
           PepperLib.Analytics.count('navigation', currentDestination);
           PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Llevame');
 
-          PepperRobot.setVolume(45);
-          removeClass(byId('pre-nav-overlay'), 'hidden');
-
-          executeNavScript(PRE_NAV_SCRIPT, function () {
-            addClass(byId('pre-nav-overlay'), 'hidden');
+          runPreNavSequence(function () {
             var overlay = byId('guide-sim-overlay');
             var message = byId('guide-sim-msg');
             if (overlay && message) {
@@ -1190,9 +1204,6 @@
             cancelArrivalPoll();
             navActive = true;
             PepperLib.isNavigating = true;
-            if (window.PepperRosNavigation) {
-              window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
-            }
             PepperLib.Inactivity.stop();
             navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
@@ -1203,10 +1214,6 @@
                   cancelArrivalPoll();
                   navActive = false;
                   startNavClearLoop();
-                  if (window.PepperRosNavigation) {
-                    window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-                    window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
-                  }
                   if (overlay) { addClass(overlay, 'hidden'); }
                   PepperLib.Inactivity.reset();
                   showNavigationNotice(
@@ -1229,10 +1236,6 @@
                   cancelArrivalPoll();
                   navActive = false;
                   startNavClearLoop();
-                  if (window.PepperRosNavigation) {
-                    window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-                    window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
-                  }
                   PepperLib.Inactivity.reset();
                   if (overlay) {
                     addClass(overlay, 'hidden');
@@ -1625,16 +1628,10 @@
           }
           cancelArrivalPoll();
           PepperLib.Inactivity.stop();
-          PepperRobot.setVolume(45);
-          removeClass(byId('pre-nav-overlay'), 'hidden');
 
-          executeNavScript(PRE_NAV_SCRIPT, function () {
-            addClass(byId('pre-nav-overlay'), 'hidden');
+          runPreNavSequence(function () {
             navActive = true;
             PepperLib.isNavigating = true;
-            if (window.PepperRosNavigation) {
-              window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
-            }
             navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
             startNavClearLoop();
@@ -1645,10 +1642,6 @@
                 navActive = false;
                 PepperLib.isNavigating = false;
                 startNavClearLoop();
-                if (window.PepperRosNavigation) {
-                  window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-                  window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
-                }
                 PepperLib.Inactivity.reset();
                 PepperRobot.animate('Gestures/You_2');
                 PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!', null, false);
@@ -1661,10 +1654,6 @@
                 navActive = false;
                 PepperLib.isNavigating = false;
                 startNavClearLoop();
-                if (window.PepperRosNavigation) {
-                  window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-                  window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
-                }
                 PepperLib.Inactivity.reset();
                 console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
               }
@@ -3078,9 +3067,6 @@
       }
       cancelArrivalPoll();
       navActive = true;
-      if (window.PepperRosNavigation) {
-        window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
-      }
       PepperLib.Inactivity.stop();
       var blackOverlay = byId('black-screen-overlay');
       if (blackOverlay) addClass(blackOverlay, 'active');
@@ -3095,10 +3081,6 @@
           if (blackOverlay) removeClass(blackOverlay, 'active');
           navActive = false;
           startNavClearLoop();
-          if (window.PepperRosNavigation) {
-            window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-            window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
-          }
           PepperLib.State.endSession();
           PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
         };
@@ -3113,10 +3095,6 @@
         clearAutoReturn();
         navActive = false;
         startNavClearLoop();
-        if (window.PepperRosNavigation) {
-          window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-          window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
-        }
         PepperLib.Inactivity.reset();
         if (blackOverlay) removeClass(blackOverlay, 'active');
         console.error('[NAV ERROR] navigateToBase:', errorString);
