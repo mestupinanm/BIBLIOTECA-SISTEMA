@@ -1723,22 +1723,24 @@
           PepperLib.Inactivity.stop();
 
           runPreNavSequence(function () {
+            // Normalize to graph name: '01' → 'shelf_1', '10' → 'shelf_10'
+            var shelfNum    = parseInt(activeShelf, 10);
+            var shelfGraphId = 'shelf_' + shelfNum;
             navActive = true;
             PepperLib.isNavigating = true;
             navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
             startNavClearLoop();
             window.PepperRosNavigation.navigateGraphToDestination(
-              'shelf_' + activeShelf,
+              shelfGraphId,
               function onSuccess() {
                 cancelArrivalPoll();
                 navActive = false;
                 PepperLib.isNavigating = false;
                 startNavClearLoop();
                 PepperLib.Inactivity.reset();
-                var destPlace = 'shelf_' + activeShelf;
-                if (SPECIAL_ARRIVAL[destPlace]) {
-                  runSpecialArrivalMessage(destPlace, function () {
+                if (SPECIAL_ARRIVAL[shelfGraphId]) {
+                  runSpecialArrivalMessage(shelfGraphId, function () {
                     PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                   });
                 } else {
@@ -1755,7 +1757,7 @@
                 PepperLib.isNavigating = false;
                 startNavClearLoop();
                 PepperLib.Inactivity.reset();
-                console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
+                console.error('[NAV ERROR] navigateGraphToDestination [' + shelfGraphId + ']:', err);
               }
             );
           });
