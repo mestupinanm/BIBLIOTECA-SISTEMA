@@ -5,7 +5,10 @@
   var PepperLib = window.PepperLib || {};
   var PepperRobot = window.PepperRobot || {};
   var NEWS_LINK = 'https://www.uniandes.edu.co/es/noticias';
-  var NEWS_PROXY = 'https://api.codetabs.com/v1/proxy?quest=';
+  var NEWS_PROXIES = [
+    'https://api.allorigins.win/raw?url=',
+    'https://api.codetabs.com/v1/proxy?quest='
+  ];
   var FALLBACK_ACTIVITIES = [
     {
       id: 'library-trivia',
@@ -2123,6 +2126,16 @@
       bindInfoActions();
     }
 
+    function xhrNewsWithFallback(targetUrl, proxies, index, onSuccess, onError) {
+      if (index >= proxies.length) {
+        onError();
+        return;
+      }
+      xhrRequest('GET', proxies[index] + encodeURIComponent(targetUrl), {}, null, onSuccess, function () {
+        xhrNewsWithFallback(targetUrl, proxies, index + 1, onSuccess, onError);
+      });
+    }
+
     function loadNews(pageToLoad, append) {
       var targetUrl = NEWS_LINK + (pageToLoad > 0 ? '?page=' + pageToLoad : '');
 
@@ -2136,7 +2149,7 @@
         renderTab('news');
       }
 
-      xhrRequest('GET', NEWS_PROXY + encodeURIComponent(targetUrl), {}, null, function (text) {
+      xhrNewsWithFallback(targetUrl, NEWS_PROXIES, 0, function (text) {
         var parsed = extractNewsCards(text);
         var existingLookup = {};
         var merged = [];
