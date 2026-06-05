@@ -2120,7 +2120,10 @@ button { cursor: pointer; }
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 4px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.info-content::-webkit-scrollbar { display: none; }
 
 /* HOURS — 2 columnas (hero + week list) usando float */
 .hours-panel {
@@ -2286,7 +2289,7 @@ button { cursor: pointer; }
 }
 .news-count-badge {
   position: absolute;
-  top: 16px;
+  top: 0;
   right: 0;
   min-width: 132px;
   height: 38px;
@@ -2436,7 +2439,18 @@ button { cursor: pointer; }
 }
 
 /* FAQ */
-.faq-panel-header { margin: 0 0 18px; padding: 4px 2px; }
+.faq-panel {
+  background: #FFFFFF;
+  border: 1px solid #D4CBB1;
+  border-radius: 24px;
+  padding: 24px 24px 20px;
+  box-shadow: 0 1px 2px rgba(20,35,58,0.04);
+}
+.faq-panel-header {
+  margin: 0 0 20px;
+  padding: 4px 2px 20px;
+  border-bottom: 1px solid #D4CBB1;
+}
 .faq-panel-header h3 {
   margin: 0 0 6px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -2457,16 +2471,22 @@ button { cursor: pointer; }
   padding: 0;
   border: 1px solid #D4CBB1;
   border-radius: 20px;
-  background: #FFFFFF;
+  background: #EDE8D9;
   box-shadow: 0 1px 2px rgba(20,35,58,0.04);
   overflow: hidden;
 }
+.faq-item.open { background: #DCE4F0; border-color: #BDD0E8; }
 
 .faq-question {
-  position: relative;
-  display: block;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 14px;
   width: 100%;
-  padding: 18px 56px 18px 22px;
+  padding: 16px 18px;
   border: 0;
   background: transparent;
   text-align: left;
@@ -2477,12 +2497,50 @@ button { cursor: pointer; }
   line-height: 1.3;
   color: #0F1B2D;
   cursor: pointer;
+  box-sizing: border-box;
+}
+.faq-number {
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  width: 28px;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #5A6678;
+}
+.faq-question-text {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+.faq-toggle-btn {
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #B3A684;
+  background: #FFFFFF;
+  color: #5A6678;
+  box-sizing: border-box;
+}
+.faq-item.open .faq-toggle-btn {
+  background: #143562;
+  border-color: #143562;
+  color: #FFFFFF;
 }
 .faq-arrow {
-  position: absolute;
-  top: 22px;
-  right: 22px;
-  color: #5A6678;
+  display: block;
   -webkit-transition: -webkit-transform .2s ease;
   transition: transform .2s ease;
 }
@@ -2492,13 +2550,12 @@ button { cursor: pointer; }
 }
 .faq-answer {
   display: none;
-  padding: 0 22px 18px;
+  padding: 0 22px 16px 60px;
   color: #5A6678;
   font-size: 14px;
   line-height: 1.6;
 }
 .faq-item.open .faq-answer { display: block; }
-.faq-item.open .faq-question { background: #DCE4F0; }
 
 /* =============================================================
    14. EVENTS

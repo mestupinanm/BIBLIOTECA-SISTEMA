@@ -2068,15 +2068,18 @@
       var faq;
       var question;
       var answer;
+      var num;
 
       for (i = 0; i < faqs.length; i++) {
         faq = faqs[i];
         question = faq.q[PepperLib.State.language] || faq.q.es;
         answer = faq.a[PepperLib.State.language] || faq.a.es;
+        num = (i + 1) < 10 ? '0' + (i + 1) : '' + (i + 1);
         html += '<article class="faq-item' + (openFaq[i] ? ' open' : '') + '" data-faq="' + i + '">';
         html += '<button class="faq-question" data-faq-toggle="' + i + '">';
-        html += '<span>' + escapeHtml(question) + '</span>';
-        html += '<svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+        html += '<span class="faq-number">' + num + '</span>';
+        html += '<span class="faq-question-text">' + escapeHtml(question) + '</span>';
+        html += '<span class="faq-toggle-btn"><svg class="faq-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>';
         html += '</button>';
         html += '<div class="faq-answer">' + escapeHtml(answer) + '</div>';
         html += '</article>';

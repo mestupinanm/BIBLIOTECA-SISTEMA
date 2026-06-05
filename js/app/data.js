@@ -265,14 +265,14 @@ window.LibraryData.STRINGS = {
     'books.return': 'Return',
     'books.return_desc': 'I want to return a book',
     'books.borrow_title': 'Book borrowing',
-    'books.borrow_message': 'To borrow a book, please go to Reception where a librarian will assist you, or use the self-checkout station.',
-    'books.borrow_message_html': 'To borrow a book, go to <strong>Reception</strong> where a librarian will assist you, or use the self-checkout station.',
+    'books.borrow_message': 'To borrow a book, please go to reception where a librarian will assist you, or use the self-checkout station.',
+    'books.borrow_message_html': 'To borrow a book, go to <strong>reception</strong> where a librarian will assist you, or use the self-checkout station.',
     'books.borrow_note_html': 'You may borrow up to <strong>5 books</strong> with a <strong>valid ID card</strong> for <strong>15 days</strong>. Returns are handled at the same point.',
     'books.return_title': 'Book return',
-    'books.return_message': 'To return a book, please go to Reception or use the return drop-box available on the first floor.',
-    'books.return_message_html': 'To return a book, go to <strong>Reception</strong> or use the return drop-box available on the first floor.',
-    'books.return_note_html': 'Return materials at <strong>Reception</strong> or the <strong>return drop-box</strong>. Confirm the return before finishing.',
-    'books.go_reception': 'Take me to Reception',
+    'books.return_message': 'To return a book, please go to reception or use the return drop-box available on the first floor.',
+    'books.return_message_html': 'To return a book, go to <strong>reception</strong> or use the return drop-box available on the first floor.',
+    'books.return_note_html': 'Return materials at <strong>reception</strong> or the <strong>return drop-box</strong>. Confirm the return before finishing.',
+    'books.go_reception': 'Take me to reception',
     'books.back_options': 'Back to options',
     'books.hero_eyebrow': 'Available services',
     'books.hero_title': 'Borrowing and returns without the guesswork',
@@ -602,28 +602,44 @@ window.LibraryData.INSPIRATIONAL_QUOTES = [
 
 window.LibraryData.FAQS = [
   {
-    q: { es: 'Como puedo prestar un libro?', en: 'How can I borrow a book?' },
-    a: { es: 'Dirigete a Recepcion con tu carnet universitario. El personal te asistira con el proceso de prestamo. Tambien puedes usar la estacion de autoservicio.', en: 'Go to Reception with your university ID. Staff will assist you with the borrowing process. You can also use the self-checkout station.' }
+    q: { es: '¿Cómo reservo una sala de estudio?', en: '¿Cómo reservo una sala de estudio?' },
+    a: { es: 'Por medio del portal web o puedes escanear un código QR que tenemos disponible en todos los puntos de atención.', en: 'Por medio del portal web o puedes escanear un código QR que tenemos disponible en todos los puntos de atención.' }
   },
   {
-    q: { es: 'Cuantos libros puedo tener prestados?', en: 'How many books can I have on loan?' },
-    a: { es: 'Los estudiantes de pregrado pueden tener hasta 5 libros prestados simultaneamente. Estudiantes de posgrado pueden tener hasta 8.', en: 'Undergraduate students can have up to 5 books on loan simultaneously. Graduate students can have up to 8.' }
+    q: { es: '¿Cómo renovar material en préstamo?', en: '¿Cómo renovar material en préstamo?' },
+    a: { es: 'Iniciando sesión en i-RUS en el perfil de cada usuario encuentran la opción de renovación y estado de cuenta.', en: 'Iniciando sesión en i-RUS en el perfil de cada usuario encuentran la opción de renovación y estado de cuenta.' }
   },
   {
-    q: { es: 'Donde estan los banos?', en: 'Where are the restrooms?' },
-    a: { es: 'Los banos estan ubicados en el costado derecho de la biblioteca. Puedes usar la opcion "Adonde voy?" para que te guie.', en: 'The restrooms are located on the right side of the library. You can use the "Where do I go?" option for directions.' }
+    q: { es: '¿Cómo buscar libros en la Biblioteca?', en: '¿Cómo buscar libros en la Biblioteca?' },
+    a: { es: 'En cada piso tenemos disponibles equipos de consulta para realizar las búsquedas en i-RUS y con la opción de GPS Bibliográfico pueden identificar la ubicación del material en estantería.', en: 'En cada piso tenemos disponibles equipos de consulta para realizar las búsquedas en i-RUS y con la opción de GPS Bibliográfico pueden identificar la ubicación del material en estantería.' }
   },
   {
-    q: { es: 'Puedo reservar una sala de estudio?', en: 'Can I reserve a study room?' },
-    a: { es: 'Si, las salas de estudio se pueden reservar a traves del sistema IRUS o directamente en Recepcion.', en: 'Yes, study rooms can be reserved through the IRUS system or directly at Reception.' }
+    q: { es: '¿La biblioteca tiene espacios para trabajo en grupo?', en: '¿La biblioteca tiene espacios para trabajo en grupo?' },
+    a: { es: 'Aparte de las salas de estudio, contamos con la sala Rubik, ubicada en el piso 3 de la Biblioteca general.', en: 'Aparte de las salas de estudio, contamos con la sala Rubik, ubicada en el piso 3 de la Biblioteca general.' }
   },
   {
-    q: { es: 'Hay impresoras disponibles?', en: 'Are printers available?' },
-    a: { es: 'Si, hay impresoras disponibles para los estudiantes. Consulta en Recepcion sobre el servicio de impresion.', en: 'Yes, printers are available for students. Ask at Reception about the printing service.' }
+    q: { es: '¿Tienen servicio de impresión y escáner?', en: '¿Tienen servicio de impresión y escáner?' },
+    a: { es: 'Sí. En el piso 3 de la biblioteca general hay un punto de papelería que ofrece este tipo de servicio.', en: 'Sí. En el piso 3 de la biblioteca general hay un punto de papelería que ofrece este tipo de servicio.' }
   },
   {
-    q: { es: 'Que hago si pierdo un libro prestado?', en: 'What if I lose a borrowed book?' },
-    a: { es: 'Dirigete a Recepcion lo antes posible para reportar la perdida. El personal te indicara el procedimiento a seguir.', en: 'Go to Reception as soon as possible to report the loss. Staff will guide you through the procedure.' }
+    q: { es: '¿En la Biblioteca hay préstamo de computadores?', en: '¿En la Biblioteca hay préstamo de computadores?' },
+    a: { es: 'Sí. En la sala SAI, ubicada en el piso 4 de la Biblioteca contamos con préstamo de equipos portátiles para uso exclusivo en esta sala y préstamo de computadores de escritorio.', en: 'Sí. En la sala SAI, ubicada en el piso 4 de la Biblioteca contamos con préstamo de equipos portátiles para uso exclusivo en esta sala y préstamo de computadores de escritorio.' }
+  },
+  {
+    q: { es: '¿Hay préstamo de cargadores?', en: '¿Hay préstamo de cargadores?' },
+    a: { es: 'Sí. Tenemos este servicio en los puntos de atención del piso 3 y 4 de la Biblioteca general.', en: 'Sí. Tenemos este servicio en los puntos de atención del piso 3 y 4 de la Biblioteca general.' }
+  },
+  {
+    q: { es: '¿Puedo ver películas en la Biblioteca?', en: '¿Puedo ver películas en la Biblioteca?' },
+    a: { es: 'Sí. Tenemos una amplia colección de películas que se pueden solicitar y disfrutar en las salas de audiovisuales, disponibles en el piso 4 de la Biblioteca general. Así mismo, en este lugar está la Cineteca, en la cual pueden disfrutar de una programación diaria de las mejores películas de nuestra colección.', en: 'Sí. Tenemos una amplia colección de películas que se pueden solicitar y disfrutar en las salas de audiovisuales, disponibles en el piso 4 de la Biblioteca general. Así mismo, en este lugar está la Cineteca, en la cual pueden disfrutar de una programación diaria de las mejores películas de nuestra colección.' }
+  },
+  {
+    q: { es: '¿Si la Biblioteca está cerrada, cómo puedo devolver el material en préstamo?', en: '¿Si la Biblioteca está cerrada, cómo puedo devolver el material en préstamo?' },
+    a: { es: 'Contamos con 5 buzones disponibles para devolución del material, ubicados en la entrada de la Biblioteca General "Ramón de Zubiría", entrada Edificio RGD, entrada Edificio SD, entrada Edificio W y Torre Séneca en CityU.', en: 'Contamos con 5 buzones disponibles para devolución del material, ubicados en la entrada de la Biblioteca General "Ramón de Zubiría", entrada Edificio RGD, entrada Edificio SD, entrada Edificio W y Torre Séneca en CityU.' }
+  },
+  {
+    q: { es: '¿Se pueden solicitar libros de otras universidades?', en: '¿Se pueden solicitar libros de otras universidades?' },
+    a: { es: 'Sí. Se pueden solicitar libros que estén en las colecciones de las bibliotecas o instituciones con las cuales se tiene una alianza vigente. Toda la información la encuentran en el portal web de la biblioteca en la sección de servicios.', en: 'Sí. Se pueden solicitar libros que estén en las colecciones de las bibliotecas o instituciones con las cuales se tiene una alianza vigente. Toda la información la encuentran en el portal web de la biblioteca en la sección de servicios.' }
   }
 ];
 
