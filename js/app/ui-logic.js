@@ -256,7 +256,7 @@
 
       request.onreadystatechange = function () {
         if (request.readyState !== 4) { return; }
-        if (request.status === 0) { return; }
+        if (request.status === 0) { if (onError) { onError(request); } return; }
         if (request.status >= 200 && request.status < 300) {
           if (onSuccess) { onSuccess(request.responseText, request); }
           return;
@@ -498,7 +498,7 @@
       if (PepperLib.State.current !== PepperLib.SCREENS.IDLE &&
           PepperLib.State.current !== PepperLib.SCREENS.GREETING &&
           PepperLib.State.current !== PepperLib.SCREENS.FEEDBACK) {
-        PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+        PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
       } else {
         PepperLib.State.endSession();
         PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
@@ -1260,7 +1260,7 @@
             PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Listo');
           }
 
-          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
         };
       },
 
@@ -1665,7 +1665,7 @@
             return;
           }
           PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Listo');
-          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
         };
       },
 
@@ -3049,6 +3049,7 @@
 
   (function registerFeedbackScreen() {
     var autoReturnTimer = null;
+    var skipReturn = false;
     var ratingMap = DATA.RATING_MAP || {
       excelente: 'Excelente',
       bueno: 'Bueno',
@@ -3063,6 +3064,12 @@
     }
 
     function initiateReturn() {
+      if (skipReturn) {
+        clearAutoReturn();
+        PepperLib.State.endSession();
+        PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+        return;
+      }
       cancelArrivalPoll();
       navActive = true;
       if (window.PepperRosNavigation) {
@@ -3207,7 +3214,8 @@
         };
       },
 
-      onEnter: function () {
+      onEnter: function (params) {
+        skipReturn = !!(params && params.skipReturn);
         PepperLib.Inactivity.stop();
         clearAutoReturn();
         prepareFeedbackImages();
