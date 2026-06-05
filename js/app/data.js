@@ -915,14 +915,11 @@ window.LibraryData.SHELF_TOPICS = [
 window.LibraryData.ROS_NAVIGATION = window.NavigationUtilitiesData || null;
 
 window.LibraryData.HELP_CONFIG = {
-  provider: 'formsubmit',
-  recipient: 'm.estupinanm@uniandes.edu.co',
+  provider: 'resend',
+  recipient: 'mapaesma2004@gmail.com',
   senderName: 'Nova',
-  formsubmit: {
-    endpointBase: 'https://formsubmit.co/ajax/',
-    subject: 'Nova necesita ayuda',
-    captcha: false,
-    template: 'table'
+  resend: {
+    subject: 'Nova necesita ayuda'
   }
 };
 

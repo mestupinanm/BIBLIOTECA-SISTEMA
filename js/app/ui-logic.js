@@ -159,6 +159,7 @@
   PepperLib.LastActionItem = null;
   PepperLib.LastActionCategory = null;
   PepperLib.CurrentGeneralId = null;
+  PepperLib.isNavigating = false;
 
   function byId(id) {
     return document.getElementById(id);
@@ -721,76 +722,47 @@
 
     buildEmailPayload: function () {
       var config = DATA.HELP_CONFIG || {};
+      var senderName = config.senderName || 'Nova';
       var lastAction = this.getLocationLabel() || PepperLib.i18n.t('help.location_unknown');
+      var locationLine = PepperLib.isNavigating
+        ? 'Estoy camino a: ' + lastAction + '.'
+        : 'Estoy en base.';
       return {
-        recipient: config.recipient || 'm.estupinanm@uniandes.edu.co',
+        recipient: config.recipient || 'mapaesma2004@gmail.com',
         lastAction: lastAction,
-        message: 'Soy ' + (config.senderName || 'Nova') + ' y necesito ayuda. Mi ultima peticion fue: ' + lastAction + '.'
+        subject: 'Ayuda asistente bibliotecario',
+        message: 'Soy ' + senderName + ' y necesito ayuda. ' + locationLine + ' Mi ultima peticion fue: ' + lastAction + '.'
       };
     },
 
     sendEmail: function (onSuccess, onError) {
-      var config = DATA.HELP_CONFIG || {};
+      var supabase = DATA.SUPABASE || {};
       var payload = this.buildEmailPayload();
-      var form;
-      var iframe;
-      var hiddenFields;
-      var endpoint;
-      var fieldName;
+      var subject = payload.subject;
+      var url = supabase.url + '/functions/v1/send-help-email';
 
-      endpoint = 'https://formsubmit.co/' + encodeURIComponent(payload.recipient);
-      iframe = document.createElement('iframe');
-      iframe.name = 'pepper-help-target';
-      iframe.id = 'pepper-help-target';
-      iframe.className = 'hidden';
-      document.body.appendChild(iframe);
-
-      form = document.createElement('form');
-      form.method = 'POST';
-      form.action = endpoint;
-      form.target = 'pepper-help-target';
-      form.className = 'hidden';
-
-      hiddenFields = {
-        name: config.senderName || 'Nova',
-        subject: (config.formsubmit && config.formsubmit.subject ? config.formsubmit.subject : 'Nova necesita ayuda') + ' - ' + payload.lastAction,
-        message: payload.message,
-        _captcha: config.formsubmit && config.formsubmit.captcha === false ? 'false' : 'true',
-        _template: config.formsubmit && config.formsubmit.template ? config.formsubmit.template : 'table',
-        _next: 'about:blank'
-      };
-
-      for (fieldName in hiddenFields) {
-        if (hiddenFields.hasOwnProperty(fieldName)) {
-          var input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = fieldName;
-          input.value = hiddenFields[fieldName];
-          form.appendChild(input);
-        }
-      }
-
-      document.body.appendChild(form);
-
-      try {
-        form.submit();
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + supabase.key
+        },
+        body: JSON.stringify({
+          subject: subject,
+          message: payload.message,
+          lastAction: payload.lastAction
+        })
+      }).then(function (res) {
+        return res.json();
+      }).then(function (data) {
         if (onSuccess) {
-          onSuccess({ method: 'form_post' });
+          onSuccess({ method: 'resend', data: data });
         }
-      } catch (error) {
+      }).catch(function (error) {
         if (onError) {
           onError(error);
         }
-      }
-
-      setTimeout(function () {
-        if (form && form.parentNode) {
-          form.parentNode.removeChild(form);
-        }
-        if (iframe && iframe.parentNode) {
-          iframe.parentNode.removeChild(iframe);
-        }
-      }, 2500);
+      });
     }
   };
 
@@ -1212,6 +1184,7 @@
             }
             cancelArrivalPoll();
             navActive = true;
+            PepperLib.isNavigating = true;
             if (window.PepperRosNavigation) {
               window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
             }
@@ -1301,6 +1274,7 @@
       onExit: function () {
         clearSimulationTimers();
         currentDestination = null;
+        PepperLib.isNavigating = false;
         addClass(byId('guide-sim-overlay'), 'hidden');
       },
 
@@ -1646,6 +1620,7 @@
           }
           cancelArrivalPoll();
           navActive = true;
+          PepperLib.isNavigating = true;
           if (window.PepperRosNavigation) {
             window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
           }
@@ -1658,6 +1633,7 @@
             function onSuccess() {
               cancelArrivalPoll();
               navActive = false;
+              PepperLib.isNavigating = false;
               startNavClearLoop();
               if (window.PepperRosNavigation) {
                 window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
@@ -1669,6 +1645,7 @@
             function onError(err) {
               cancelArrivalPoll();
               navActive = false;
+              PepperLib.isNavigating = false;
               startNavClearLoop();
               if (window.PepperRosNavigation) {
                 window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
@@ -1705,6 +1682,7 @@
       },
 
       onExit: function () {
+        PepperLib.isNavigating = false;
       }
     });
   })();
