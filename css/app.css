@@ -2353,6 +2353,7 @@ button { cursor: pointer; }
   object-fit: cover;
   display: block;
   z-index: 0;
+  border-radius: 24px 24px 0 0;
 }
 .news-card-visual.has-image .news-card-icon { display: none; }
 .news-card-icon {
