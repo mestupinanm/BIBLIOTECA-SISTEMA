@@ -175,7 +175,7 @@
       var duration = Math.max(2000, words * 300);
 
       if (window.PepperRosNavigation && window.PepperRosNavigation.publishSpeech) {
-        window.PepperRosNavigation.publishSpeech(text, !hasAnimation);
+        window.PepperRosNavigation.publishSpeech(text, true);
         setTimeout(onDone || function () {}, duration);
         return;
       }

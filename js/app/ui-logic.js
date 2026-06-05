@@ -3095,7 +3095,11 @@
           PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
         };
         if (window.PepperRosNavigation && window.PepperRosNavigation.rotateInPlace) {
-          window.PepperRosNavigation.rotateInPlace(180, goIdle, goIdle);
+          window.PepperRosNavigation.rotateInPlace(180, function () {
+            setTimeout(goIdle, 1500);
+          }, function () {
+            setTimeout(goIdle, 3000);
+          });
         } else {
           goIdle();
         }
