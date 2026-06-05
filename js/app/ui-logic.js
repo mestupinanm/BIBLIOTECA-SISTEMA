@@ -1624,46 +1624,65 @@
             return;
           }
           cancelArrivalPoll();
-          navActive = true;
-          PepperLib.isNavigating = true;
-          if (window.PepperRosNavigation) {
-            window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
-          }
           PepperLib.Inactivity.stop();
-          navStartTime = Date.now();
-          window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
-          startNavClearLoop();
-          window.PepperRosNavigation.navigateGraphToDestination(
-            'shelf_' + activeShelf,
-            function onSuccess() {
-              cancelArrivalPoll();
-              navActive = false;
-              PepperLib.isNavigating = false;
-              startNavClearLoop();
-              if (window.PepperRosNavigation) {
-                window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-                window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
-              }
-              PepperLib.Inactivity.reset();
-              PepperRobot.animate('Gestures/You_2');
-              PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!', null, false);
+
+          PepperRobot.setVolume(45);
+          removeClass(byId('pre-nav-overlay'), 'hidden');
+          PepperRobot.animate('BodyTalk/Speaking/BodyTalk_1');
+          PepperRobot.speakAndWait('Lo siento si me demoro un poco,', null, false);
+
+          setTimeout(function () {
+            PepperRobot.animate('Gestures/Me_1');
+            PepperRobot.speakAndWait('estoy chiquita y aprendiendo a caminar sola', null, false);
+
+            setTimeout(function () {
+              PepperRobot.animate('Gestures/Everything_1');
+              PepperRobot.speakAndWait('Por favor permiso para comenzar a guiarte', null, false);
+
               setTimeout(function () {
-                PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-              }, 4000);
-            },
-            function onError(err) {
-              cancelArrivalPoll();
-              navActive = false;
-              PepperLib.isNavigating = false;
-              startNavClearLoop();
-              if (window.PepperRosNavigation) {
-                window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-                window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
-              }
-              PepperLib.Inactivity.reset();
-              console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
-            }
-          );
+                addClass(byId('pre-nav-overlay'), 'hidden');
+                navActive = true;
+                PepperLib.isNavigating = true;
+                if (window.PepperRosNavigation) {
+                  window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
+                }
+                navStartTime = Date.now();
+                window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
+                startNavClearLoop();
+                window.PepperRosNavigation.navigateGraphToDestination(
+                  'shelf_' + activeShelf,
+                  function onSuccess() {
+                    cancelArrivalPoll();
+                    navActive = false;
+                    PepperLib.isNavigating = false;
+                    startNavClearLoop();
+                    if (window.PepperRosNavigation) {
+                      window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+                      window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
+                    }
+                    PepperLib.Inactivity.reset();
+                    PepperRobot.animate('Gestures/You_2');
+                    PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!', null, false);
+                    setTimeout(function () {
+                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                    }, 4000);
+                  },
+                  function onError(err) {
+                    cancelArrivalPoll();
+                    navActive = false;
+                    PepperLib.isNavigating = false;
+                    startNavClearLoop();
+                    if (window.PepperRosNavigation) {
+                      window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+                      window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
+                    }
+                    PepperLib.Inactivity.reset();
+                    console.error('[NAV ERROR] navigateGraphToDestination [shelf_' + activeShelf + ']:', err);
+                  }
+                );
+              }, 3000);
+            }, 6000);
+          }, 2500);
         };
 
         byId('btn-shelves-done').onclick = function () {
@@ -1671,13 +1690,7 @@
             return;
           }
           PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Listo');
-          PepperLib.Inactivity.stop();
-          PepperRobot.animate('Gestures/Hey_1');
-          PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', null, false);
-          setTimeout(function () {
-            PepperLib.State.endSession();
-            PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
-          }, 3500);
+          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
         };
       },
 
@@ -1785,13 +1798,7 @@
       byId('btn-books-listo').onclick = function () {
         var typeLabel = currentAction === 'borrow' ? 'Prestamo' : 'Devolucion';
         PepperLib.Analytics.insertServiciosLibros(typeLabel, 'Listo');
-        PepperLib.Inactivity.stop();
-        PepperRobot.animate('Gestures/Hey_1');
-        PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', null, false);
-        setTimeout(function () {
-          PepperLib.State.endSession();
-          PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
-        }, 3500);
+        PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
       };
     }
 
