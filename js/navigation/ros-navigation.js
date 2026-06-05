@@ -245,6 +245,9 @@
     var meta;
 
     if (direct) {
+      if (from === 'base' && !direct.advanceMeters) {
+        direct = { advanceMeters: 0.4, turnDegrees: direct.turnDegrees || 0, actionOrder: direct.actionOrder || 'advance-turn', invertOnReturn: direct.invertOnReturn !== false };
+      }
       return direct;
     }
 
@@ -255,6 +258,10 @@
       meta.actionOrder = 'navigate-turn-advance';
       meta.invertOnReturn = true;
       return meta;
+    }
+
+    if (from === 'base') {
+      return { advanceMeters: 0.4, turnDegrees: 0, actionOrder: 'advance-turn', invertOnReturn: true };
     }
 
     return { advanceMeters: 0, turnDegrees: 0, actionOrder: 'advance-turn', invertOnReturn: true };
