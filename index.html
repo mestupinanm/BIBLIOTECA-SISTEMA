@@ -284,8 +284,8 @@
 
       <section id="screen-feedback" class="screen">
         <div class="feedback-container">
-          <h1 class="feedback-title" data-i18n="feedback.title">Como fue tu experiencia?</h1>
-          <p class="feedback-caption" data-i18n="feedback.caption">Tu opinion ayuda a que Nova atienda mejor</p>
+          <h1 class="feedback-title" data-i18n="feedback.title">¿Cómo fue tu experiencia?</h1>
+          <p class="feedback-caption" data-i18n="feedback.caption">Tu opinión ayuda a que Nova atienda mejor</p>
 
           <div class="feedback-options">
             <button class="feedback-btn" data-rating="excelente">
@@ -309,20 +309,21 @@
               <span class="feedback-label" data-i18n="feedback.malo">Malo</span>
             </button>
             <button class="feedback-btn" data-rating="pesimo">
-              <img class="feedback-icon-image hidden" data-rating-image="pesimo" alt="Pesimo" />
+              <img class="feedback-icon-image hidden" data-rating-image="pesimo" alt="Pésimo" />
               <span class="feedback-emoji">&#128552;</span>
-              <span class="feedback-label" data-i18n="feedback.pesimo">Pesimo</span>
+              <span class="feedback-label" data-i18n="feedback.pesimo">Pésimo</span>
             </button>
           </div>
 
           <div class="feedback-comment-section hidden" id="feedback-comment-section">
-            <p class="feedback-comment-prompt" data-i18n="feedback.comment_prompt">Quieres agregar algun comentario? (opcional)</p>
-            <textarea class="feedback-comment-input" id="feedback-comment-input" rows="4" data-i18n-placeholder="feedback.comment_placeholder" placeholder="Escribe aqui tu comentario..."></textarea>
+            <div class="feedback-comment-choice" id="feedback-selected-rating"></div>
+            <p class="feedback-comment-prompt" data-i18n="feedback.comment_prompt">¿Quieres agregar algún comentario? (opcional)</p>
+            <textarea class="feedback-comment-input" id="feedback-comment-input" rows="4" data-i18n-placeholder="feedback.comment_placeholder" placeholder="Escribe aquí tu comentario..."></textarea>
             <button class="btn btn--primary" id="btn-feedback-send" data-i18n="feedback.send">Enviar</button>
           </div>
 
           <div class="feedback-thanks hidden" id="feedback-thanks">
-            <h2 data-i18n="feedback.thanks">Gracias por tu opinion!</h2>
+            <h2 data-i18n="feedback.thanks">¡Gracias por tu opinión!</h2>
           </div>
         </div>
       </section>

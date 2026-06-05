@@ -173,7 +173,7 @@ window.LibraryData.STRINGS = {
     'shelves.view_topics': 'Ver temas',
     'shelves.hide_topics': 'Ocultar temas',
     'shelves.tap_topic': 'Toca un tema para ver la ubicacion',
-    'feedback.title': 'Como fue tu experiencia?',
+    'feedback.title': '¿Cómo fue tu experiencia?',
     'feedback.bad': 'Mala',
     'feedback.ok': 'Regular',
     'feedback.great': 'Buena',
@@ -181,11 +181,12 @@ window.LibraryData.STRINGS = {
     'feedback.bueno': 'Bueno',
     'feedback.regular': 'Regular',
     'feedback.malo': 'Malo',
-    'feedback.pesimo': 'Pesimo',
-    'feedback.thanks': 'Gracias por tu opinion!',
-    'feedback.caption': 'Tu opinion ayuda a que Nova atienda mejor',
-    'feedback.comment_prompt': 'Quieres agregar algun comentario? (opcional)',
-    'feedback.comment_placeholder': 'Escribe aqui tu comentario...',
+    'feedback.pesimo': 'Pésimo',
+    'feedback.thanks': '¡Gracias por tu opinión!',
+    'feedback.caption': 'Tu opinión ayuda a que Nova atienda mejor',
+    'feedback.comment_prompt': '¿Quieres agregar algún comentario? (opcional)',
+    'feedback.comment_placeholder': 'Escribe aquí tu comentario...',
+    'feedback.selected_rating': 'Elegiste',
     'feedback.send': 'Enviar'
   },
   en: {
@@ -365,6 +366,7 @@ window.LibraryData.STRINGS = {
     'feedback.caption': 'Your feedback helps Nova assist better',
     'feedback.comment_prompt': 'Would you like to add a comment? (optional)',
     'feedback.comment_placeholder': 'Write your comment here...',
+    'feedback.selected_rating': 'You chose',
     'feedback.send': 'Send'
   }
 };
@@ -597,7 +599,7 @@ window.LibraryData.RATING_MAP = {
   bueno: 'Bueno',
   regular: 'Regular',
   malo: 'Malo',
-  pesimo: 'Pesimo'
+  pesimo: 'Pésimo'
 };
 
 window.LibraryData.SHELF_NUMBERS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'];

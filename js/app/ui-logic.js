@@ -3016,7 +3016,7 @@
       bueno: 'Bueno',
       regular: 'Regular',
       malo: 'Malo',
-      pesimo: 'Pesimo'
+      pesimo: 'Pésimo'
     };
 
     function clearAutoReturn() {
@@ -3123,6 +3123,24 @@
       }
     }
 
+    function updateSelectedRatingSummary(rating) {
+      var summary = byId('feedback-selected-rating');
+      var labelKey = 'feedback.' + rating;
+      var label = PepperLib.i18n.t(labelKey);
+      var prefix = PepperLib.i18n.t('feedback.selected_rating');
+
+      if (!summary) {
+        return;
+      }
+
+      if (!rating) {
+        summary.textContent = '';
+        return;
+      }
+
+      summary.textContent = prefix + ': ' + (label === labelKey ? (ratingMap[rating] || rating) : label);
+    }
+
     PepperLib.State.registerScreen('feedback', {
       init: function () {
         var buttons = document.querySelectorAll('.feedback-btn');
@@ -3132,7 +3150,9 @@
 
         for (i = 0; i < buttons.length; i++) {
           buttons[i].onclick = function () {
-            byId('screen-feedback').setAttribute('data-selected-rating', this.getAttribute('data-rating'));
+            var rating = this.getAttribute('data-rating');
+            byId('screen-feedback').setAttribute('data-selected-rating', rating);
+            updateSelectedRatingSummary(rating);
             addClass(document.querySelector('.feedback-options'), 'hidden');
             removeClass(byId('feedback-comment-section'), 'hidden');
             clearAutoReturn();
@@ -3172,6 +3192,7 @@
         addClass(byId('feedback-thanks'), 'hidden');
         byId('screen-feedback').removeAttribute('data-selected-rating');
         byId('feedback-comment-input').value = '';
+        updateSelectedRatingSummary('');
         autoReturnTimer = setTimeout(function () {
           initiateReturn();
         }, 60000);
