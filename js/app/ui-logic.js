@@ -206,6 +206,14 @@
       .replace(/'/g, '&#39;');
   }
 
+  function truncateText(value, limit) {
+    var text = String(value || '').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
+    if (!limit || text.length <= limit) {
+      return text;
+    }
+    return text.substr(0, limit - 1).replace(/\s+\S*$/, '') + '...';
+  }
+
   function stripAccents(value) {
     return String(value || '')
       .replace(/[ÁÀÂÄ]/g, 'A')
@@ -1828,7 +1836,8 @@
       page: 0,
       loading: false,
       error: '',
-      hasMore: true
+      hasMore: true,
+      displayCount: 4
     };
 
     function normalizeNewsImageUrl(imageUrl) {
@@ -1901,6 +1910,50 @@
       return items;
     }
 
+    function parseNewsDateValue(value) {
+      var text = normalizeText(value).replace(/\./g, '').replace(/^\s+|\s+$/g, '');
+      var months = {
+        ene: 0, enero: 0, jan: 0, january: 0,
+        feb: 1, febrero: 1, february: 1,
+        mar: 2, marzo: 2, march: 2,
+        abr: 3, abril: 3, apr: 3, april: 3,
+        may: 4, mayo: 4,
+        jun: 5, junio: 5, june: 5,
+        jul: 6, julio: 6, july: 6,
+        ago: 7, agosto: 7, aug: 7, august: 7,
+        sep: 8, sept: 8, septiembre: 8, september: 8,
+        oct: 9, octubre: 9, october: 9,
+        nov: 10, noviembre: 10, november: 10,
+        dic: 11, diciembre: 11, dec: 11, december: 11
+      };
+      var match = text.match(/(\d{1,2})(?:\s+de)?\s+([a-z]+)(?:\s+de)?\s+(\d{4})/);
+      var parsed;
+
+      if (match && months[match[2]] !== undefined) {
+        return new Date(parseInt(match[3], 10), months[match[2]], parseInt(match[1], 10)).getTime();
+      }
+
+      parsed = Date.parse(value);
+      return isNaN(parsed) ? 0 : parsed;
+    }
+
+    function getSortedNewsItems(items) {
+      var copy = (items || []).slice(0);
+      copy.sort(function (a, b) {
+        return parseNewsDateValue(b.publishedAt) - parseNewsDateValue(a.publishedAt);
+      });
+      return copy;
+    }
+
+    function formatNewsDateDisplay(dateText) {
+      var months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+      var ts = parseNewsDateValue(dateText);
+      var d;
+      if (!ts) return dateText;
+      d = new Date(ts);
+      return d.getDate() + ' de ' + months[d.getMonth()] + ' de ' + d.getFullYear();
+    }
+
     function renderHours() {
       var now = PepperLib.Utils.getBogotaNow();
       var today = now.getDay();
@@ -1946,15 +1999,19 @@
     }
 
     function renderNews() {
-      var leadStory = newsState.items.length ? newsState.items[0] : null;
-      var secondary = newsState.items.length > 1 ? newsState.items.slice(1) : [];
+      var allItems = getSortedNewsItems(newsState.items);
+      var items = allItems.slice(0, newsState.displayCount);
+      var hasMoreToShow = allItems.length > newsState.displayCount || newsState.hasMore;
       var html = '';
       var i;
       var item;
+      var tag;
+      var theme;
 
       html += '<section class="news-panel"><div class="news-stage">';
       html += '<header class="news-stage-header">';
       html += '<div class="news-stage-copy"><div class="news-stage-kicker">Portal Uniandes</div><h3>' + PepperLib.i18n.t('info.news_title') + '</h3><p>' + PepperLib.i18n.t('info.news_copy') + '</p></div>';
+      html += '<div class="news-count-badge"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h10v14H4z"></path><path d="M8 9h6"></path><path d="M8 13h6"></path><path d="M18 7h2v14H8"></path></svg><strong>' + items.length + '</strong><span>' + PepperLib.i18n.t('info.news') + '</span></div>';
       html += '</header>';
 
       if (newsState.loading && !newsState.items.length) {
@@ -1965,70 +2022,37 @@
         html += '<div class="news-error-state"><p>' + escapeHtml(newsState.error) + '</p><button class="btn btn--secondary news-inline-btn" id="btn-news-retry">Intentar de nuevo</button></div>';
       }
 
-      if (leadStory) {
-        html += '<article class="news-feature">';
-        if (leadStory.imageUrl) {
-          html += '<img class="news-feature-image" src="' + escapeHtml(leadStory.imageUrl) + '" alt="' + escapeHtml(leadStory.title) + '" />';
-        } else {
-          html += '<div class="news-feature-image news-feature-image--placeholder">Sin imagen</div>';
-        }
-        html += '<div class="news-feature-body">';
-        if (leadStory.contentType || leadStory.publishedAt) {
-          html += '<div class="news-card-meta news-card-meta--feature">';
-          if (leadStory.contentType) {
-            html += '<span class="news-card-tag">' + escapeHtml(leadStory.contentType) + '</span>';
+      if (items.length) {
+        html += '<div class="news-grid">';
+        for (i = 0; i < items.length; i++) {
+          item = items[i];
+          tag = item.contentType || 'Noticia';
+          theme = (i % 4) + 1;
+          html += '<article class="news-card news-card--theme-' + theme + '">';
+          html += '<div class="news-card-visual' + (item.imageUrl ? ' has-image' : '') + '">';
+          if (item.imageUrl) {
+            html += '<img class="news-card-img" src="' + item.imageUrl + '" alt="">';
           }
-          if (leadStory.publishedAt) {
-            html += '<span class="news-card-date">' + escapeHtml(leadStory.publishedAt) + '</span>';
-          }
+          html += '<span class="news-card-tag">' + escapeHtml(tag) + '</span>';
+          html += '<span class="news-card-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="M21 15l-5-5L5 21"></path></svg></span>';
           html += '</div>';
-        }
-        html += '<h4 class="news-feature-title">' + escapeHtml(leadStory.title) + '</h4>';
-        if (leadStory.summary) {
-          html += '<p class="news-feature-summary">' + escapeHtml(leadStory.summary) + '</p>';
-        }
-        html += '</div></article>';
-
-        if (secondary.length) {
-          html += '<div class="news-grid">';
-          for (i = 0; i < secondary.length; i++) {
-            item = secondary[i];
-            html += '<article class="news-card">';
-            if (item.imageUrl) {
-              html += '<img class="news-card-image" src="' + escapeHtml(item.imageUrl) + '" alt="' + escapeHtml(item.title) + '" />';
-            } else {
-              html += '<div class="news-card-image news-card-image--placeholder">Sin imagen</div>';
-            }
-            html += '<div class="news-card-body">';
-            if (item.contentType || item.publishedAt) {
-              html += '<div class="news-card-meta">';
-              if (item.contentType) {
-                html += '<span class="news-card-tag">' + escapeHtml(item.contentType) + '</span>';
-              }
-              if (item.publishedAt) {
-                html += '<span class="news-card-date">' + escapeHtml(item.publishedAt) + '</span>';
-              }
-              html += '</div>';
-            }
-            html += '<h5 class="news-card-title">' + escapeHtml(item.title) + '</h5>';
-            if (item.summary) {
-              html += '<p class="news-card-summary">' + escapeHtml(item.summary) + '</p>';
-            }
-            html += '</div></article>';
+          html += '<div class="news-card-body">';
+          if (item.publishedAt) {
+            html += '<div class="news-card-date">' + escapeHtml(formatNewsDateDisplay(item.publishedAt)) + '</div>';
           }
-          html += '</div>';
-        }
-
-        html += '<div class="news-feed-actions">';
-        if (newsState.hasMore) {
-          html += '<button class="btn btn--primary news-load-more" id="btn-news-load-more">' + (newsState.loading ? 'Cargando...' : 'Cargar mas noticias') + '</button>';
-        } else {
-          html += '<span class="news-feed-end">No hay mas noticias por cargar.</span>';
+          html += '<h5 class="news-card-title">' + escapeHtml(truncateText(item.title, 86)) + '</h5>';
+          if (item.summary) {
+            html += '<p class="news-card-summary">' + escapeHtml(truncateText(item.summary, 112)) + '</p>';
+          }
+          html += '</div></article>';
         }
         html += '</div>';
+        if (hasMoreToShow && !newsState.loading) {
+          html += '<div class="news-load-more-wrap"><button class="btn btn--secondary news-load-more" id="btn-news-load-more">Cargar más noticias</button></div>';
+        }
       }
 
-      if (!newsState.loading && !newsState.error && !leadStory) {
+      if (!newsState.loading && !newsState.error && !items.length) {
         html += '<div class="news-empty-state">No se encontraron noticias.</div>';
       }
 
@@ -2083,7 +2107,11 @@
 
       if (byId('btn-news-load-more')) {
         byId('btn-news-load-more').onclick = function () {
-          if (!newsState.loading) {
+          if (newsState.loading) { return; }
+          if (newsState.displayCount < newsState.items.length) {
+            newsState.displayCount += 4;
+            renderTab('news');
+          } else if (newsState.hasMore) {
             loadNews(newsState.page + 1, true);
           }
         };
@@ -2137,6 +2165,7 @@
         newsState.page = pageToLoad;
 
         if (!append) {
+          newsState.displayCount = 4;
           newsState.items = parsed;
         } else {
           for (i = 0; i < newsState.items.length; i++) {
@@ -2154,6 +2183,7 @@
           newsState.items = merged;
         }
 
+        newsState.items = getSortedNewsItems(newsState.items);
         newsState.hasMore = parsed.length > 0;
 
         if (activeTab === 'news') {
