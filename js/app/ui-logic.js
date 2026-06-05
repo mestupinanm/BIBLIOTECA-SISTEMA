@@ -1049,6 +1049,54 @@
     next();
   }
 
+  var SPECIAL_ARRIVAL = (function () {
+    var map = {};
+    var i;
+    var common = 'Navegaré hasta acá porque me puedo desconectar de internet y eso representaría un problema.';
+    var shelf16guidance = 'Por favor continúa derecho y la estantería más cerca a mí es la 6 y la más lejana la 1. En caso de perderte puedes mirar el número en la parte superior.';
+    var shelf1822guidance = 'Por favor continúa derecho y la estantería más cerca a mí es la 19 y la más lejana la 22. En caso de perderte puedes mirar el número en la parte superior.';
+    var rooms254guidance = 'Continúa derecho, la sala que podemos ver desde acá es la 254 y la última es la 257.';
+    var coordGuidance = 'Sigue derecho y es la última sala a la izquierda.';
+    var endGuidance = 'A mi derecha podrás encontrarlo al fondo.';
+
+    function makeSteps(line2) {
+      return [
+        { speech: common,  animation: 'BodyTalk/Speaking/BodyTalk_1' },
+        { speech: line2, animation: 'Gestures/Everything_1' }
+      ];
+    }
+
+    var shelf16Names = ['shelf_1','shelf_2','shelf_3','shelf_4','shelf_5','shelf_6',
+                        'shelf_01','shelf_02','shelf_03','shelf_04','shelf_05','shelf_06'];
+    var shelf1822Names = ['shelf_18','shelf_19','shelf_20','shelf_21','shelf_22'];
+    var room254Names   = ['room_254','room_255','room_256','room_257'];
+
+    for (i = 0; i < shelf16Names.length;  i++) { map[shelf16Names[i]]  = makeSteps(shelf16guidance);  }
+    for (i = 0; i < shelf1822Names.length; i++) { map[shelf1822Names[i]] = makeSteps(shelf1822guidance); }
+    for (i = 0; i < room254Names.length;   i++) { map[room254Names[i]]   = makeSteps(rooms254guidance);  }
+
+    map['coordinacion']        = makeSteps(coordGuidance);
+    map['coordination']        = makeSteps(coordGuidance);
+    map['room_252c']           = makeSteps(endGuidance);
+    map['sterilization_room']  = makeSteps(endGuidance);
+    map['sterilization_space'] = makeSteps(endGuidance);
+
+    return map;
+  }());
+
+  function runSpecialArrivalMessage(placeName, onComplete) {
+    var steps = SPECIAL_ARRIVAL[placeName];
+    if (!steps) {
+      if (onComplete) { onComplete(); }
+      return;
+    }
+    removeClass(byId('pre-nav-overlay'), 'hidden');
+    executeNavScript({ config: { stepDelay: 600 }, steps: steps }, function () {
+      addClass(byId('pre-nav-overlay'), 'hidden');
+      if (onComplete) { onComplete(); }
+    });
+  }
+
   function runPreNavSequence(onComplete) {
     PepperRobot.setVolume(45);
     removeClass(byId('pre-nav-overlay'), 'hidden');
@@ -1216,20 +1264,27 @@
                   startNavClearLoop();
                   if (overlay) { addClass(overlay, 'hidden'); }
                   PepperLib.Inactivity.reset();
-                  showNavigationNotice(
-                    PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
-                    function () {
+                  var destPlace = destination && destination.place ? destination.place : resolveGraphDest(currentDestination);
+                  if (SPECIAL_ARRIVAL[destPlace]) {
+                    runSpecialArrivalMessage(destPlace, function () {
                       PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                    }
-                  );
-                  if (window.PepperRosNavigation) {
-                    window.PepperRosNavigation.standPosture(function () {
-                      executeNavScript(ARRIVAL_SCRIPT, null);
-                    }, function () {
-                      executeNavScript(ARRIVAL_SCRIPT, null);
                     });
                   } else {
-                    executeNavScript(ARRIVAL_SCRIPT, null);
+                    showNavigationNotice(
+                      PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
+                      function () {
+                        PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                      }
+                    );
+                    if (window.PepperRosNavigation) {
+                      window.PepperRosNavigation.standPosture(function () {
+                        executeNavScript(ARRIVAL_SCRIPT, null);
+                      }, function () {
+                        executeNavScript(ARRIVAL_SCRIPT, null);
+                      });
+                    } else {
+                      executeNavScript(ARRIVAL_SCRIPT, null);
+                    }
                   }
                 },
                 function onError(errorString) {
@@ -1643,11 +1698,18 @@
                 PepperLib.isNavigating = false;
                 startNavClearLoop();
                 PepperLib.Inactivity.reset();
-                PepperRobot.animate('Gestures/You_2');
-                PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!', null, false);
-                setTimeout(function () {
-                  PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                }, 4000);
+                var destPlace = 'shelf_' + activeShelf;
+                if (SPECIAL_ARRIVAL[destPlace]) {
+                  runSpecialArrivalMessage(destPlace, function () {
+                    PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                  });
+                } else {
+                  PepperRobot.animate('Gestures/You_2');
+                  PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!', null, false);
+                  setTimeout(function () {
+                    PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                  }, 4000);
+                }
               },
               function onError(err) {
                 cancelArrivalPoll();
