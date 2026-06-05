@@ -186,7 +186,6 @@ window.LibraryData.STRINGS = {
     'feedback.caption': 'Tu opinión ayuda a que Nova atienda mejor',
     'feedback.comment_prompt': '¿Quieres agregar algún comentario? (opcional)',
     'feedback.comment_placeholder': 'Escribe aquí tu comentario...',
-    'feedback.selected_rating': 'Elegiste',
     'feedback.send': 'Enviar'
   },
   en: {
@@ -366,7 +365,6 @@ window.LibraryData.STRINGS = {
     'feedback.caption': 'Your feedback helps Nova assist better',
     'feedback.comment_prompt': 'Would you like to add a comment? (optional)',
     'feedback.comment_placeholder': 'Write your comment here...',
-    'feedback.selected_rating': 'You chose',
     'feedback.send': 'Send'
   }
 };

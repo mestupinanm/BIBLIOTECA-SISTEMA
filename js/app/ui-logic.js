@@ -3123,22 +3123,11 @@
       }
     }
 
-    function updateSelectedRatingSummary(rating) {
-      var summary = byId('feedback-selected-rating');
-      var labelKey = 'feedback.' + rating;
-      var label = PepperLib.i18n.t(labelKey);
-      var prefix = PepperLib.i18n.t('feedback.selected_rating');
-
-      if (!summary) {
-        return;
-      }
-
-      if (!rating) {
-        summary.textContent = '';
-        return;
-      }
-
-      summary.textContent = prefix + ': ' + (label === labelKey ? (ratingMap[rating] || rating) : label);
+    function showFeedbackThanks() {
+      addClass(byId('screen-feedback'), 'is-thanking');
+      addClass(document.querySelector('.feedback-options'), 'hidden');
+      addClass(byId('feedback-comment-section'), 'hidden');
+      removeClass(byId('feedback-thanks'), 'hidden');
     }
 
     PepperLib.State.registerScreen('feedback', {
@@ -3152,13 +3141,11 @@
           buttons[i].onclick = function () {
             var rating = this.getAttribute('data-rating');
             byId('screen-feedback').setAttribute('data-selected-rating', rating);
-            updateSelectedRatingSummary(rating);
             addClass(document.querySelector('.feedback-options'), 'hidden');
             removeClass(byId('feedback-comment-section'), 'hidden');
             clearAutoReturn();
             autoReturnTimer = setTimeout(function () {
-              addClass(byId('feedback-comment-section'), 'hidden');
-              removeClass(byId('feedback-thanks'), 'hidden');
+              showFeedbackThanks();
               initiateReturn();
             }, 60000);
           };
@@ -3173,8 +3160,7 @@
           PepperLib.Analytics.insertFeedback(rating);
           PepperLib.Analytics.insertCalidadServicio(scoreLabel, comment);
 
-          addClass(byId('feedback-comment-section'), 'hidden');
-          removeClass(byId('feedback-thanks'), 'hidden');
+          showFeedbackThanks();
 
           PepperRobot.animate('Gestures/Hey_1');
           PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', null, false);
@@ -3187,12 +3173,12 @@
         PepperLib.Inactivity.stop();
         clearAutoReturn();
         prepareFeedbackImages();
+        removeClass(byId('screen-feedback'), 'is-thanking');
         removeClass(document.querySelector('.feedback-options'), 'hidden');
         addClass(byId('feedback-comment-section'), 'hidden');
         addClass(byId('feedback-thanks'), 'hidden');
         byId('screen-feedback').removeAttribute('data-selected-rating');
         byId('feedback-comment-input').value = '';
-        updateSelectedRatingSummary('');
         autoReturnTimer = setTimeout(function () {
           initiateReturn();
         }, 60000);
@@ -3200,6 +3186,7 @@
 
       onExit: function () {
         clearAutoReturn();
+        removeClass(byId('screen-feedback'), 'is-thanking');
       }
     });
   })();
