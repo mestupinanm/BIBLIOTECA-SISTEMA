@@ -794,24 +794,35 @@
         var pose = lastAmclPose;
         var dx, dy, dist;
 
-        if (pose) {
-          dx = Number(place.x) - pose.position.x;
-          dy = Number(place.y) - pose.position.y;
-          dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist > ARRIVAL_THRESHOLD && attempt < maxRetries) {
+        if (!pose) {
+          if (attempt < maxRetries) {
             attempt += 1;
-            console.warn('[NAV] move_base terminó a ' + dist.toFixed(2) + 'm del destino. Reintentando (' + attempt + '/' + maxRetries + ')...');
+            console.warn('[NAV] move_base terminó pero no hay pose AMCL para verificar llegada. Reintentando (' + attempt + '/' + maxRetries + ')...');
             sendAttempt();
             return;
           }
-
-          if (dist > ARRIVAL_THRESHOLD) {
-            if (onError) {
-              onError('No se pudo llegar a ' + placeName + ' tras ' + maxRetries + ' intentos (distancia final: ' + dist.toFixed(2) + 'm).');
-            }
-            return;
+          if (onError) {
+            onError('move_base terminó sin pose AMCL para verificar llegada a ' + placeName + '.');
           }
+          return;
+        }
+
+        dx = Number(place.x) - pose.position.x;
+        dy = Number(place.y) - pose.position.y;
+        dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist > ARRIVAL_THRESHOLD && attempt < maxRetries) {
+          attempt += 1;
+          console.warn('[NAV] move_base terminó a ' + dist.toFixed(2) + 'm del destino. Reintentando (' + attempt + '/' + maxRetries + ')...');
+          sendAttempt();
+          return;
+        }
+
+        if (dist > ARRIVAL_THRESHOLD) {
+          if (onError) {
+            onError('No se pudo llegar a ' + placeName + ' tras ' + maxRetries + ' intentos (distancia final: ' + dist.toFixed(2) + 'm).');
+          }
+          return;
         }
 
         if (onSuccess) {
@@ -1367,11 +1378,16 @@
         return;
       }
       var sendDestination = function () {
+        Navigation.setMoveArmsEnabled(false, false, null, null);
         Navigation.navigateGraphClient(destination.place, true, function (response) {
+          Navigation.setMoveArmsEnabled(true, true, null, null);
           if (onSuccess) {
             onSuccess(response, destination);
           }
-        }, onError, onStep);
+        }, function (err) {
+          Navigation.setMoveArmsEnabled(true, true, null, null);
+          if (onError) { onError(err); }
+        }, onStep);
       };
 
       Navigation.connect(getRosbridgeUrl(), function () {
