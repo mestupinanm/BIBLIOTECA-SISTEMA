@@ -1724,13 +1724,26 @@
 
           runPreNavSequence(function () {
             // Normalize to graph name: '01' → 'shelf_1', '10' → 'shelf_10'
-            var shelfNum    = parseInt(activeShelf, 10);
+            var shelfNum     = parseInt(activeShelf, 10);
             var shelfGraphId = 'shelf_' + shelfNum;
+            var overlay      = byId('pre-nav-overlay');
+            var overlayText  = byId('pre-nav-text');
+
+            if (overlay && overlayText) {
+              overlayText.textContent = PepperLib.State.language === 'en' ? 'Navigating...' : 'Navegando...';
+              removeClass(overlay, 'hidden');
+            }
+
             navActive = true;
             PepperLib.isNavigating = true;
             navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
             startNavClearLoop();
+
+            function hideOverlay() {
+              if (overlay) { addClass(overlay, 'hidden'); }
+            }
+
             try {
               window.PepperRosNavigation.navigateGraphToDestination(
                 shelfGraphId,
@@ -1740,16 +1753,27 @@
                   PepperLib.isNavigating = false;
                   startNavClearLoop();
                   PepperLib.Inactivity.reset();
+                  hideOverlay();
                   if (SPECIAL_ARRIVAL[shelfGraphId]) {
                     runSpecialArrivalMessage(shelfGraphId, function () {
                       PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                     });
                   } else {
-                    PepperRobot.animate('Gestures/You_2');
-                    PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!', null, false);
-                    setTimeout(function () {
-                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                    }, 4000);
+                    showNavigationNotice(
+                      PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
+                      function () {
+                        PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                      }
+                    );
+                    if (window.PepperRosNavigation) {
+                      window.PepperRosNavigation.standPosture(function () {
+                        executeNavScript(ARRIVAL_SCRIPT, null);
+                      }, function () {
+                        executeNavScript(ARRIVAL_SCRIPT, null);
+                      });
+                    } else {
+                      executeNavScript(ARRIVAL_SCRIPT, null);
+                    }
                   }
                 },
                 function onError(err) {
@@ -1758,6 +1782,7 @@
                   PepperLib.isNavigating = false;
                   startNavClearLoop();
                   PepperLib.Inactivity.reset();
+                  hideOverlay();
                   console.error('[NAV ERROR] navigateGraphToDestination [' + shelfGraphId + ']:', err);
                 }
               );
@@ -1767,6 +1792,7 @@
               PepperLib.isNavigating = false;
               startNavClearLoop();
               PepperLib.Inactivity.reset();
+              hideOverlay();
               console.error('[NAV ERROR] navigateGraphToDestination exception (shelf):', e);
             }
           });
