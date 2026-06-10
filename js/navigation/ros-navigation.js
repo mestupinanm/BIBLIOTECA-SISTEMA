@@ -801,12 +801,15 @@
 
           if (dist > ARRIVAL_THRESHOLD && attempt < maxRetries) {
             attempt += 1;
-            console.warn('[NAV] move_base terminó a ' + dist.toFixed(2) + 'm del destino. Limpiando costmaps y reintentando (' + attempt + '/' + maxRetries + ')...');
-            Navigation.clearCostmaps(function () {
-              sendAttempt();
-            }, function () {
-              sendAttempt();
-            });
+            console.warn('[NAV] move_base terminó a ' + dist.toFixed(2) + 'm del destino. Reintentando (' + attempt + '/' + maxRetries + ')...');
+            sendAttempt();
+            return;
+          }
+
+          if (dist > ARRIVAL_THRESHOLD) {
+            if (onError) {
+              onError('No se pudo llegar a ' + placeName + ' tras ' + maxRetries + ' intentos (distancia final: ' + dist.toFixed(2) + 'm).');
+            }
             return;
           }
         }
