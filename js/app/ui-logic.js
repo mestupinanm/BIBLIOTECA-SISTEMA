@@ -1053,17 +1053,18 @@
     var map = {};
     var i;
     var common = 'Navegaré hasta acá porque me puedo desconectar de internet y eso representaría un problema.';
-    var shelf16guidance = 'Por favor continúa derecho y la estantería más cerca a mí es la 6 y la más lejana la 1. En caso de perderte puedes mirar el número en la parte superior.';
-    var shelf1822guidance = 'Por favor continúa derecho y la estantería más cerca a mí es la 19 y la más lejana la 22. En caso de perderte puedes mirar el número en la parte superior.';
     var rooms254guidance = 'Continúa derecho, la sala que podemos ver desde acá es la 254 y la última es la 257.';
     var coordGuidance = 'Sigue derecho y es la última sala a la izquierda.';
     var endGuidance = 'A mi derecha podrás encontrarlo al fondo.';
 
-    function makeSteps(line2) {
-      return [
-        { speech: common,  animation: 'BodyTalk/Speaking/BodyTalk_1' },
-        { speech: line2, animation: 'Gestures/Everything_1' }
-      ];
+    function makeSteps(lines) {
+      var steps = [{ speech: common, animation: 'BodyTalk/Speaking/BodyTalk_1' }];
+      var animations = ['Gestures/Everything_1', 'BodyTalk/Speaking/BodyTalk_8', 'Gestures/Please_1'];
+      var i;
+      for (i = 0; i < lines.length; i++) {
+        steps.push({ speech: lines[i], animation: animations[i % animations.length] });
+      }
+      return steps;
     }
 
     var shelf16Names = ['shelf_1','shelf_2','shelf_3','shelf_4','shelf_5','shelf_6',
@@ -1071,15 +1072,22 @@
     var shelf1822Names = ['shelf_18','shelf_19','shelf_20','shelf_21','shelf_22'];
     var room254Names   = ['room_254','room_255','room_256','room_257'];
 
-    for (i = 0; i < shelf16Names.length;  i++) { map[shelf16Names[i]]  = makeSteps(shelf16guidance);  }
-    for (i = 0; i < shelf1822Names.length; i++) { map[shelf1822Names[i]] = makeSteps(shelf1822guidance); }
-    for (i = 0; i < room254Names.length;   i++) { map[room254Names[i]]   = makeSteps(rooms254guidance);  }
+    var shelf16Steps = ['Por favor continúa derecho.',
+                        'La estantería más cercana a mí es la 6 y la más lejana es la 1.',
+                        'En caso de perderte puedes mirar el número en la parte superior.'];
+    var shelf1822Steps = ['Por favor continúa derecho.',
+                          'La estantería más cercana a mí es la 19 y la más lejana es la 22.',
+                          'En caso de perderte puedes mirar el número en la parte superior.'];
 
-    map['coordinacion']        = makeSteps(coordGuidance);
-    map['coordination']        = makeSteps(coordGuidance);
-    map['room_252c']           = makeSteps(endGuidance);
-    map['sterilization_room']  = makeSteps(endGuidance);
-    map['sterilization_space'] = makeSteps(endGuidance);
+    for (i = 0; i < shelf16Names.length;  i++) { map[shelf16Names[i]]  = makeSteps(shelf16Steps);   }
+    for (i = 0; i < shelf1822Names.length; i++) { map[shelf1822Names[i]] = makeSteps(shelf1822Steps); }
+    for (i = 0; i < room254Names.length;   i++) { map[room254Names[i]]   = makeSteps([rooms254guidance]); }
+
+    map['coordinacion']        = makeSteps([coordGuidance]);
+    map['coordination']        = makeSteps([coordGuidance]);
+    map['room_252c']           = makeSteps([endGuidance]);
+    map['sterilization_room']  = makeSteps([endGuidance]);
+    map['sterilization_space'] = makeSteps([endGuidance]);
 
     return map;
   }());
@@ -1749,32 +1757,57 @@
                 shelfGraphId,
                 function onSuccess() {
                   cancelArrivalPoll();
-                  navActive = false;
-                  PepperLib.isNavigating = false;
-                  startNavClearLoop();
-                  PepperLib.Inactivity.reset();
-                  hideOverlay();
-                  if (SPECIAL_ARRIVAL[shelfGraphId]) {
-                    runSpecialArrivalMessage(shelfGraphId, function () {
-                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                    });
-                  } else {
-                    showNavigationNotice(
-                      PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!',
-                      function () {
+
+                  function doArrival() {
+                    cancelArrivalPoll();
+                    navActive = false;
+                    PepperLib.isNavigating = false;
+                    startNavClearLoop();
+                    PepperLib.Inactivity.reset();
+                    hideOverlay();
+                    if (SPECIAL_ARRIVAL[shelfGraphId]) {
+                      runSpecialArrivalMessage(shelfGraphId, function () {
                         PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                      }
-                    );
-                    if (window.PepperRosNavigation) {
-                      window.PepperRosNavigation.standPosture(function () {
-                        executeNavScript(ARRIVAL_SCRIPT, null);
-                      }, function () {
-                        executeNavScript(ARRIVAL_SCRIPT, null);
                       });
                     } else {
-                      executeNavScript(ARRIVAL_SCRIPT, null);
+                      var arrOverlay = byId('pre-nav-overlay');
+                      var arrText    = byId('pre-nav-text');
+                      if (arrOverlay && arrText) {
+                        arrText.textContent = PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!';
+                        removeClass(arrOverlay, 'hidden');
+                      }
+                      var shelfArrivalScript = {
+                        config: { stepDelay: 1000 },
+                        steps: [
+                          { speech: '¡Llegamos!', animation: 'Gestures/You_2' },
+                          { speech: 'Por favor completa cómo te sentiste', animation: 'Gestures/Please_1' }
+                        ]
+                      };
+                      function runShelfArrival() {
+                        executeNavScript(shelfArrivalScript, function () {
+                          if (arrOverlay) { addClass(arrOverlay, 'hidden'); }
+                          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                        });
+                      }
+                      if (window.PepperRosNavigation) {
+                        window.PepperRosNavigation.standPosture(runShelfArrival, runShelfArrival);
+                      } else {
+                        runShelfArrival();
+                      }
                     }
                   }
+
+                  function giveUp() {
+                    cancelArrivalPoll();
+                    navActive = false;
+                    PepperLib.isNavigating = false;
+                    startNavClearLoop();
+                    PepperLib.Inactivity.reset();
+                    hideOverlay();
+                    PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                  }
+
+                  navArrivalPoll = pollUntilArrived(shelfGraphId, doArrival, giveUp);
                 },
                 function onError(err) {
                   cancelArrivalPoll();
@@ -1829,6 +1862,7 @@
 
       onExit: function () {
         PepperLib.isNavigating = false;
+        cancelArrivalPoll();
       }
     });
   })();
@@ -3442,7 +3476,7 @@
   function startNavClearLoop() {
     if (!rosNavClearInterval) {
       rosNavClearInterval = setInterval(function () {
-        if (window.PepperRosNavigation) {
+        if (window.PepperRosNavigation && !navActive) {
           window.PepperRosNavigation.clearCostmaps(null, null);
         }
       }, 2000);
