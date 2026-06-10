@@ -839,6 +839,53 @@
     goal.send();
   };
 
+  Navigation.advanceInPlace = function (meters, onSuccess, onError) {
+    var pose = lastAmclPose;
+    var yaw;
+    var goal;
+
+    if (!pose) {
+      if (onError) {
+        onError('Todavia no hay /amcl_pose para calcular avance.');
+      }
+      return;
+    }
+
+    if (!ros || status !== 'connected') {
+      if (onError) {
+        onError('ROSBridge no esta conectado.');
+      }
+      return;
+    }
+
+    yaw = poseYawRadians(pose);
+
+    goal = new window.ROSLIB.Goal({
+      actionClient: ensureMoveBaseClient(),
+      goalMessage: {
+        target_pose: {
+          header: { frame_id: 'map' },
+          pose: {
+            position: {
+              x: pose.position.x + (Number(meters) || 0) * Math.cos(yaw),
+              y: pose.position.y + (Number(meters) || 0) * Math.sin(yaw),
+              z: 0
+            },
+            orientation: { x: 0, y: 0, z: pose.orientation.z, w: pose.orientation.w }
+          }
+        }
+      }
+    });
+
+    activeGoal = goal;
+    goal.on('result', function (result) {
+      if (onSuccess) {
+        onSuccess(result || {});
+      }
+    });
+    goal.send();
+  };
+
   Navigation.navigateGraphClient = function (targetPlace, useGraph, onSuccess, onError, onStep) {
     var route = useGraph && currentPlace ? shortestRoute(currentPlace, targetPlace) : [targetPlace];
     var index = 0;
@@ -880,7 +927,7 @@
           if (onStep) {
             onStep({ turnDegrees: meta.turnDegrees }, { name: toPlace }, route, index);
           }
-          Navigation.spin(meta.turnDegrees, afterRotate, function (err) {
+          Navigation.rotateInPlace(meta.turnDegrees, afterRotate, function (err) {
             console.warn('[NAV] giro fallido:', err);
             if (onError) { onError('Giro fallido al ir a ' + toPlace + ': ' + err); }
           });
@@ -895,7 +942,7 @@
           if (onStep) {
             onStep({ advanceMeters: meters }, { name: toPlace }, route, index);
           }
-          Navigation.moveRelativeWithPyToolkit(meters, 0, afterAdvance, function (err) {
+          Navigation.advanceInPlace(meters, afterAdvance, function (err) {
             console.warn('[NAV] advance fallido:', err);
             if (onError) { onError('Advance fallido al ir a ' + toPlace + ': ' + err); }
           });
