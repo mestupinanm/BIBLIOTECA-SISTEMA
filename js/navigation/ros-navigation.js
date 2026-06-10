@@ -736,8 +736,9 @@
 
   Navigation.sendMoveBasePlace = function (placeName, onSuccess, onError, onFeedback) {
     var place = findPlace(placeName);
-    var goal;
-    var theta;
+    var attempt = 0;
+    var maxRetries = 3;
+    var ARRIVAL_THRESHOLD = 1.0;
 
     if (!place) {
       if (onError) {
@@ -753,49 +754,71 @@
       return;
     }
 
-    if (lastAmclPose) {
-      var dx = Number(place.x) - lastAmclPose.position.x;
-      var dy = Number(place.y) - lastAmclPose.position.y;
-      if (Math.abs(dx) > 0.05 || Math.abs(dy) > 0.05) {
-        theta = Math.atan2(dy, dx);
-      } else {
-        theta = poseYawRadians(lastAmclPose);
+    function computeTheta() {
+      if (lastAmclPose) {
+        var dx = Number(place.x) - lastAmclPose.position.x;
+        var dy = Number(place.y) - lastAmclPose.position.y;
+        if (Math.abs(dx) > 0.05 || Math.abs(dy) > 0.05) {
+          return Math.atan2(dy, dx);
+        }
+        return poseYawRadians(lastAmclPose);
       }
-    } else {
-      theta = Number(place.theta) || 0;
+      return Number(place.theta) || 0;
     }
 
-    goal = new window.ROSLIB.Goal({
-      actionClient: ensureMoveBaseClient(),
-      goalMessage: {
-        target_pose: {
-          header: {
-            frame_id: 'map'
-          },
-          pose: {
-            position: {
-              x: Number(place.x) || 0,
-              y: Number(place.y) || 0,
-              z: 0
-            },
-            orientation: thetaToQuaternion(theta)
+    function sendAttempt() {
+      var goal = new window.ROSLIB.Goal({
+        actionClient: ensureMoveBaseClient(),
+        goalMessage: {
+          target_pose: {
+            header: { frame_id: 'map' },
+            pose: {
+              position: {
+                x: Number(place.x) || 0,
+                y: Number(place.y) || 0,
+                z: 0
+              },
+              orientation: thetaToQuaternion(computeTheta())
+            }
           }
         }
-      }
-    });
+      });
 
-    activeGoal = goal;
-    goal.on('feedback', function (feedback) {
-      if (onFeedback) {
-        onFeedback(feedback, place);
-      }
-    });
-    goal.on('result', function (result) {
-      if (onSuccess) {
-        onSuccess(result || {}, place);
-      }
-    });
-    goal.send();
+      activeGoal = goal;
+      goal.on('feedback', function (feedback) {
+        if (onFeedback) {
+          onFeedback(feedback, place);
+        }
+      });
+      goal.on('result', function (result) {
+        var pose = lastAmclPose;
+        var dx, dy, dist;
+
+        if (pose) {
+          dx = Number(place.x) - pose.position.x;
+          dy = Number(place.y) - pose.position.y;
+          dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist > ARRIVAL_THRESHOLD && attempt < maxRetries) {
+            attempt += 1;
+            console.warn('[NAV] move_base terminó a ' + dist.toFixed(2) + 'm del destino. Limpiando costmaps y reintentando (' + attempt + '/' + maxRetries + ')...');
+            Navigation.clearCostmaps(function () {
+              sendAttempt();
+            }, function () {
+              sendAttempt();
+            });
+            return;
+          }
+        }
+
+        if (onSuccess) {
+          onSuccess(result || {}, place);
+        }
+      });
+      goal.send();
+    }
+
+    sendAttempt();
   };
 
   Navigation.rotateInPlace = function (degrees, onSuccess, onError) {
