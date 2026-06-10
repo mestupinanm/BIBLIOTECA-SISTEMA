@@ -880,9 +880,9 @@
           if (onStep) {
             onStep({ turnDegrees: meta.turnDegrees }, { name: toPlace }, route, index);
           }
-          Navigation.rotateInPlace(meta.turnDegrees, afterRotate, function (err) {
-            console.warn('[NAV] rotación fallida, continuando sin girar:', err);
-            afterRotate();
+          Navigation.spin(meta.turnDegrees, afterRotate, function (err) {
+            console.warn('[NAV] giro fallido:', err);
+            if (onError) { onError('Giro fallido al ir a ' + toPlace + ': ' + err); }
           });
           return;
         }
@@ -896,8 +896,8 @@
             onStep({ advanceMeters: meters }, { name: toPlace }, route, index);
           }
           Navigation.moveRelativeWithPyToolkit(meters, 0, afterAdvance, function (err) {
-            console.warn('[NAV] advance fallido, continuando sin advance:', err);
-            afterAdvance();
+            console.warn('[NAV] advance fallido:', err);
+            if (onError) { onError('Advance fallido al ir a ' + toPlace + ': ' + err); }
           });
           return;
         }
