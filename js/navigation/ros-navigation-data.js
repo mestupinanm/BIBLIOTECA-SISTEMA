@@ -34,7 +34,7 @@
   var shelfId;
 
   for (i = 1; i <= 22; i += 1) {
-    shelfId = i < 10 ? 'shelf_0' + i : 'shelf_' + i;
+    shelfId = 'shelf_' + i;
     appDestinations[shelfId] = { place: shelfId, graph: 1 };
   }
 

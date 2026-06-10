@@ -1731,35 +1731,44 @@
             navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
             startNavClearLoop();
-            window.PepperRosNavigation.navigateGraphToDestination(
-              shelfGraphId,
-              function onSuccess() {
-                cancelArrivalPoll();
-                navActive = false;
-                PepperLib.isNavigating = false;
-                startNavClearLoop();
-                PepperLib.Inactivity.reset();
-                if (SPECIAL_ARRIVAL[shelfGraphId]) {
-                  runSpecialArrivalMessage(shelfGraphId, function () {
-                    PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                  });
-                } else {
-                  PepperRobot.animate('Gestures/You_2');
-                  PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!', null, false);
-                  setTimeout(function () {
-                    PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                  }, 4000);
+            try {
+              window.PepperRosNavigation.navigateGraphToDestination(
+                shelfGraphId,
+                function onSuccess() {
+                  cancelArrivalPoll();
+                  navActive = false;
+                  PepperLib.isNavigating = false;
+                  startNavClearLoop();
+                  PepperLib.Inactivity.reset();
+                  if (SPECIAL_ARRIVAL[shelfGraphId]) {
+                    runSpecialArrivalMessage(shelfGraphId, function () {
+                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                    });
+                  } else {
+                    PepperRobot.animate('Gestures/You_2');
+                    PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!', null, false);
+                    setTimeout(function () {
+                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                    }, 4000);
+                  }
+                },
+                function onError(err) {
+                  cancelArrivalPoll();
+                  navActive = false;
+                  PepperLib.isNavigating = false;
+                  startNavClearLoop();
+                  PepperLib.Inactivity.reset();
+                  console.error('[NAV ERROR] navigateGraphToDestination [' + shelfGraphId + ']:', err);
                 }
-              },
-              function onError(err) {
-                cancelArrivalPoll();
-                navActive = false;
-                PepperLib.isNavigating = false;
-                startNavClearLoop();
-                PepperLib.Inactivity.reset();
-                console.error('[NAV ERROR] navigateGraphToDestination [' + shelfGraphId + ']:', err);
-              }
-            );
+              );
+            } catch (e) {
+              cancelArrivalPoll();
+              navActive = false;
+              PepperLib.isNavigating = false;
+              startNavClearLoop();
+              PepperLib.Inactivity.reset();
+              console.error('[NAV ERROR] navigateGraphToDestination exception (shelf):', e);
+            }
           });
         };
 
