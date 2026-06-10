@@ -495,6 +495,7 @@
     },
 
     onTimeout: function () {
+      if (navActive) { return; }
       var noFeedback = PepperLib.State.current === PepperLib.SCREENS.IDLE ||
                        PepperLib.State.current === PepperLib.SCREENS.GREETING ||
                        PepperLib.State.current === PepperLib.SCREENS.FEEDBACK ||
@@ -1757,18 +1758,24 @@
                 shelfGraphId,
                 function onSuccess() {
                   cancelArrivalPoll();
+                  var arrivalDone = false;
 
                   function doArrival() {
+                    if (arrivalDone) { return; }
+                    arrivalDone = true;
                     cancelArrivalPoll();
-                    navActive = false;
                     PepperLib.isNavigating = false;
-                    startNavClearLoop();
-                    PepperLib.Inactivity.reset();
+                    PepperLib.Inactivity.stop();
                     hideOverlay();
+
+                    function onArrivalComplete() {
+                      navActive = false;
+                      startNavClearLoop();
+                      PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                    }
+
                     if (SPECIAL_ARRIVAL[shelfGraphId]) {
-                      runSpecialArrivalMessage(shelfGraphId, function () {
-                        PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
-                      });
+                      runSpecialArrivalMessage(shelfGraphId, onArrivalComplete);
                     } else {
                       var arrOverlay = byId('pre-nav-overlay');
                       var arrText    = byId('pre-nav-text');
@@ -1786,7 +1793,7 @@
                       function runShelfArrival() {
                         executeNavScript(shelfArrivalScript, function () {
                           if (arrOverlay) { addClass(arrOverlay, 'hidden'); }
-                          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
+                          onArrivalComplete();
                         });
                       }
                       if (window.PepperRosNavigation) {
@@ -1798,11 +1805,13 @@
                   }
 
                   function giveUp() {
+                    if (arrivalDone) { return; }
+                    arrivalDone = true;
                     cancelArrivalPoll();
                     navActive = false;
                     PepperLib.isNavigating = false;
                     startNavClearLoop();
-                    PepperLib.Inactivity.reset();
+                    PepperLib.Inactivity.stop();
                     hideOverlay();
                     PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                   }
