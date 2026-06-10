@@ -1367,7 +1367,17 @@
             PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Listo');
           }
 
-          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
+          PepperLib.Inactivity.stop();
+          var overlay = byId('pre-nav-overlay');
+          if (overlay) { removeClass(overlay, 'hidden'); }
+          var doneScript = {
+            config: { stepDelay: 500 },
+            steps: [{ speech: '¡Muchas gracias, espero verte pronto!', animation: 'Gestures/Hey_1' }]
+          };
+          executeNavScript(doneScript, function () {
+            if (overlay) { addClass(overlay, 'hidden'); }
+            PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
+          });
         };
       },
 
@@ -1846,11 +1856,16 @@
           }
           PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Listo');
           PepperLib.Inactivity.stop();
-          PepperRobot.animate('Gestures/Hey_1');
-          PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', function () {
-            PepperLib.State.endSession();
-            PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
-          }, true);
+          var overlay = byId('pre-nav-overlay');
+          if (overlay) { removeClass(overlay, 'hidden'); }
+          var doneScript = {
+            config: { stepDelay: 500 },
+            steps: [{ speech: '¡Muchas gracias, espero verte pronto!', animation: 'Gestures/Hey_1' }]
+          };
+          executeNavScript(doneScript, function () {
+            if (overlay) { addClass(overlay, 'hidden'); }
+            PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
+          });
         };
       },
 
@@ -3266,13 +3281,13 @@
 
       if (window.PepperRosNavigation) {
         window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
-        window.PepperRosNavigation.setBreathEnabled('Arms', false, null, null);
+        window.PepperRosNavigation.setBreathEnabled('Body', false, null, null);
       }
 
       function reEnableArms() {
         if (window.PepperRosNavigation) {
           window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-          window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
+          window.PepperRosNavigation.setBreathEnabled('Body', true, null, null);
         }
       }
 
