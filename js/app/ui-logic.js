@@ -3255,10 +3255,23 @@
       clearAutoReturn();
       startNavClearLoop();
 
+      if (window.PepperRosNavigation) {
+        window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
+        window.PepperRosNavigation.setBreathEnabled('Arms', false, null, null);
+      }
+
+      function reEnableArms() {
+        if (window.PepperRosNavigation) {
+          window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+          window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
+        }
+      }
+
       function endAndReturn() {
         clearAutoReturn();
         PepperLib.Inactivity.reset();
         var goIdle = function () {
+          reEnableArms();
           if (blackOverlay) removeClass(blackOverlay, 'active');
           navActive = false;
           startNavClearLoop();
@@ -3278,6 +3291,7 @@
 
       function onReturnError(errorString) {
         clearAutoReturn();
+        reEnableArms();
         navActive = false;
         startNavClearLoop();
         PepperLib.Inactivity.reset();
@@ -3290,13 +3304,20 @@
       if (window.PepperRosNavigation) {
         try {
           autoReturnTimer = setTimeout(endAndReturn, 120000);
-          window.PepperRosNavigation.rotateInPlace(180, function () {
-            window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
-          }, function (err) {
-            console.error('[NAV ERROR] Return rotate 180 failed, navigating anyway:', err);
-            window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
+          var doRotateAndNav = function () {
+            window.PepperRosNavigation.rotateInPlace(180, function () {
+              window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
+            }, function (err) {
+              console.error('[NAV ERROR] Return rotate 180 failed, navigating anyway:', err);
+              window.PepperRosNavigation.navigateGraphClient('base', true, endAndReturn, onReturnError, null);
+            });
+          };
+          window.PepperRosNavigation.advanceInPlace(0.4, doRotateAndNav, function () {
+            console.warn('[NAV] Return advance failed, proceeding with rotation anyway.');
+            doRotateAndNav();
           });
         } catch (e) {
+          reEnableArms();
           navActive = false;
           startNavClearLoop();
           PepperLib.Inactivity.reset();
