@@ -1390,7 +1390,13 @@
           }
 
           PepperLib.Inactivity.stop();
-          executeNavScript(getArrivalScript(), function () {
+          executeNavScript({
+            config: { stepDelay: 800 },
+            steps: [
+              { speech: 'Oki dokie', animation: 'Gestures/Hey_1' },
+              { speech: PepperLib.State.language === 'en' ? 'Please rate my service' : 'Por favor califica mi servicio', animation: 'Gestures/Please_1' }
+            ]
+          }, function () {
             PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
           });
         };
@@ -1867,7 +1873,13 @@
           }
           PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Listo');
           PepperLib.Inactivity.stop();
-          executeNavScript(getArrivalScript(), function () {
+          executeNavScript({
+            config: { stepDelay: 800 },
+            steps: [
+              { speech: 'Oki dokie', animation: 'Gestures/Hey_1' },
+              { speech: PepperLib.State.language === 'en' ? 'Please rate my service' : 'Por favor califica mi servicio', animation: 'Gestures/Please_1' }
+            ]
+          }, function () {
             PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
           });
         };
@@ -3318,8 +3330,16 @@
       }
 
       function onReturnError(errorString) {
-        console.error('[NAV ERROR] navigateToBase:', errorString);
-        endAndReturn();
+        console.error('[NAV ERROR] navigateToBase (grafo):', errorString);
+        if (window.PepperRosNavigation) {
+          console.warn('[NAV] Intentando navegación directa a base como fallback...');
+          window.PepperRosNavigation.navigateGraphClient('base', false, endAndReturn, function (fallbackErr) {
+            console.error('[NAV ERROR] Navegación directa a base también falló:', fallbackErr);
+            endAndReturn();
+          }, null);
+        } else {
+          endAndReturn();
+        }
       }
 
       if (window.PepperRosNavigation) {

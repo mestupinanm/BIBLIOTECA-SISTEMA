@@ -965,8 +965,8 @@
             onStep({ turnDegrees: meta.turnDegrees }, { name: toPlace }, route, index);
           }
           Navigation.rotateInPlace(meta.turnDegrees, afterRotate, function (err) {
-            console.warn('[NAV] giro fallido:', err);
-            if (onError) { onError('Giro fallido al ir a ' + toPlace + ': ' + err); }
+            console.warn('[NAV] giro fallido, continuando sin girar:', err);
+            afterRotate();
           });
           return;
         }
@@ -980,8 +980,8 @@
             onStep({ advanceMeters: meters }, { name: toPlace }, route, index);
           }
           Navigation.advanceInPlace(meters, afterAdvance, function (err) {
-            console.warn('[NAV] advance fallido:', err);
-            if (onError) { onError('Advance fallido al ir a ' + toPlace + ': ' + err); }
+            console.warn('[NAV] advance fallido, continuando sin avanzar:', err);
+            afterAdvance();
           });
           return;
         }
