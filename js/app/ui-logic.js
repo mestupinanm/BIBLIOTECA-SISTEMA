@@ -3289,6 +3289,9 @@
       cancelArrivalPoll();
       navActive = true;
       startNavActiveCostmapClear();
+      if (window.PepperRosNavigation) {
+        window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
+      }
       PepperLib.Inactivity.stop();
       var blackOverlay = byId('black-screen-overlay');
       if (blackOverlay) addClass(blackOverlay, 'active');
@@ -3296,50 +3299,40 @@
       clearAutoReturn();
       startNavClearLoop();
 
-      if (window.PepperRosNavigation) {
-        window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
-      }
-
-      function reEnableArms() {
-        if (window.PepperRosNavigation) {
-          window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-          window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
-        }
-      }
-
       function endAndReturn() {
         clearAutoReturn();
         PepperLib.Inactivity.reset();
         var goIdle = function () {
-          reEnableArms();
+          if (blackOverlay) removeClass(blackOverlay, 'active');
           navActive = false;
           startNavClearLoop();
+          if (window.PepperRosNavigation) {
+            window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+            window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
+          }
           PepperLib.State.endSession();
           PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
-          if (blackOverlay) removeClass(blackOverlay, 'active');
         };
         if (window.PepperRosNavigation && window.PepperRosNavigation.rotateInPlace) {
-          window.PepperRosNavigation.rotateInPlace(180, function () {
-            setTimeout(goIdle, 1500);
-          }, function () {
-            setTimeout(goIdle, 3000);
-          });
+          window.PepperRosNavigation.rotateInPlace(180, goIdle, goIdle);
         } else {
           goIdle();
         }
       }
 
       function onReturnError(errorString) {
-        console.error('[NAV ERROR] navigateToBase (grafo):', errorString);
+        clearAutoReturn();
+        navActive = false;
+        startNavClearLoop();
         if (window.PepperRosNavigation) {
-          console.warn('[NAV] Intentando navegación directa a base como fallback...');
-          window.PepperRosNavigation.navigateGraphClient('base', false, endAndReturn, function (fallbackErr) {
-            console.error('[NAV ERROR] Navegación directa a base también falló:', fallbackErr);
-            endAndReturn();
-          }, null);
-        } else {
-          endAndReturn();
+          window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
+          window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
         }
+        PepperLib.Inactivity.reset();
+        if (blackOverlay) removeClass(blackOverlay, 'active');
+        console.error('[NAV ERROR] navigateToBase:', errorString);
+        PepperLib.State.endSession();
+        PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
       }
 
       if (window.PepperRosNavigation) {
@@ -3358,7 +3351,6 @@
             doRotateAndNav();
           });
         } catch (e) {
-          reEnableArms();
           navActive = false;
           startNavClearLoop();
           PepperLib.Inactivity.reset();
