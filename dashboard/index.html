@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel General de Uso — Nova Library</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<div id="tooltip"></div>
+
+<div class="page-wrap">
+
+  <!-- ── ENCABEZADO ──────────────────────────────────── -->
+  <header class="page-head">
+    <h1 class="page-title">Panel General de Uso</h1>
+    <button id="btn-refresh" class="btn-refresh">↻ Actualizar datos</button>
+  </header>
+  <div class="hline"></div>
+
+  <!-- ── FILA 1: 60 / 40 ─────────────────────────────── -->
+  <div class="layout-two-col">
+
+    <!-- COLUMNA IZQUIERDA (60%) -->
+    <div class="col-stack">
+
+      <section class="card">
+        <h2 class="sec-title">Indicadores de uso</h2>
+        <div class="hline-thin"></div>
+        <div id="kpi-list"></div>
+      </section>
+
+      <section class="card">
+        <h2 class="sec-title">¿A dónde van los usuarios?</h2>
+        <div class="hline-thin"></div>
+        <div class="legend-row" style="margin-bottom:16px">
+          <span class="leg-item">
+            <span class="leg-dot" style="background:#1B2A4A"></span>Llévame
+          </span>
+          <span class="leg-item">
+            <span class="leg-dot" style="background:#C8973A"></span>Listo (solo mapa)
+          </span>
+        </div>
+        <div id="destinos-bars"></div>
+      </section>
+
+    </div>
+
+    <!-- COLUMNA DERECHA (40%) -->
+    <div class="col-stack">
+
+      <section class="card">
+        <h2 class="sec-title">Uso por tipo de servicio</h2>
+        <div class="hline-thin"></div>
+        <div id="uso-cards" class="uso-cards-row"></div>
+        <div id="uso-stack" style="margin-top:14px"></div>
+        <div id="uso-legend" class="legend-row" style="margin-top:10px;flex-wrap:wrap;gap:8px 16px"></div>
+      </section>
+
+      <section class="card">
+        <h2 class="sec-title">Embudo de navegación</h2>
+        <div class="hline-thin"></div>
+        <p id="embudo-summary" class="embudo-summary"></p>
+        <div id="embudo-bar" style="margin:10px 0"></div>
+        <div id="embudo-legend" class="legend-row"></div>
+      </section>
+
+      <section class="card">
+        <h2 class="sec-title">Satisfacción</h2>
+        <div class="hline-thin"></div>
+        <div id="satisfaccion-wrap" class="satisfaccion-wrap"></div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ── ACTIVIDAD POR DÍA ────────────────────────────── -->
+  <section class="card full-section">
+    <h2 class="sec-title">Actividad por día de la semana</h2>
+    <div class="hline-thin"></div>
+    <div id="actividad-chart"></div>
+    <div class="legend-row" style="margin-top:14px;justify-content:center">
+      <span class="leg-item">
+        <span class="leg-dot" style="background:#1B2A4A"></span>Día hábil
+      </span>
+      <span class="leg-item">
+        <span class="leg-dot" style="background:#C8973A"></span>Día más activo
+      </span>
+    </div>
+  </section>
+
+  <!-- ── FILA 2: 3 COLUMNAS ───────────────────────────── -->
+  <div class="layout-three-col">
+
+    <section class="card">
+      <h2 class="sec-title">Temas más buscados</h2>
+      <div class="hline-thin"></div>
+      <div id="temas-bars"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="sec-title">Estanterías consultadas</h2>
+      <div class="hline-thin"></div>
+      <div id="ests-bars"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="sec-title">Servicios de libros</h2>
+      <div class="hline-thin"></div>
+      <div id="svc-libros"></div>
+    </section>
+
+  </div>
+
+  <!-- ── FILA 3: 3 COLUMNAS ───────────────────────────── -->
+  <div class="layout-three-col">
+
+    <section class="card">
+      <h2 class="sec-title">Pestañas de información</h2>
+      <div class="hline-thin"></div>
+      <div id="info-bars"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="sec-title">Actividades jugadas</h2>
+      <div class="hline-thin"></div>
+      <div id="act-bars"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="sec-title">Comentarios recientes</h2>
+      <div class="hline-thin"></div>
+      <div id="comments-list"></div>
+    </section>
+
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script src="../js/app/data.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

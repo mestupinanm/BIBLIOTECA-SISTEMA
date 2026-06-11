@@ -1299,6 +1299,7 @@
             cancelArrivalPoll();
             navActive = true;
             PepperLib.isNavigating = true;
+            window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
             PepperLib.Inactivity.stop();
             navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
@@ -1755,6 +1756,7 @@
 
             navActive = true;
             PepperLib.isNavigating = true;
+            window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
             navStartTime = Date.now();
             window.PepperRosNavigation.setCurrentPlaceLocal('base', null, null);
             startNavClearLoop();
