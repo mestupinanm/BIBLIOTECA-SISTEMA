@@ -1021,6 +1021,17 @@
     }
   }
 
+  function getArrivalScript() {
+    var en = PepperLib.State.language === 'en';
+    return {
+      config: { stepDelay: 1000 },
+      steps: [
+        { speech: en ? "We're here!" : '¡Llegamos!', animation: 'Gestures/You_2' },
+        { speech: en ? 'Please rate my service' : 'Por favor califica mi servicio', animation: 'Gestures/Please_1' }
+      ]
+    };
+  }
+
   function executeNavScript(script, onComplete) {
     var steps = script && script.steps ? script.steps : [];
     var idx = 0;
@@ -1268,17 +1279,6 @@
       simulationTimers.push(timer);
     }
 
-    function getArrivalScript() {
-      var en = PepperLib.State.language === 'en';
-      return {
-        config: { stepDelay: 1000 },
-        steps: [
-          { speech: en ? "We're here!" : '¡Llegamos!', animation: 'Gestures/You_2' },
-          { speech: en ? 'Please fill in how you felt' : 'Por favor completa cómo te sentiste', animation: 'Gestures/Please_1' }
-        ]
-      };
-    }
-
     PepperLib.State.registerScreen('navigation-guide', {
       init: function () {
         byId('btn-guide-me').onclick = function () {
@@ -1390,7 +1390,9 @@
           }
 
           PepperLib.Inactivity.stop();
-          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
+          executeNavScript(getArrivalScript(), function () {
+            PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
+          });
         };
       },
 
@@ -1865,7 +1867,9 @@
           }
           PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Listo');
           PepperLib.Inactivity.stop();
-          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
+          executeNavScript(getArrivalScript(), function () {
+            PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
+          });
         };
       },
 
@@ -3296,11 +3300,11 @@
         PepperLib.Inactivity.reset();
         var goIdle = function () {
           reEnableArms();
-          if (blackOverlay) removeClass(blackOverlay, 'active');
           navActive = false;
           startNavClearLoop();
           PepperLib.State.endSession();
           PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+          if (blackOverlay) removeClass(blackOverlay, 'active');
         };
         if (window.PepperRosNavigation && window.PepperRosNavigation.rotateInPlace) {
           window.PepperRosNavigation.rotateInPlace(180, function () {

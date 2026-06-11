@@ -3749,7 +3749,7 @@ button { cursor: pointer; }
 
 #black-screen-overlay.active {
   display: block;
-  pointer-events: none;
+  pointer-events: all;
 }
 
 #ros-logger {
