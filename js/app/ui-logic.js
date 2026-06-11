@@ -871,7 +871,7 @@
 
       onEnter: function () {
         PepperLib.Inactivity.stop();
-        PepperRobot.speak('Hola! Bienvenido a la biblioteca.');
+        PepperRobot.speak(PepperLib.State.language === 'en' ? 'Hello! Welcome to the library.' : 'Hola! Bienvenido a la biblioteca.');
       },
 
       onExit: function () {
@@ -985,27 +985,30 @@
     });
   })();
 
-  var PRE_NAV_SCRIPT = {
-    config: { name: 'inicio_navegacion', language: 'Spanish', stepDelay: 100 },
-    steps: [
-      {
-        speech: 'Lo siento si me demoro un poco,',
-        animation: 'BodyTalk/Speaking/BodyTalk_1',
-        screen: { type: 'subtitle', content: '' }
-      },
-      {
-        speech: 'estoy chiquita y aprendiendo a caminar sola',
-        animation: 'Gestures/Me_1',
-        screen: { type: 'subtitle', content: '' },
-        delay: 3000
-      },
-      {
-        speech: 'Por favor permiso para comenzar a guiarte :)',
-        animation: 'Gestures/Everything_1',
-        screen: { type: 'subtitle', content: '' }
-      }
-    ]
-  };
+  function getPreNavScript() {
+    var en = PepperLib.State.language === 'en';
+    return {
+      config: { name: 'inicio_navegacion', language: en ? 'English' : 'Spanish', stepDelay: 100 },
+      steps: [
+        {
+          speech: en ? "I'm sorry if I take a little while," : 'Lo siento si me demoro un poco,',
+          animation: 'BodyTalk/Speaking/BodyTalk_1',
+          screen: { type: 'subtitle', content: '' }
+        },
+        {
+          speech: en ? "I'm small and still learning to walk on my own" : 'estoy chiquita y aprendiendo a caminar sola',
+          animation: 'Gestures/Me_1',
+          screen: { type: 'subtitle', content: '' },
+          delay: 3000
+        },
+        {
+          speech: en ? 'Please allow me to start guiding you :)' : 'Por favor permiso para comenzar a guiarte :)',
+          animation: 'Gestures/Everything_1',
+          screen: { type: 'subtitle', content: '' }
+        }
+      ]
+    };
+  }
 
   function updatePreNavSubtitle(text) {
     var el = byId('pre-nav-text');
@@ -1050,20 +1053,29 @@
     next();
   }
 
-  var SPECIAL_ARRIVAL = (function () {
+  function getSpecialArrival() {
+    var en = PepperLib.State.language === 'en';
     var map = {};
     var i;
-    var common = 'Navegaré hasta acá porque me puedo desconectar de internet y eso representaría un problema.';
-    var rooms254guidance = 'Continúa derecho, la sala que podemos ver desde acá es la 254 y la última es la 257.';
-    var coordGuidance = 'Sigue derecho y es la última sala a la izquierda.';
-    var endGuidance = 'A mi derecha podrás encontrarlo al fondo.';
+    var common = en
+      ? 'I navigate up to here because I can disconnect from the internet and that would be a problem.'
+      : 'Navegaré hasta acá porque me puedo desconectar de internet y eso representaría un problema.';
+    var rooms254guidance = en
+      ? 'Continue straight, the room we can see from here is 254 and the last one is 257.'
+      : 'Continúa derecho, la sala que podemos ver desde acá es la 254 y la última es la 257.';
+    var coordGuidance = en
+      ? "Go straight and it's the last room on the left."
+      : 'Sigue derecho y es la última sala a la izquierda.';
+    var endGuidance = en
+      ? 'To my right you can find it at the back.'
+      : 'A mi derecha podrás encontrarlo al fondo.';
 
     function makeSteps(lines) {
       var steps = [{ speech: common, animation: 'BodyTalk/Speaking/BodyTalk_1' }];
       var animations = ['Gestures/Everything_1', 'BodyTalk/Speaking/BodyTalk_8', 'Gestures/Please_1'];
-      var i;
-      for (i = 0; i < lines.length; i++) {
-        steps.push({ speech: lines[i], animation: animations[i % animations.length] });
+      var j;
+      for (j = 0; j < lines.length; j++) {
+        steps.push({ speech: lines[j], animation: animations[j % animations.length] });
       }
       return steps;
     }
@@ -1073,12 +1085,20 @@
     var shelf1822Names = ['shelf_18','shelf_19','shelf_20','shelf_21','shelf_22'];
     var room254Names   = ['room_254','room_255','room_256','room_257'];
 
-    var shelf16Steps = ['Por favor continúa derecho.',
-                        'La estantería más cercana a mí es la 6 y la más lejana es la 1.',
-                        'En caso de perderte puedes mirar el número en la parte superior.'];
-    var shelf1822Steps = ['Por favor continúa derecho.',
-                          'La estantería más cercana a mí es la 19 y la más lejana es la 22.',
-                          'En caso de perderte puedes mirar el número en la parte superior.'];
+    var shelf16Steps = en
+      ? ['Please continue straight ahead.',
+         'The shelf closest to me is 6 and the farthest is 1.',
+         'If you get lost, you can look at the number at the top.']
+      : ['Por favor continúa derecho.',
+         'La estantería más cercana a mí es la 6 y la más lejana es la 1.',
+         'En caso de perderte puedes mirar el número en la parte superior.'];
+    var shelf1822Steps = en
+      ? ['Please continue straight ahead.',
+         'The shelf closest to me is 19 and the farthest is 22.',
+         'If you get lost, you can look at the number at the top.']
+      : ['Por favor continúa derecho.',
+         'La estantería más cercana a mí es la 19 y la más lejana es la 22.',
+         'En caso de perderte puedes mirar el número en la parte superior.'];
 
     for (i = 0; i < shelf16Names.length;  i++) { map[shelf16Names[i]]  = makeSteps(shelf16Steps);   }
     for (i = 0; i < shelf1822Names.length; i++) { map[shelf1822Names[i]] = makeSteps(shelf1822Steps); }
@@ -1091,27 +1111,30 @@
     map['sterilization_space'] = makeSteps([endGuidance]);
 
     return map;
-  }());
+  }
 
-  var BASE_ONLY_MESSAGES = {
-    stairs_emergency: [
-      { speech: 'A mis dos costados podrás ver las dos salidas de emergencia.', animation: 'BodyTalk/Speaking/BodyTalk_1' },
-      { speech: '¡En caso de usarlas no corras!', animation: 'Gestures/Please_1' }
-    ],
-    reception: [
-      { speech: 'Está justo al frente mío.', animation: 'Gestures/You_2' }
-    ],
-    stairs_up: [
-      { speech: 'A mis costados pasando el muro lo verás.', animation: 'BodyTalk/Speaking/BodyTalk_1' }
-    ],
-    stairs_down: [
-      { speech: 'Están exactamente en la parte de atrás mío,', animation: 'BodyTalk/Speaking/BodyTalk_1' },
-      { speech: 'sigue a tu derecha, luego avanza y ahí las verás.', animation: 'Gestures/Everything_1' }
-    ]
-  };
+  function getBaseOnlyMessages() {
+    var en = PepperLib.State.language === 'en';
+    return {
+      stairs_emergency: [
+        { speech: en ? 'On both sides of me you can see the two emergency exits.' : 'A mis dos costados podrás ver las dos salidas de emergencia.', animation: 'BodyTalk/Speaking/BodyTalk_1' },
+        { speech: en ? "In case you need to use them, don't run!" : '¡En caso de usarlas no corras!', animation: 'Gestures/Please_1' }
+      ],
+      reception: [
+        { speech: en ? "It's right in front of me." : 'Está justo al frente mío.', animation: 'Gestures/You_2' }
+      ],
+      stairs_up: [
+        { speech: en ? "On my sides, past the wall, you'll see it." : 'A mis costados pasando el muro lo verás.', animation: 'BodyTalk/Speaking/BodyTalk_1' }
+      ],
+      stairs_down: [
+        { speech: en ? 'They are exactly behind me,' : 'Están exactamente en la parte de atrás mío,', animation: 'BodyTalk/Speaking/BodyTalk_1' },
+        { speech: en ? "go to your right, then move forward and you'll see them." : 'sigue a tu derecha, luego avanza y ahí las verás.', animation: 'Gestures/Everything_1' }
+      ]
+    };
+  }
 
   function runBaseOnlyMessage(destId, onComplete) {
-    var steps = BASE_ONLY_MESSAGES[destId];
+    var steps = getBaseOnlyMessages()[destId];
     if (!steps) {
       if (onComplete) { onComplete(); }
       return;
@@ -1124,7 +1147,7 @@
   }
 
   function runSpecialArrivalMessage(placeName, onComplete) {
-    var steps = SPECIAL_ARRIVAL[placeName];
+    var steps = getSpecialArrival()[placeName];
     if (!steps) {
       if (onComplete) { onComplete(); }
       return;
@@ -1141,7 +1164,7 @@
     removeClass(byId('pre-nav-overlay'), 'hidden');
 
     function doScript() {
-      executeNavScript(PRE_NAV_SCRIPT, function () {
+      executeNavScript(getPreNavScript(), function () {
         addClass(byId('pre-nav-overlay'), 'hidden');
         if (onComplete) { onComplete(); }
       });
@@ -1245,19 +1268,16 @@
       simulationTimers.push(timer);
     }
 
-    var ARRIVAL_SCRIPT = {
-      config: { stepDelay: 1000 },
-      steps: [
-        {
-          speech: '¡Llegamos!',
-          animation: 'Gestures/You_2'
-        },
-        {
-          speech: 'Por favor completa cómo te sentiste',
-          animation: 'Gestures/Please_1'
-        }
-      ]
-    };
+    function getArrivalScript() {
+      var en = PepperLib.State.language === 'en';
+      return {
+        config: { stepDelay: 1000 },
+        steps: [
+          { speech: en ? "We're here!" : '¡Llegamos!', animation: 'Gestures/You_2' },
+          { speech: en ? 'Please fill in how you felt' : 'Por favor completa cómo te sentiste', animation: 'Gestures/Please_1' }
+        ]
+      };
+    }
 
     PepperLib.State.registerScreen('navigation-guide', {
       init: function () {
@@ -1274,7 +1294,7 @@
           PepperLib.Analytics.count('navigation', currentDestination);
           PepperLib.Analytics.insertNavegacion(categoryLabel, getShortLabel(currentDestination), 'Llevame');
 
-          if (BASE_ONLY_MESSAGES[currentDestination]) {
+          if (getBaseOnlyMessages()[currentDestination]) {
             PepperLib.Inactivity.stop();
             runBaseOnlyMessage(currentDestination, function () {
               PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
@@ -1298,6 +1318,7 @@
             }
             cancelArrivalPoll();
             navActive = true;
+            startNavActiveCostmapClear();
             PepperLib.isNavigating = true;
             window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
             PepperLib.Inactivity.stop();
@@ -1313,7 +1334,7 @@
                   if (overlay) { addClass(overlay, 'hidden'); }
                   PepperLib.Inactivity.reset();
                   var destPlace = destination && destination.place ? destination.place : resolveGraphDest(currentDestination);
-                  if (SPECIAL_ARRIVAL[destPlace]) {
+                  if (getSpecialArrival()[destPlace]) {
                     runSpecialArrivalMessage(destPlace, function () {
                       PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                     });
@@ -1326,12 +1347,12 @@
                     );
                     if (window.PepperRosNavigation) {
                       window.PepperRosNavigation.standPosture(function () {
-                        executeNavScript(ARRIVAL_SCRIPT, null);
+                        executeNavScript(getArrivalScript(), null);
                       }, function () {
-                        executeNavScript(ARRIVAL_SCRIPT, null);
+                        executeNavScript(getArrivalScript(), null);
                       });
                     } else {
-                      executeNavScript(ARRIVAL_SCRIPT, null);
+                      executeNavScript(getArrivalScript(), null);
                     }
                   }
                 },
@@ -1369,16 +1390,7 @@
           }
 
           PepperLib.Inactivity.stop();
-          var overlay = byId('pre-nav-overlay');
-          if (overlay) { removeClass(overlay, 'hidden'); }
-          var doneScript = {
-            config: { stepDelay: 500 },
-            steps: [{ speech: '¡Muchas gracias, espero verte pronto!', animation: 'Gestures/Hey_1' }]
-          };
-          executeNavScript(doneScript, function () {
-            if (overlay) { addClass(overlay, 'hidden'); }
-            PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
-          });
+          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
         };
       },
 
@@ -1755,6 +1767,7 @@
             }
 
             navActive = true;
+            startNavActiveCostmapClear();
             PepperLib.isNavigating = true;
             window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
             navStartTime = Date.now();
@@ -1786,7 +1799,7 @@
                       PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, {}, { pushHistory: false });
                     }
 
-                    if (SPECIAL_ARRIVAL[shelfGraphId]) {
+                    if (getSpecialArrival()[shelfGraphId]) {
                       runSpecialArrivalMessage(shelfGraphId, onArrivalComplete);
                     } else {
                       var arrOverlay = byId('pre-nav-overlay');
@@ -1795,13 +1808,7 @@
                         arrText.textContent = PepperLib.State.language === 'en' ? 'We have arrived!' : '¡Llegamos!';
                         removeClass(arrOverlay, 'hidden');
                       }
-                      var shelfArrivalScript = {
-                        config: { stepDelay: 1000 },
-                        steps: [
-                          { speech: '¡Llegamos!', animation: 'Gestures/You_2' },
-                          { speech: 'Por favor completa cómo te sentiste', animation: 'Gestures/Please_1' }
-                        ]
-                      };
+                      var shelfArrivalScript = getArrivalScript();
                       function runShelfArrival() {
                         executeNavScript(shelfArrivalScript, function () {
                           if (arrOverlay) { addClass(arrOverlay, 'hidden'); }
@@ -1858,16 +1865,7 @@
           }
           PepperLib.Analytics.insertBuscarLibro(activeShelf, activeTopic, 'Listo');
           PepperLib.Inactivity.stop();
-          var overlay = byId('pre-nav-overlay');
-          if (overlay) { removeClass(overlay, 'hidden'); }
-          var doneScript = {
-            config: { stepDelay: 500 },
-            steps: [{ speech: '¡Muchas gracias, espero verte pronto!', animation: 'Gestures/Hey_1' }]
-          };
-          executeNavScript(doneScript, function () {
-            if (overlay) { addClass(overlay, 'hidden'); }
-            PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
-          });
+          PepperLib.State.go(PepperLib.SCREENS.FEEDBACK, { skipReturn: true }, { pushHistory: false });
         };
       },
 
@@ -1978,7 +1976,7 @@
         PepperLib.Analytics.insertServiciosLibros(typeLabel, 'Listo');
         PepperLib.Inactivity.stop();
         PepperRobot.animate('Gestures/Hey_1');
-        PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', function () {
+        PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'Thank you so much, hope to see you soon!' : '¡Muchas gracias, espero verte pronto!', function () {
           PepperLib.State.endSession();
           PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
         }, true);
@@ -3274,6 +3272,7 @@
       }
       cancelArrivalPoll();
       navActive = true;
+      startNavActiveCostmapClear();
       PepperLib.Inactivity.stop();
       var blackOverlay = byId('black-screen-overlay');
       if (blackOverlay) addClass(blackOverlay, 'active');
@@ -3315,15 +3314,8 @@
       }
 
       function onReturnError(errorString) {
-        clearAutoReturn();
-        reEnableArms();
-        navActive = false;
-        startNavClearLoop();
-        PepperLib.Inactivity.reset();
-        if (blackOverlay) removeClass(blackOverlay, 'active');
         console.error('[NAV ERROR] navigateToBase:', errorString);
-        PepperLib.State.endSession();
-        PepperLib.State.go(PepperLib.SCREENS.IDLE, {}, { pushHistory: false });
+        endAndReturn();
       }
 
       if (window.PepperRosNavigation) {
@@ -3424,7 +3416,7 @@
           clearAutoReturn();
 
           PepperRobot.animate('Gestures/Hey_1');
-          PepperRobot.speakAndWait('¡Muchas gracias, espero verte pronto!', function () {
+          PepperRobot.speakAndWait(PepperLib.State.language === 'en' ? 'Thank you so much, hope to see you soon!' : '¡Muchas gracias, espero verte pronto!', function () {
             initiateReturn();
           }, true);
         };
@@ -3508,6 +3500,7 @@
 
   var rosNavClearInterval = null;
   var rosStandInterval = null;
+  var navActiveCostmapInterval = null;
   var navStartTime = null;
   var navArrivalPoll = null;
   var navActive = false;
@@ -3520,6 +3513,7 @@
   }
 
   function startNavClearLoop() {
+    stopNavActiveCostmapClear();
     if (!rosNavClearInterval) {
       rosNavClearInterval = setInterval(function () {
         if (window.PepperRosNavigation && !navActive) {
@@ -3539,6 +3533,22 @@
   function stopNavClearLoop() {
     if (rosNavClearInterval) { clearInterval(rosNavClearInterval); rosNavClearInterval = null; }
     if (rosStandInterval)    { clearInterval(rosStandInterval);    rosStandInterval = null;    }
+  }
+
+  function startNavActiveCostmapClear() {
+    if (navActiveCostmapInterval) { return; }
+    navActiveCostmapInterval = setInterval(function () {
+      if (window.PepperRosNavigation) {
+        window.PepperRosNavigation.clearCostmaps(null, null);
+      }
+    }, 1000);
+  }
+
+  function stopNavActiveCostmapClear() {
+    if (navActiveCostmapInterval) {
+      clearInterval(navActiveCostmapInterval);
+      navActiveCostmapInterval = null;
+    }
   }
 
   var DEST_GRAPH_MAP = {

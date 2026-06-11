@@ -737,7 +737,6 @@
   Navigation.sendMoveBasePlace = function (placeName, onSuccess, onError, onFeedback) {
     var place = findPlace(placeName);
     var attempt = 0;
-    var maxRetries = 3;
     var ARRIVAL_THRESHOLD = 1.0;
 
     if (!place) {
@@ -794,16 +793,11 @@
         var pose = lastAmclPose;
         var dx, dy, dist;
 
+        attempt += 1;
+
         if (!pose) {
-          if (attempt < maxRetries) {
-            attempt += 1;
-            console.warn('[NAV] move_base terminó pero no hay pose AMCL para verificar llegada. Reintentando (' + attempt + '/' + maxRetries + ')...');
-            sendAttempt();
-            return;
-          }
-          if (onError) {
-            onError('move_base terminó sin pose AMCL para verificar llegada a ' + placeName + '.');
-          }
+          console.warn('[NAV] move_base terminó pero no hay pose AMCL. Reintentando (intento ' + attempt + ')...');
+          sendAttempt();
           return;
         }
 
@@ -811,17 +805,9 @@
         dy = Number(place.y) - pose.position.y;
         dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist > ARRIVAL_THRESHOLD && attempt < maxRetries) {
-          attempt += 1;
-          console.warn('[NAV] move_base terminó a ' + dist.toFixed(2) + 'm del destino. Reintentando (' + attempt + '/' + maxRetries + ')...');
-          sendAttempt();
-          return;
-        }
-
         if (dist > ARRIVAL_THRESHOLD) {
-          if (onError) {
-            onError('No se pudo llegar a ' + placeName + ' tras ' + maxRetries + ' intentos (distancia final: ' + dist.toFixed(2) + 'm).');
-          }
+          console.warn('[NAV] move_base terminó a ' + dist.toFixed(2) + 'm de ' + placeName + '. Reintentando (intento ' + attempt + ')...');
+          sendAttempt();
           return;
         }
 
@@ -965,8 +951,8 @@
             onStep({ turnDegrees: meta.turnDegrees }, { name: toPlace }, route, index);
           }
           Navigation.rotateInPlace(meta.turnDegrees, afterRotate, function (err) {
-            console.warn('[NAV] giro fallido:', err);
-            if (onError) { onError('Giro fallido al ir a ' + toPlace + ': ' + err); }
+            console.warn('[NAV] giro fallido, continuando sin girar:', err);
+            afterRotate();
           });
           return;
         }
@@ -980,8 +966,8 @@
             onStep({ advanceMeters: meters }, { name: toPlace }, route, index);
           }
           Navigation.advanceInPlace(meters, afterAdvance, function (err) {
-            console.warn('[NAV] advance fallido:', err);
-            if (onError) { onError('Advance fallido al ir a ' + toPlace + ': ' + err); }
+            console.warn('[NAV] advance fallido, continuando sin avanzar:', err);
+            afterAdvance();
           });
           return;
         }
