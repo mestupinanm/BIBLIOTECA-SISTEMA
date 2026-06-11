@@ -3281,13 +3281,12 @@
 
       if (window.PepperRosNavigation) {
         window.PepperRosNavigation.setMoveArmsEnabled(false, false, null, null);
-        window.PepperRosNavigation.setBreathEnabled('Body', false, null, null);
       }
 
       function reEnableArms() {
         if (window.PepperRosNavigation) {
           window.PepperRosNavigation.setMoveArmsEnabled(true, true, null, null);
-          window.PepperRosNavigation.setBreathEnabled('Body', true, null, null);
+          window.PepperRosNavigation.setBreathEnabled('Arms', true, null, null);
         }
       }
 

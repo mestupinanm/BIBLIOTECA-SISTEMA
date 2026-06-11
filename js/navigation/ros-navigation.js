@@ -1379,16 +1379,15 @@
       }
       var sendDestination = function () {
         Navigation.setMoveArmsEnabled(false, false, null, null);
-        Navigation.setBreathEnabled('Body', false, null, null);
         Navigation.navigateGraphClient(destination.place, true, function (response) {
           Navigation.setMoveArmsEnabled(true, true, null, null);
-          Navigation.setBreathEnabled('Body', true, null, null);
+          Navigation.setBreathEnabled('Arms', true, null, null);
           if (onSuccess) {
             onSuccess(response, destination);
           }
         }, function (err) {
           Navigation.setMoveArmsEnabled(true, true, null, null);
-          Navigation.setBreathEnabled('Body', true, null, null);
+          Navigation.setBreathEnabled('Arms', true, null, null);
           if (onError) { onError(err); }
         }, onStep);
       };
